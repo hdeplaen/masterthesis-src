@@ -1,0 +1,7 @@
+# (C) KU Leuven. Henri De Plaen.
+
+c = cint(12)
+c = c / 3
+
+f = sfix(3)
+f = f / 3

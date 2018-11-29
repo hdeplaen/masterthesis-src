@@ -1,0 +1,328 @@
+\contentsline {section}{\numberline {1}Changes}{6}{section.1}
+\contentsline {subsection}{\numberline {1.1}Changes in version 1.2 from 1.1}{6}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Changes in version 1.1 from 1.0}{6}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Changes From SPDZ}{7}{subsection.1.3}
+\contentsline {subsubsection}{\numberline {1.3.1}Things no longer supported}{7}{subsubsection.1.3.1}
+\contentsline {subsubsection}{\numberline {1.3.2}Additions}{8}{subsubsection.1.3.2}
+\contentsline {subsubsection}{\numberline {1.3.3}Changes}{8}{subsubsection.1.3.3}
+\contentsline {section}{\numberline {2}Introduction}{10}{section.2}
+\contentsline {subsection}{\numberline {2.1}Architecture}{10}{subsection.2.1}
+\contentsline {section}{\numberline {3}Installation and Setup}{12}{section.3}
+\contentsline {subsection}{\numberline {3.1}Installation}{12}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Creating and Installing Certificates}{13}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Running Setup}{13}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Data for networking}{14}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}Data for secret sharing:}{14}{subsubsection.3.3.2}
+\contentsline {paragraph}{Full Threshold:}{14}{subsubsection.3.3.2}
+\contentsline {paragraph}{Shamir Secret Sharing:}{14}{subsubsection.3.3.2}
+\contentsline {paragraph}{Replicated Secret Sharing:}{15}{subsubsection.3.3.2}
+\contentsline {paragraph}{Q2-MSP Programs:}{16}{Item.38}
+\contentsline {section}{\numberline {4}Idiot's Installation}{16}{section.4}
+\contentsline {section}{\numberline {5}Simple Example}{17}{section.5}
+\contentsline {subsection}{\numberline {5.1}Compiling and running simple program}{17}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}The Test Scripts}{18}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Run Time Switches for Player.x}{18}{subsection.5.3}
+\contentsline {section}{\numberline {6}Run Time Subsystem}{20}{section.6}
+\contentsline {subsection}{\numberline {6.1}Overview}{20}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Bytecode instructions}{21}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Load, Store and Memory Instructions}{21}{subsection.6.3}
+\contentsline {subsubsection}{\numberline {6.3.1}Basic Load/Store/Move Instructions:}{21}{subsubsection.6.3.1}
+\contentsline {subsubsection}{\numberline {6.3.2}Loading to/from Memory:}{21}{subsubsection.6.3.2}
+\contentsline {subsubsection}{\numberline {6.3.3}Accessing the integer stack:}{21}{subsubsection.6.3.3}
+\contentsline {subsubsection}{\numberline {6.3.4}Data Conversion}{22}{subsubsection.6.3.4}
+\contentsline {subsection}{\numberline {6.4}Preprocessing loading instructions}{22}{subsection.6.4}
+\contentsline {subsection}{\numberline {6.5}Open instructions}{22}{subsection.6.5}
+\contentsline {subsection}{\numberline {6.6}Threading tools}{22}{subsection.6.6}
+\contentsline {subsection}{\numberline {6.7}Basic Arithmetic}{22}{subsection.6.7}
+\contentsline {subsection}{\numberline {6.8}Advanced Arithmetic}{22}{subsection.6.8}
+\contentsline {subsection}{\numberline {6.9}Debuging Output}{23}{subsection.6.9}
+\contentsline {subsection}{\numberline {6.10}Data input and output}{23}{subsection.6.10}
+\contentsline {subsection}{\numberline {6.11}Branching}{23}{subsection.6.11}
+\contentsline {subsection}{\numberline {6.12}Other Commands}{23}{subsection.6.12}
+\contentsline {section}{\numberline {7}New IO Class}{24}{section.7}
+\contentsline {subsection}{\numberline {7.1}Adding your own IO Processing}{24}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Types of IO Processing}{24}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Private Output}{24}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Private Input}{25}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}Public Output}{25}{subsubsection.7.2.3}
+\contentsline {subsubsection}{\numberline {7.2.4}Public Input}{25}{subsubsection.7.2.4}
+\contentsline {subsubsection}{\numberline {7.2.5}Share Output}{25}{subsubsection.7.2.5}
+\contentsline {subsubsection}{\numberline {7.2.6}Share Input}{25}{subsubsection.7.2.6}
+\contentsline {subsection}{\numberline {7.3}Other IO Processing}{25}{subsection.7.3}
+\contentsline {subsubsection}{\numberline {7.3.1}Opening and Closing Channels}{25}{subsubsection.7.3.1}
+\contentsline {subsubsection}{\numberline {7.3.2}Trigger}{26}{subsubsection.7.3.2}
+\contentsline {subsubsection}{\numberline {7.3.3}Debug Output}{26}{subsubsection.7.3.3}
+\contentsline {subsubsection}{\numberline {7.3.4}Crashing}{26}{subsubsection.7.3.4}
+\contentsline {subsection}{\numberline {7.4}MAMBA Hooks}{26}{subsection.7.4}
+\contentsline {section}{\numberline {8}Programmatic Restarting}{28}{section.8}
+\contentsline {subsection}{\numberline {8.1}Memory Management While Restarting}{28}{subsection.8.1}
+\contentsline {section}{\numberline {9}The MAMBA Programming Language}{30}{section.9}
+\contentsline {subsection}{\numberline {9.1}Getting Started}{30}{subsection.9.1}
+\contentsline {subsubsection}{\numberline {9.1.1}Setup}{30}{subsubsection.9.1.1}
+\contentsline {paragraph}{Dependencies}{30}{subsubsection.9.1.1}
+\contentsline {paragraph}{Directory structure}{30}{subsubsection.9.1.1}
+\contentsline {paragraph}{Compilation}{30}{lstnumber.-1.8}
+\contentsline {paragraph}{\texttt {-n --nomerge}}{30}{lstnumber.-1.8}
+\contentsline {paragraph}{\texttt {-o --output <name>}}{30}{lstnumber.-1.8}
+\contentsline {paragraph}{\texttt {-d --debug}}{30}{lstnumber.-1.8}
+\contentsline {paragraph}{\texttt {-c --comparison <type>}}{31}{lstnumber.-1.8}
+\contentsline {paragraph}{\texttt {-a --asm-output}}{31}{lstnumber.-1.8}
+\contentsline {paragraph}{\texttt {-D --dead-code-elimination}}{31}{lstnumber.-1.8}
+\contentsline {subsubsection}{\numberline {9.1.2}Understanding the compilation output}{31}{subsubsection.9.1.2}
+\contentsline {subsubsection}{\numberline {9.1.3}Program Level Parameters}{32}{subsubsection.9.1.3}
+\contentsline {paragraph}{\texttt {p}}{32}{subsubsection.9.1.3}
+\contentsline {paragraph}{\texttt {Prime Size}}{32}{subsubsection.9.1.3}
+\contentsline {paragraph}{\texttt {Default Bit Length}}{32}{subsubsection.9.1.3}
+\contentsline {paragraph}{\texttt {Default Statistical Security}}{33}{subsubsection.9.1.3}
+\contentsline {subsubsection}{\numberline {9.1.4}Compilation comments regarding the tape enrollment:}{33}{subsubsection.9.1.4}
+\contentsline {paragraph}{\texttt {Compiling basic block}}{33}{subsubsection.9.1.4}
+\contentsline {paragraph}{\texttt {Processing tape}}{33}{subsubsection.9.1.4}
+\contentsline {paragraph}{\texttt {Processing basic block}}{33}{subsubsection.9.1.4}
+\contentsline {paragraph}{\texttt {Program requires X rounds of communication}}{33}{subsubsection.9.1.4}
+\contentsline {paragraph}{\texttt {Program requires X invocations}}{33}{subsubsection.9.1.4}
+\contentsline {subsubsection}{\numberline {9.1.5}Offline data Requirements:}{33}{subsubsection.9.1.5}
+\contentsline {paragraph}{\texttt {Tape requires X triples in modp, Y squares in modp, Z bits in modp}}{33}{subsubsection.9.1.5}
+\contentsline {paragraph}{\texttt {Memory Size}}{33}{subsubsection.9.1.5}
+\contentsline {subsection}{\numberline {9.2}Writing Programs}{34}{subsection.9.2}
+\contentsline {subsubsection}{\numberline {9.2.1}Data Types}{34}{subsubsection.9.2.1}
+\contentsline {subsubsection}{\numberline {9.2.2}Creating data}{35}{subsubsection.9.2.2}
+\contentsline {paragraph}{\texttt {sint(value)}}{35}{subsubsection.9.2.2}
+\contentsline {paragraph}{\texttt {cint(value)}}{35}{lstnumber.-4.1}
+\contentsline {paragraph}{\texttt {regint(value)}}{35}{lstnumber.-5.1}
+\contentsline {paragraph}{\texttt {sfix(value)}}{35}{lstnumber.-6.1}
+\contentsline {paragraph}{\texttt {cfix(value)}}{35}{lstnumber.-7.1}
+\contentsline {paragraph}{\texttt {sfloat(value)}}{35}{lstnumber.-8.1}
+\contentsline {paragraph}{\texttt {load_int_to_secret_vector(vector)}}{36}{lstnumber.-9.1}
+\contentsline {paragraph}{\texttt {load_secret_mem(address) \\ load_clear_mem(address)}}{36}{lstnumber.-10.3}
+\contentsline {paragraph}{\texttt {x.store_in_mem(address)}}{36}{lstnumber.-11.4}
+\contentsline {paragraph}{\texttt {x.load_mem(address)}}{36}{lstnumber.-12.4}
+\contentsline {paragraph}{\texttt {x.reveal()}}{36}{lstnumber.-13.4}
+\contentsline {subsubsection}{\numberline {9.2.3}Operations on Data Types}{37}{subsubsection.9.2.3}
+\contentsline {paragraph}{Multiplication:}{37}{subsubsection.9.2.3}
+\contentsline {paragraph}{Additions and Substractions:}{37}{lstnumber.-15.5}
+\contentsline {paragraph}{Division and Modulus:}{37}{lstnumber.-16.5}
+\contentsline {paragraph}{Shift operations}{38}{lstnumber.-18.4}
+\contentsline {paragraph}{Exponentiation:}{38}{lstnumber.-19.3}
+\contentsline {paragraph}{Comparisons (Inequality Tests)}{38}{lstnumber.-20.7}
+\contentsline {subsubsection}{\numberline {9.2.4}Loading preprocessing data and sources of randomness}{39}{subsubsection.9.2.4}
+\contentsline {paragraph}{\texttt {sint.get_random_triple()}}{39}{subsubsection.9.2.4}
+\contentsline {paragraph}{\texttt {sint.get_random_bit()}}{39}{lstnumber.-24.2}
+\contentsline {paragraph}{\texttt {sint.get_random_square()}}{39}{lstnumber.-25.2}
+\contentsline {paragraph}{\texttt {sint.get_random_int(nbits)}}{39}{lstnumber.-26.2}
+\contentsline {subsubsection}{\numberline {9.2.5}Printing}{40}{subsubsection.9.2.5}
+\contentsline {paragraph}{\texttt {print_str(string, *args)\\ print_ln(string, *args)}}{40}{subsubsection.9.2.5}
+\contentsline {subsubsection}{\numberline {9.2.6}How to print Vectorized data}{40}{subsubsection.9.2.6}
+\contentsline {subsection}{\numberline {9.3}Advanced Data Type Explanation}{40}{subsection.9.3}
+\contentsline {subsubsection}{\numberline {9.3.1}class sfix}{40}{subsubsection.9.3.1}
+\contentsline {paragraph}{Data Components:}{40}{subsubsection.9.3.1}
+\contentsline {paragraph}{\texttt {v}}{41}{subsubsection.9.3.1}
+\contentsline {paragraph}{\texttt {f}}{41}{subsubsection.9.3.1}
+\contentsline {paragraph}{\texttt {k}}{41}{subsubsection.9.3.1}
+\contentsline {paragraph}{Special Operations:}{41}{subsubsection.9.3.1}
+\contentsline {paragraph}{\texttt {sfix.set_precision(f, k = None)}}{41}{subsubsection.9.3.1}
+\contentsline {paragraph}{\texttt {sfix.load_int(v)}}{41}{lstnumber.-30.3}
+\contentsline {paragraph}{\texttt {sfix.conv()}}{42}{lstnumber.-31.4}
+\contentsline {paragraph}{\texttt {sfix.sizeof()}}{42}{lstnumber.-32.4}
+\contentsline {paragraph}{\texttt {sfix.compute_reciprocal()}}{42}{lstnumber.-33.5}
+\contentsline {paragraph}{Observations:}{42}{lstnumber.-34.4}
+\contentsline {subsubsection}{\numberline {9.3.2}class cfix}{43}{subsubsection.9.3.2}
+\contentsline {paragraph}{Data Components:}{43}{subsubsection.9.3.2}
+\contentsline {paragraph}{\texttt {v}}{43}{subsubsection.9.3.2}
+\contentsline {paragraph}{\texttt {f}}{43}{subsubsection.9.3.2}
+\contentsline {paragraph}{\texttt {k}}{43}{subsubsection.9.3.2}
+\contentsline {paragraph}{Special Operations:}{43}{subsubsection.9.3.2}
+\contentsline {paragraph}{\texttt {cfix.set_precision(f, k = None)}}{43}{subsubsection.9.3.2}
+\contentsline {paragraph}{\texttt {cfix.load_int(v)}}{43}{lstnumber.-35.3}
+\contentsline {paragraph}{\texttt {cfix.conv()}}{44}{lstnumber.-36.4}
+\contentsline {paragraph}{\texttt {cfix.sizeof()}}{44}{lstnumber.-37.4}
+\contentsline {paragraph}{\texttt {cfix.compute_reciprocal()}}{44}{lstnumber.-38.5}
+\contentsline {paragraph}{Observations:}{45}{lstnumber.-39.4}
+\contentsline {subsubsection}{\numberline {9.3.3}class sfloat}{45}{subsubsection.9.3.3}
+\contentsline {paragraph}{Data Components}{45}{lstnumber.-40.3}
+\contentsline {paragraph}{\texttt {v}}{45}{lstnumber.-40.3}
+\contentsline {paragraph}{\texttt {p}}{45}{lstnumber.-40.3}
+\contentsline {paragraph}{\texttt {s}}{45}{lstnumber.-40.3}
+\contentsline {paragraph}{\texttt {z}}{46}{lstnumber.-40.3}
+\contentsline {paragraph}{Special Operations:}{46}{lstnumber.-40.3}
+\contentsline {paragraph}{\texttt {sfloat.set_error(error)}}{46}{lstnumber.-40.3}
+\contentsline {paragraph}{\texttt {sfloat.convert_float(v,vlen,plen)}}{46}{lstnumber.-42.2}
+\contentsline {paragraph}{\texttt {sfloat.sizeof()}}{46}{lstnumber.-43.2}
+\contentsline {subsubsection}{\numberline {9.3.4}Branching and Looping}{47}{subsubsection.9.3.4}
+\contentsline {paragraph}{Branching}{48}{subsubsection.9.3.4}
+\contentsline {paragraph}{Looping}{48}{subsubsection.9.3.4}
+\contentsline {paragraph}{\texttt {do_loop(condition, loop_fn)}}{48}{subsubsection.9.3.4}
+\contentsline {paragraph}{\texttt {while_loop(loop_body, condition, arg1, arg2, ...)}}{48}{lstnumber.-45.6}
+\contentsline {paragraph}{\texttt {range_loop(loop_body, stop) \\ range_loop(loop_body, start, stop[, step])}}{49}{lstnumber.-45.6}
+\contentsline {paragraph}{\texttt {do_while(loop_body)}}{49}{lstnumber.-45.6}
+\contentsline {subsubsection}{\numberline {9.3.5}Arrays}{49}{subsubsection.9.3.5}
+\contentsline {paragraph}{\texttt {type.Array(size)}}{49}{subsubsection.9.3.5}
+\contentsline {paragraph}{\texttt {type.Matrix(rows, columns)}}{50}{lstnumber.-46.10}
+\contentsline {paragraph}{\texttt {type.MultiArray([n_1,\dots ,n_k])}}{50}{lstnumber.-47.13}
+\contentsline {paragraph}{Short-circuit evalution}{51}{lstnumber.-48.15}
+\contentsline {paragraph}{\texttt {and_(term1, term2, ...) \\ or_(term1, term2, ...) \\ not_(term)}}{51}{lstnumber.-48.15}
+\contentsline {subsubsection}{\numberline {9.3.6}Multi-threading}{51}{subsubsection.9.3.6}
+\contentsline {subsubsection}{\numberline {9.3.7}Testing}{52}{subsubsection.9.3.7}
+\contentsline {paragraph}{\texttt {test(value, lower=None, upper=None)}}{52}{subsubsection.9.3.7}
+\contentsline {paragraph}{\texttt {test_mem(value, address, lower=None, upper=None)}}{52}{subsubsection.9.3.7}
+\contentsline {subsection}{\numberline {9.4}The Compilation Process}{52}{subsection.9.4}
+\contentsline {subsubsection}{\numberline {9.4.1}Program Representation}{52}{subsubsection.9.4.1}
+\contentsline {subsubsection}{\numberline {9.4.2}Optimizing Communication}{54}{subsubsection.9.4.2}
+\contentsline {subsubsection}{\numberline {9.4.3}Register allocation}{54}{subsubsection.9.4.3}
+\contentsline {subsubsection}{\numberline {9.4.4}Notes}{55}{subsubsection.9.4.4}
+\contentsline {section}{\numberline {10}FHE Security}{56}{section.10}
+\contentsline {subsection}{\numberline {10.1}Main Security Parameters}{56}{subsection.10.1}
+\contentsline {subsection}{\numberline {10.2}Distributions and Norms}{57}{subsection.10.2}
+\contentsline {subsection}{\numberline {10.3}The FHE Scheme and Noise Analysis}{58}{subsection.10.3}
+\contentsline {subsubsection}{\numberline {10.3.1}Key Generation:}{58}{subsubsection.10.3.1}
+\contentsline {subsubsection}{\numberline {10.3.2}Encryption:}{58}{subsubsection.10.3.2}
+\contentsline {subsubsection}{\numberline {10.3.3}$\mathsf {SwitchModulus}((c_0,c_1))$:}{59}{subsubsection.10.3.3}
+\contentsline {subsubsection}{\numberline {10.3.4}$\mathsf {Dec}_{\mathfrak {s}}(\mathfrak {c})$:}{59}{subsubsection.10.3.4}
+\contentsline {subsubsection}{\numberline {10.3.5}$\mathsf {DistDec}_{\{\mathfrak {s}_i\}}(\mathfrak {c})$:}{59}{subsubsection.10.3.5}
+\contentsline {paragraph}{Reshare Version 1:}{61}{figure.1}
+\contentsline {paragraph}{Reshare Version 2:}{61}{figure.1}
+\contentsline {subsubsection}{\numberline {10.3.6}$\mathsf {SwitchKey}(d_0,d_1,d_2)$:}{61}{subsubsection.10.3.6}
+\contentsline {subsubsection}{\numberline {10.3.7}$\mathsf {Mult}(\mathfrak {c},\mathfrak {c}')$:}{62}{subsubsection.10.3.7}
+\contentsline {subsubsection}{\numberline {10.3.8}Application to the Offline Phase:}{62}{subsubsection.10.3.8}
+\contentsline {subsection}{\numberline {10.4}Zero Knowledge Proof}{62}{subsection.10.4}
+\contentsline {paragraph}{Correctness.}{62}{figure.3}
+\contentsline {paragraph}{Special soundness.}{64}{figure.3}
+\contentsline {paragraph}{Honest verifier zero-knowledge.}{64}{figure.3}
+\contentsline {section}{\numberline {11}Advanced Protocols}{65}{section.11}
+\contentsline {subsection}{\numberline {11.1}Basic Protocols}{66}{subsection.11.1}
+\contentsline {subsubsection}{\numberline {11.1.1}$\mathsf {Inv}(\delimiter "426830A x \delimiter "526930B )$:}{66}{subsubsection.11.1.1}
+\contentsline {paragraph}{MAMBA Example:}{66}{Item.72}
+\contentsline {subsubsection}{\numberline {11.1.2}$\mathsf {Ran}_p^*()$:}{66}{subsubsection.11.1.2}
+\contentsline {subsubsection}{\numberline {11.1.3}$\mathsf {PreMult}(\delimiter "426830A a_1 \delimiter "526930B ,\ldots ,\delimiter "426830A a_t \delimiter "526930B ,T)$:}{66}{subsubsection.11.1.3}
+\contentsline {subsection}{\numberline {11.2}Bit Oriented Operations}{68}{subsection.11.2}
+\contentsline {subsubsection}{\numberline {11.2.1}$\mathsf {OR}(\delimiter "426830A a \delimiter "526930B ,\delimiter "426830A b \delimiter "526930B )$:}{68}{subsubsection.11.2.1}
+\contentsline {paragraph}{MAMBA Example:}{68}{Item.87}
+\contentsline {subsubsection}{\numberline {11.2.2}$\mathsf {XOR}(\delimiter "426830A a \delimiter "526930B ,\delimiter "426830A b \delimiter "526930B )$:}{68}{subsubsection.11.2.2}
+\contentsline {paragraph}{MAMBA Example:}{68}{Item.88}
+\contentsline {subsubsection}{\numberline {11.2.3}$\mathsf {KOp}(\odot ,\delimiter "426830A a_1 \delimiter "526930B ,\ldots ,\delimiter "426830A a_k \delimiter "526930B ,k)$:}{68}{subsubsection.11.2.3}
+\contentsline {paragraph}{MAMBA Example:}{68}{Item.95}
+\contentsline {subsubsection}{\numberline {11.2.4}$\mathsf {PreOp}(\odot ,\delimiter "426830A a_1 \delimiter "526930B ,\ldots ,\delimiter "426830A a_k \delimiter "526930B ,k)$:}{69}{subsubsection.11.2.4}
+\contentsline {paragraph}{MAMBA Example:}{69}{Item.101}
+\contentsline {subsubsection}{\numberline {11.2.5}$\mathsf {Solved\mhyphen Bits}(BitsList, k)$:}{69}{subsubsection.11.2.5}
+\contentsline {paragraph}{MAMBA Example:}{69}{Item.104}
+\contentsline {subsubsection}{\numberline {11.2.6}$\mathsf {PRandM}(k,m,\kappa )$:}{70}{subsubsection.11.2.6}
+\contentsline {paragraph}{MAMBA Example:}{70}{Item.107}
+\contentsline {subsubsection}{\numberline {11.2.7}$\mathsf {CarryOut}(\delimiter "426830A a \delimiter "526930B _B,\delimiter "426830A b \delimiter "526930B _B,k)$:}{70}{subsubsection.11.2.7}
+\contentsline {paragraph}{MAMBA Example:}{70}{Item.112}
+\contentsline {subsubsection}{\numberline {11.2.8}$\mathsf {CarryOutAux}(\delimiter "426830A d_k \delimiter "526930B _B,\ldots ,\delimiter "426830A d_1 \delimiter "526930B _B,k, \kappa )$:}{71}{subsubsection.11.2.8}
+\contentsline {paragraph}{MAMBA Example:}{71}{Item.119}
+\contentsline {subsubsection}{\numberline {11.2.9}$\mathsf {BitAdd}((\delimiter "426830A a_{k-1} \delimiter "526930B ,\ldots ,\delimiter "426830A a_0 \delimiter "526930B ), (\delimiter "426830A b_{k-1} \delimiter "526930B ,\ldots ,\delimiter "426830A b_0 \delimiter "526930B ),k)$:}{71}{subsubsection.11.2.9}
+\contentsline {paragraph}{MAMBA Example:}{72}{Item.127}
+\contentsline {subsubsection}{\numberline {11.2.10}$\mathsf {BitLT}(a,\delimiter "426830A b \delimiter "526930B _B,k)$:}{72}{subsubsection.11.2.10}
+\contentsline {paragraph}{MAMBA Example:}{72}{Item.131}
+\contentsline {subsubsection}{\numberline {11.2.11}$\mathsf {BitDec}(\delimiter "426830A a \delimiter "526930B ,k,m)$:}{72}{subsubsection.11.2.11}
+\contentsline {paragraph}{MAMBA Example:}{72}{Item.135}
+\contentsline {subsection}{\numberline {11.3}Arithmetic with Signed Integers}{73}{subsection.11.3}
+\contentsline {subsubsection}{\numberline {11.3.1}$\mathsf {TruncPR}(\delimiter "426830A a \delimiter "526930B ,k,m, \kappa )$:}{73}{subsubsection.11.3.1}
+\contentsline {paragraph}{MAMBA Example:}{73}{Item.141}
+\contentsline {subsubsection}{\numberline {11.3.2}$\mathsf {Mod2m}(\delimiter "426830A a_{prime} \delimiter "526930B , \delimiter "426830A a \delimiter "526930B ,k,m, \kappa , signed)$:}{73}{subsubsection.11.3.2}
+\contentsline {paragraph}{MAMBA Example:}{74}{Item.147}
+\contentsline {subsubsection}{\numberline {11.3.3}$\mathsf {Trunc}(\delimiter "426830A a \delimiter "526930B ,k,m, kappa)$:}{74}{subsubsection.11.3.3}
+\contentsline {paragraph}{MAMBA Example:}{74}{Item.151}
+\contentsline {subsubsection}{\numberline {11.3.4}$\mathsf {Mod2}(\delimiter "426830A a \delimiter "526930B ,k, \kappa , signed)$:}{74}{subsubsection.11.3.4}
+\contentsline {paragraph}{MAMBA Example:}{74}{Item.155}
+\contentsline {subsubsection}{\numberline {11.3.5}$\mathsf {LTZ}(\delimiter "426830A a \delimiter "526930B ,k, \kappa )$:}{75}{subsubsection.11.3.5}
+\contentsline {paragraph}{MAMBA Example:}{75}{Item.156}
+\contentsline {subsubsection}{\numberline {11.3.6}$\mathsf {EQZ}(\delimiter "426830A a \delimiter "526930B ,k, \kappa )$:}{75}{subsubsection.11.3.6}
+\contentsline {paragraph}{MAMBA Example:}{75}{Item.163}
+\contentsline {subsubsection}{\numberline {11.3.7}Comparison Operators:}{76}{subsubsection.11.3.7}
+\contentsline {subsubsection}{\numberline {11.3.8}Addition, Multiplication in ${\mathbb {Z}}_{\delimiter "426830A k \delimiter "526930B }$}{76}{subsubsection.11.3.8}
+\contentsline {subsubsection}{\numberline {11.3.9}$\mathsf {Pow2}(\delimiter "426830A a \delimiter "526930B ,k, \kappa )$:}{76}{subsubsection.11.3.9}
+\contentsline {paragraph}{MAMBA Example:}{76}{Item.172}
+\contentsline {subsubsection}{\numberline {11.3.10}$\mathsf {B2U}(\delimiter "426830A a \delimiter "526930B ,k, \kappa )$:}{77}{subsubsection.11.3.10}
+\contentsline {paragraph}{MAMBA Example:}{77}{Item.182}
+\contentsline {subsubsection}{\numberline {11.3.11}$\mathsf {Trunc}(\delimiter "426830A a \delimiter "526930B ,k,\delimiter "426830A m \delimiter "526930B , \kappa )$:}{77}{subsubsection.11.3.11}
+\contentsline {paragraph}{MAMBA Example:}{78}{Item.192}
+\contentsline {subsubsection}{\numberline {11.3.12}$\mathsf {Mod2m}(a_prime, \delimiter "426830A a \delimiter "526930B ,k,\delimiter "426830A m \delimiter "526930B , \kappa )$:}{78}{subsubsection.11.3.12}
+\contentsline {paragraph}{MAMBA Example:}{78}{Item.202}
+\contentsline {subsection}{\numberline {11.4}Arithmetic with Fixed Point Numbers}{79}{subsection.11.4}
+\contentsline {subsubsection}{\numberline {11.4.1}$\mathsf {Scale}(\delimiter "426830A a \delimiter "526930B ,k,f_1,f_2)$:}{79}{subsubsection.11.4.1}
+\contentsline {subsubsection}{\numberline {11.4.2}$\mathsf {FxEQZ}, \mathsf {FxLTZ}, \mathsf {FxEQ}, \mathsf {FxLT}$, etc:}{79}{subsubsection.11.4.2}
+\contentsline {subsubsection}{\numberline {11.4.3}$\mathsf {FxAbs}(\delimiter "426830A a \delimiter "526930B ,k,f)$}{79}{subsubsection.11.4.3}
+\contentsline {paragraph}{MAMBA Example:}{79}{Item.209}
+\contentsline {subsubsection}{\numberline {11.4.4}$\mathsf {FxNeg}(\delimiter "426830A a \delimiter "526930B ,k,f)$}{79}{subsubsection.11.4.4}
+\contentsline {paragraph}{MAMBA Example:}{80}{Item.210}
+\contentsline {subsubsection}{\numberline {11.4.5}$\mathsf {FxAdd}(\delimiter "426830A a \delimiter "526930B ,\delimiter "426830A b \delimiter "526930B ,k,f)$:}{80}{subsubsection.11.4.5}
+\contentsline {paragraph}{MAMBA Example:}{80}{Item.213}
+\contentsline {subsubsection}{\numberline {11.4.6}$\mathsf {FxMult}(\delimiter "426830A a \delimiter "526930B ,\delimiter "426830A b \delimiter "526930B ,k,f)$:}{80}{subsubsection.11.4.6}
+\contentsline {paragraph}{MAMBA Example:}{80}{Item.216}
+\contentsline {subsubsection}{\numberline {11.4.7}$\mathsf {FxDiv}(\delimiter "426830A a \delimiter "526930B ,b,k,f)$:}{80}{subsubsection.11.4.7}
+\contentsline {paragraph}{MAMBA Example:}{81}{Item.219}
+\contentsline {subsubsection}{\numberline {11.4.8}$\mathsf {FxDiv}(\delimiter "426830A a \delimiter "526930B ,\delimiter "426830A b \delimiter "526930B ,k,f)$:}{81}{subsubsection.11.4.8}
+\contentsline {paragraph}{MAMBA Example:}{81}{Item.233}
+\contentsline {subsubsection}{\numberline {11.4.9}$\mathsf {AppRcr}(\delimiter "426830A b \delimiter "526930B ,k,f)$:}{81}{subsubsection.11.4.9}
+\contentsline {subsubsection}{\numberline {11.4.10}$\mathsf {MSB}(\delimiter "426830A b \delimiter "526930B ,k):$}{82}{subsubsection.11.4.10}
+\contentsline {subsubsection}{\numberline {11.4.11}$\mathsf {Norm}(\delimiter "426830A b \delimiter "526930B ,k,f):$}{82}{subsubsection.11.4.11}
+\contentsline {paragraph}{MAMBA Example:}{82}{Item.259}
+\contentsline {subsubsection}{\numberline {11.4.12}$\mathsf {NormSQ}(\delimiter "426830A b \delimiter "526930B ,k):$}{83}{subsubsection.11.4.12}
+\contentsline {subsubsection}{\numberline {11.4.13}$\mathsf {SimplifiedNormSQ}(\delimiter "426830A b \delimiter "526930B ,k):$}{83}{subsubsection.11.4.13}
+\contentsline {subsection}{\numberline {11.5}Arithmetic with Floating Point Numbers}{84}{subsection.11.5}
+\contentsline {subsubsection}{\numberline {11.5.1}$\mathsf {FlowDetect}(\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B )$:}{84}{subsubsection.11.5.1}
+\contentsline {subsubsection}{\numberline {11.5.2}$\mathsf {FLNeg}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ))$:}{84}{subsubsection.11.5.2}
+\contentsline {subsubsection}{\numberline {11.5.3}$\mathsf {FLAbs}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ))$:}{84}{subsubsection.11.5.3}
+\contentsline {subsubsection}{\numberline {11.5.4}$\mathsf {FLMult}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{85}{subsubsection.11.5.4}
+\contentsline {subsubsection}{\numberline {11.5.5}$\mathsf {FLAdd}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{85}{subsubsection.11.5.5}
+\contentsline {subsubsection}{\numberline {11.5.6}$\mathsf {SDiv}(\delimiter "426830A a \delimiter "526930B ,\delimiter "426830A b \delimiter "526930B ,\ell )$:}{86}{subsubsection.11.5.6}
+\contentsline {subsubsection}{\numberline {11.5.7}$\mathsf {FLDiv}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{87}{subsubsection.11.5.7}
+\contentsline {subsubsection}{\numberline {11.5.8}$\mathsf {FLLTZ}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ))$:}{87}{subsubsection.11.5.8}
+\contentsline {subsubsection}{\numberline {11.5.9}$\mathsf {FLEQZ}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ))$:}{87}{subsubsection.11.5.9}
+\contentsline {subsubsection}{\numberline {11.5.10}$\mathsf {FLGTZ}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ))$:}{87}{subsubsection.11.5.10}
+\contentsline {subsubsection}{\numberline {11.5.11}$\mathsf {FLLEZ}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ))$:}{87}{subsubsection.11.5.11}
+\contentsline {subsubsection}{\numberline {11.5.12}$\mathsf {FLGEZ}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ))$:}{87}{subsubsection.11.5.12}
+\contentsline {subsubsection}{\numberline {11.5.13}$\mathsf {FLEQ}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{87}{subsubsection.11.5.13}
+\contentsline {subsubsection}{\numberline {11.5.14}$\mathsf {FLLT}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{88}{subsubsection.11.5.14}
+\contentsline {subsubsection}{\numberline {11.5.15}$\mathsf {FLGT}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{88}{subsubsection.11.5.15}
+\contentsline {subsubsection}{\numberline {11.5.16}$\mathsf {FLLET}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{88}{subsubsection.11.5.16}
+\contentsline {subsubsection}{\numberline {11.5.17}$\mathsf {FLGET}( (\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ), (\delimiter "426830A v_2 \delimiter "526930B ,\delimiter "426830A p_2 \delimiter "526930B ,\delimiter "426830A z_2 \delimiter "526930B ,\delimiter "426830A s_2 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_2 \delimiter "526930B ))$:}{88}{subsubsection.11.5.17}
+\contentsline {subsection}{\numberline {11.6}Conversion Routines}{89}{subsection.11.6}
+\contentsline {subsubsection}{\numberline {11.6.1}$\mathsf {FLRound}((\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ,\mathsf {mode})$:}{89}{subsubsection.11.6.1}
+\contentsline {paragraph}{MAMBA Example:}{89}{Item.397}
+\contentsline {subsubsection}{\numberline {11.6.2}$\mathsf {Int2Fx}(\delimiter "426830A a \delimiter "526930B ,k,f)$:}{89}{subsubsection.11.6.2}
+\contentsline {paragraph}{MAMBA Example:}{90}{Item.398}
+\contentsline {subsubsection}{\numberline {11.6.3}$\mathsf {Int2FL}(\delimiter "426830A a \delimiter "526930B ,\gamma ,\ell )$:}{90}{subsubsection.11.6.3}
+\contentsline {paragraph}{MAMBA Example:}{90}{Item.413}
+\contentsline {subsubsection}{\numberline {11.6.4}$\mathsf {Fx2Int}(\delimiter "426830A a \delimiter "526930B ,k,f)$:}{90}{subsubsection.11.6.4}
+\contentsline {paragraph}{MAMBA Example:}{90}{Item.414}
+\contentsline {subsubsection}{\numberline {11.6.5}$\mathsf {FxFloor}(\delimiter "426830A a \delimiter "526930B ,k,f)$:}{91}{subsubsection.11.6.5}
+\contentsline {paragraph}{MAMBA Example:}{91}{Item.415}
+\contentsline {subsubsection}{\numberline {11.6.6}$\mathsf {Fx2FL}(\delimiter "426830A g \delimiter "526930B ,\gamma ,f,\ell ,k)$:}{91}{subsubsection.11.6.6}
+\contentsline {paragraph}{MAMBA Example:}{91}{Item.418}
+\contentsline {subsubsection}{\numberline {11.6.7}$\mathsf {FL2Int}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ),\ell ,k,\gamma )$:}{91}{subsubsection.11.6.7}
+\contentsline {paragraph}{MAMBA Example:}{92}{Item.434}
+\contentsline {subsubsection}{\numberline {11.6.8}$\mathsf {FL2Fx}((\delimiter "426830A v \delimiter "526930B ,\delimiter "426830A p \delimiter "526930B ,\delimiter "426830A z \delimiter "526930B ,\delimiter "426830A s \delimiter "526930B ,\delimiter "426830A \mathsf {err} \delimiter "526930B ),\ell ,k,\gamma ,f)$:}{92}{subsubsection.11.6.8}
+\contentsline {paragraph}{MAMBA Example:}{92}{Item.437}
+\contentsline {subsection}{\numberline {11.7}SQRT Functions}{93}{subsection.11.7}
+\contentsline {subsubsection}{\numberline {11.7.1}$\mathsf {ParamFxSqrt}(\delimiter "426830A x \delimiter "526930B ,k,f)$:}{93}{subsubsection.11.7.1}
+\contentsline {subsubsection}{\numberline {11.7.2}$\mathsf {SimplifiedFxSqrt}(\delimiter "426830A x \delimiter "526930B , k, f)$:}{94}{subsubsection.11.7.2}
+\contentsline {subsubsection}{\numberline {11.7.3}$\mathsf {FxSqrt}(\delimiter "426830A x \delimiter "526930B , k \leftarrow \mathtt {sfix.k}, f \leftarrow \mathtt {sfix.f})$:}{95}{subsubsection.11.7.3}
+\contentsline {paragraph}{MAMBA Example:}{95}{Item.491}
+\contentsline {subsubsection}{\numberline {11.7.4}$\mathsf {LinAppSQ}(\delimiter "426830A b \delimiter "526930B ,k,f)$:}{96}{subsubsection.11.7.4}
+\contentsline {subsubsection}{\numberline {11.7.5}$\mathsf {FLSqrt}((\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ))$:}{96}{subsubsection.11.7.5}
+\contentsline {subsection}{\numberline {11.8}EXP and LOG Functions}{98}{subsection.11.8}
+\contentsline {subsubsection}{\numberline {11.8.1}$\mathsf {FxExp2}(\delimiter "426830A a \delimiter "526930B ,k,f)$:}{98}{subsubsection.11.8.1}
+\contentsline {paragraph}{MAMBA Example:}{99}{Item.533}
+\contentsline {subsubsection}{\numberline {11.8.2}$\mathsf {FLExp2}((\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ))$:}{99}{subsubsection.11.8.2}
+\contentsline {subsubsection}{\numberline {11.8.3}$\mathsf {FxLog2}(\delimiter "426830A a \delimiter "526930B ,k,f)$:}{100}{subsubsection.11.8.3}
+\contentsline {paragraph}{MAMBA Example:}{101}{Item.565}
+\contentsline {subsubsection}{\numberline {11.8.4}$\mathsf {FLLog2}((\delimiter "426830A v_1 \delimiter "526930B ,\delimiter "426830A p_1 \delimiter "526930B ,\delimiter "426830A z_1 \delimiter "526930B ,\delimiter "426830A s_1 \delimiter "526930B ,\delimiter "426830A \mathsf {err}_1 \delimiter "526930B ))$:}{101}{subsubsection.11.8.4}
+\contentsline {subsection}{\numberline {11.9}Trigonometic Functions}{102}{subsection.11.9}
+\contentsline {subsubsection}{\numberline {11.9.1}$\mathsf {F\star TrigSub}(\delimiter "426830A x \delimiter "526930B )$:}{102}{subsubsection.11.9.1}
+\contentsline {paragraph}{MAMBA Example:}{103}{Item.596}
+\contentsline {subsubsection}{\numberline {11.9.2}$\mathsf {F\star Sin}(\delimiter "426830A x \delimiter "526930B )$}{103}{subsubsection.11.9.2}
+\contentsline {paragraph}{MAMBA Example:}{103}{Item.602}
+\contentsline {subsubsection}{\numberline {11.9.3}$\mathsf {F\star Cos}(\delimiter "426830A x \delimiter "526930B )$}{103}{subsubsection.11.9.3}
+\contentsline {paragraph}{MAMBA Example:}{103}{Item.607}
+\contentsline {subsubsection}{\numberline {11.9.4}$\mathsf {F\star Tan}(\delimiter "426830A x \delimiter "526930B )$}{104}{subsubsection.11.9.4}
+\contentsline {paragraph}{MAMBA Example:}{104}{Item.618}
+\contentsline {subsection}{\numberline {11.10}Inverse Trigonometric Functions}{105}{subsection.11.10}
+\contentsline {subsubsection}{\numberline {11.10.1}$\mathsf {F\star ArcSin}(\delimiter "426830A x \delimiter "526930B )$}{105}{subsubsection.11.10.1}
+\contentsline {paragraph}{MAMBA Example:}{106}{Item.628}
+\contentsline {subsubsection}{\numberline {11.10.2}$\mathsf {F\star ArcCos}(\delimiter "426830A x \delimiter "526930B )$}{106}{subsubsection.11.10.2}
+\contentsline {paragraph}{MAMBA Example:}{106}{Item.632}
+\contentsline {subsubsection}{\numberline {11.10.3}$\mathsf {F\star ArcTan}(\delimiter "426830A x \delimiter "526930B )$}{106}{subsubsection.11.10.3}
+\contentsline {paragraph}{MAMBA Example:}{106}{Item.645}
+\contentsline {section}{References}{107}{lstnumber.-103.4}

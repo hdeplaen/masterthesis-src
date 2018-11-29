@@ -1,0 +1,1 @@
+../mpn/x86_64/skylake/avx/mul_1.as

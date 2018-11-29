@@ -1,0 +1,117 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{KRSW17}
+
+\bibitem[ABZS13]{ABZS13}
+Mehrdad Aliasgari, Marina Blanton, Yihua Zhang, and Aaron Steele.
+\newblock Secure computation on floating point numbers.
+\newblock In {\em 20th Annual Network and Distributed System Security
+  Symposium, {NDSS} 2013, San Diego, California, USA, February 24-27, 2013}.
+  The Internet Society, 2013.
+
+\bibitem[CdH10]{CH10}
+Octavian Catrina and Sebastiaan de~Hoogh.
+\newblock Improved primitives for secure multiparty integer computation.
+\newblock In Juan~A. Garay and Roberto~De Prisco, editors, {\em Security and
+  Cryptography for Networks, 7th International Conference, {SCN} 2010, Amalfi,
+  Italy, September 13-15, 2010. Proceedings}, volume 6280 of {\em Lecture Notes
+  in Computer Science}, pages 182--199. Springer, 2010.
+
+\bibitem[CDM00]{CDM00}
+Ronald Cramer, Ivan Damg{\aa}rd, and Ueli~M. Maurer.
+\newblock General secure multi-party computation from any linear secret-sharing
+  scheme.
+\newblock In Bart Preneel, editor, {\em Advances in Cryptology - {EUROCRYPT}
+  2000, International Conference on the Theory and Application of Cryptographic
+  Techniques, Bruges, Belgium, May 14-18, 2000, Proceeding}, volume 1807 of
+  {\em Lecture Notes in Computer Science}, pages 316--334. Springer, 2000.
+
+\bibitem[CS10]{CS10}
+Octavian Catrina and Amitabh Saxena.
+\newblock Secure computation with fixed-point numbers.
+\newblock In Radu Sion, editor, {\em Financial Cryptography and Data Security,
+  14th International Conference, {FC} 2010, Tenerife, Canary Islands, January
+  25-28, 2010, Revised Selected Papers}, volume 6052 of {\em Lecture Notes in
+  Computer Science}, pages 35--50. Springer, 2010.
+
+\bibitem[DFK{\etalchar{+}}06]{DFKNT06}
+Ivan Damg{\aa}rd, Matthias Fitzi, Eike Kiltz, Jesper~Buus Nielsen, and Tomas
+  Toft.
+\newblock Unconditionally secure constant-rounds multi-party computation for
+  equality, comparison, bits and exponentiation.
+\newblock In Shai Halevi and Tal Rabin, editors, {\em Theory of Cryptography,
+  Third Theory of Cryptography Conference, {TCC} 2006, New York, NY, USA, March
+  4-7, 2006, Proceedings}, volume 3876 of {\em Lecture Notes in Computer
+  Science}, pages 285--304. Springer, 2006.
+
+\bibitem[DKL{\etalchar{+}}13]{SPDZ2}
+Ivan Damg{\aa}rd, Marcel Keller, Enrique Larraia, Valerio Pastro, Peter Scholl,
+  and Nigel~P. Smart.
+\newblock Practical covertly secure {MPC} for dishonest majority - or: Breaking
+  the {SPDZ} limits.
+\newblock In Jason Crampton, Sushil Jajodia, and Keith Mayes, editors, {\em
+  Computer Security - {ESORICS} 2013 - 18th European Symposium on Research in
+  Computer Security, Egham, UK, September 9-13, 2013. Proceedings}, volume 8134
+  of {\em Lecture Notes in Computer Science}, pages 1--18. Springer, 2013.
+
+\bibitem[DPSZ12]{SPDZ}
+Ivan Damg{\aa}rd, Valerio Pastro, Nigel~P. Smart, and Sarah Zakarias.
+\newblock Multiparty computation from somewhat homomorphic encryption.
+\newblock In Safavi{-}Naini and Canetti \cite{DBLP:conf/crypto/2012}, pages
+  643--662.
+
+\bibitem[GHS12]{GHS12c}
+Craig Gentry, Shai Halevi, and Nigel~P. Smart.
+\newblock Homomorphic evaluation of the {AES} circuit.
+\newblock In Safavi{-}Naini and Canetti \cite{DBLP:conf/crypto/2012}, pages
+  850--867.
+
+\bibitem[Har78]{Hart:1978:CA:540084}
+John~F. Hart.
+\newblock {\em Computer Approximations}.
+\newblock Krieger Publishing Co., Inc., Melbourne, FL, USA, 1978.
+
+\bibitem[KPR18]{KPR}
+Marcel Keller, Valerio Pastro, and Dragos Rotaru.
+\newblock Overdrive: Making {SPDZ} great again.
+\newblock In Jesper~Buus Nielsen and Vincent Rijmen, editors, {\em Advances in
+  Cryptology - {EUROCRYPT} 2018 - 37th Annual International Conference on the
+  Theory and Applications of Cryptographic Techniques, Tel Aviv, Israel, April
+  29 - May 3, 2018 Proceedings, Part {III}}, volume 10822 of {\em Lecture Notes
+  in Computer Science}, pages 158--189. Springer, 2018.
+
+\bibitem[KRSW17]{KRSW}
+Marcel Keller, Dragos Rotaru, Nigel~P. Smart, and Tim Wood.
+\newblock Reducing communication channels in {MPC}.
+\newblock {\em {IACR} Cryptology ePrint Archive}, 2017:492, 2017.
+
+\bibitem[Lie12]{Liedel12}
+Manuel Liedel.
+\newblock Secure distributed computation of the square root and applications.
+\newblock In Mark~Dermot Ryan, Ben Smyth, and Guilin Wang, editors, {\em
+  Information Security Practice and Experience - 8th International Conference,
+  {ISPEC} 2012, Hangzhou, China, April 9-12, 2012. Proceedings}, volume 7232 of
+  {\em Lecture Notes in Computer Science}, pages 277--288. Springer, 2012.
+
+\bibitem[Mau06]{Maurer}
+Ueli~M. Maurer.
+\newblock Secure multi-party computation made simple.
+\newblock {\em Discrete Applied Mathematics}, 154(2):370--381, 2006.
+
+\bibitem[SC12]{DBLP:conf/crypto/2012}
+Reihaneh Safavi{-}Naini and Ran Canetti, editors.
+\newblock {\em Advances in Cryptology - {CRYPTO} 2012 - 32nd Annual Cryptology
+  Conference, Santa Barbara, CA, USA, August 19-23, 2012. Proceedings}, volume
+  7417 of {\em Lecture Notes in Computer Science}. Springer, 2012.
+
+\bibitem[{sec}]{SSCM}
+{secureSCM}.
+\newblock Deliverable {D9.2}.
+\newblock
+  \url{https://www1.cs.fau.de/filepool/publications/octavian_securescm/SecureSCM-D.9.2.pdf}.
+
+\bibitem[SW18]{SW18}
+Nigel~P. Smart and Tim Wood.
+\newblock Error-detecting in monotone span programs with application to
+  communication efficient multi-party computation, 2018.
+
+\end{thebibliography}

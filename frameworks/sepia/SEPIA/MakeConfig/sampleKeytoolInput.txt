@@ -1,0 +1,22 @@
+# Enter here all credentials to generate the keystores
+# at least #inputpeers + #privacypeers value tuples are needed. 
+#
+# 7 values per keystore are needed  
+# Country code is 2 letters only
+##############################################
+# yes at the and is needed too and has to be
+# supplied in the language of the keytool!
+# E.g english keytool: yes
+# german keytool: ja
+# etc...
+##############################################
+# credentials 1
+Forename Name
+Organizational Unit
+organization
+City
+Province
+CC
+Yes
+
+# credentials 2, etc

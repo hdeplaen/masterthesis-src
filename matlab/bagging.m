@@ -41,14 +41,28 @@ function [Xb,Yb] = draw_bag(X,Y,bag_size)
 
     types_output = unique(Y) ;
     n_types = length(types_output) ;
-    n_elem = size(X,1) ;
+    n_elem = numel(Y) ;
+    
+    n_restant = n_types ;
+    num_unique = zeros(n_types,1) ;
+    threshold = round(bag_size/n_types) ;
+    
+    for idx_t = 1:n_types
+        num_idx = sum(strcmp(Y,types_output(idx_t))) ;
+        if num_idx < threshold
+            num_unique(idx_t) = num_idx ;
+            n_restant = n_restant-1 ;
+        end
+    end
+    num_unique(num_unique==0) = round((bag_size-sum(num_unique))/n_restant) ;
+        
     
     Xb = [] ; Yb = [] ;
     for idx_t = 1:n_types
         loc_idx = find(strcmp(Y,types_output(idx_t))) ;
         n_unique = numel(loc_idx) ;
         
-        idx_perm = randi(n_unique,round(n_unique/n_elem*bag_size),1) ;
+        idx_perm = randi(n_unique,num_unique(idx_t),1) ;
         sel_elem = loc_idx(idx_perm) ;
         
         Xb = [Xb ; X(sel_elem,:)] ; 

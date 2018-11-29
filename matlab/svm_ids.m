@@ -69,48 +69,50 @@ end
 b = mean( TrainY(S)' - w * TrainX(S,:)' ) ;
 
 %% RETURN
-varargout{1} = alpha ;
-varargout{2} = b ;
+output_TestY = w * TestX' + b ;
+
+assert(nargin==1, 'Wrong number of output arguments') ;
+varargout{1} = output_TestY ;
 
 %% TEST
-output_TrainY = sign(w * TrainX' + b) ;
-output_TestY = sign(w * TestX' + b) ;
+% output_TrainY = sign(w * TrainX' + b) ;
+% output_TestY = sign(w * TestX' + b) ;
 
-train_acc = sum(TrainY'==output_TrainY)/numel(TrainY) ;
-train_adder = TrainY'+output_TrainY ;
-train_tp = sum(train_adder== 2)/numel(TrainY) ;
-train_tn = sum(train_adder==-2)/numel(TrainY) ;
-train_substr = TrainY'-output_TrainY ;
-train_fp = sum(train_substr== 2)/numel(TrainY) ;
-train_fn = sum(train_substr==-2)/numel(TrainY) ;
+% train_acc = sum(TrainY'==output_TrainY)/numel(TrainY) ;
+% train_adder = TrainY'+output_TrainY ;
+% train_tp = sum(train_adder== 2)/numel(TrainY) ;
+% train_tn = sum(train_adder==-2)/numel(TrainY) ;
+% train_substr = TrainY'-output_TrainY ;
+% train_fp = sum(train_substr== 2)/numel(TrainY) ;
+% train_fn = sum(train_substr==-2)/numel(TrainY) ;
+% 
+% test_acc = sum(TestY'==output_TestY)/numel(TestY) ;
+% test_adder = TestY'+output_TestY ;
+% test_tp = sum(test_adder== 2)/numel(TestY) ;
+% test_tn = sum(test_adder==-2)/numel(TestY) ;
+% test_substr = TestY'-output_TestY ;
+% test_fp = sum(test_substr== 2)/numel(TestY) ;
+% test_fn = sum(test_substr==-2)/numel(TestY) ;
 
-test_acc = sum(TestY'==output_TestY)/numel(TestY) ;
-test_adder = TestY'+output_TestY ;
-test_tp = sum(test_adder== 2)/numel(TestY) ;
-test_tn = sum(test_adder==-2)/numel(TestY) ;
-test_substr = TestY'-output_TestY ;
-test_fp = sum(test_substr== 2)/numel(TestY) ;
-test_fn = sum(test_substr==-2)/numel(TestY) ;
-
-fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
-fprintf('%%%%%%  SVM RESULTS  %%%%%% \n') ;
-fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
-fprintf(['C = ' num2str(C) '\n']) ;
-fprintf(['sigma = ' num2str(sigma) '\n \n']) ;
-
-fprintf('TRAINING RESULTS\n') ;
-fprintf(['Total accuracy = ' num2str(train_acc) '%%\n']) ;
-fprintf(['TP = ' num2str(train_tp) '%%   ']) ;
-fprintf(['TN = ' num2str(train_tn) '%%\n']) ;
-fprintf(['FP = ' num2str(train_fp) '%%   ']) ;
-fprintf(['FN = ' num2str(train_fn) '%%\n \n']) ;
-
-fprintf('TEST RESULTS\n') ;
-fprintf(['Total accuracy = ' num2str(test_acc) '%%\n']) ;
-fprintf(['TP = ' num2str(test_tp) '%%    ']) ;
-fprintf(['TN = ' num2str(test_tn) '%%\n']) ;
-fprintf(['FP = ' num2str(test_fp) '%%    ']) ;
-fprintf(['FN = ' num2str(test_fn) '%%\n \n']) ;
+% fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
+% fprintf('%%%%%%  SVM RESULTS  %%%%%% \n') ;
+% fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
+% fprintf(['C = ' num2str(C) '\n']) ;
+% fprintf(['sigma = ' num2str(sigma) '\n \n']) ;
+% 
+% fprintf('TRAINING RESULTS\n') ;
+% fprintf(['Total accuracy = ' num2str(train_acc) '%%\n']) ;
+% fprintf(['TP = ' num2str(train_tp) '%%   ']) ;
+% fprintf(['TN = ' num2str(train_tn) '%%\n']) ;
+% fprintf(['FP = ' num2str(train_fp) '%%   ']) ;
+% fprintf(['FN = ' num2str(train_fn) '%%\n \n']) ;
+% 
+% fprintf('TEST RESULTS\n') ;
+% fprintf(['Total accuracy = ' num2str(test_acc) '%%\n']) ;
+% fprintf(['TP = ' num2str(test_tp) '%%    ']) ;
+% fprintf(['TN = ' num2str(test_tn) '%%\n']) ;
+% fprintf(['FP = ' num2str(test_fp) '%%    ']) ;
+% fprintf(['FN = ' num2str(test_fn) '%%\n \n']) ;
 
 end
 

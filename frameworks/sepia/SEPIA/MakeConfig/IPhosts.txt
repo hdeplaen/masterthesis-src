@@ -1,0 +1,9 @@
+# Place all candidates for INPUT peers in this file
+# if config.allowmultiplepeersonhost=true  in config.properties
+# then hosts are reused in round robin manner
+
+# valid separators are ',' newline or both
+# Whitespaces are NOT ignored e.g.  a,b != a, b
+# Empty lines whithout any spaces or lines starting with # are dicarded 
+
+localhost

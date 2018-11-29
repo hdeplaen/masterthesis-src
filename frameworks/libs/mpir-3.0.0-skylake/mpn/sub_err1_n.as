@@ -1,0 +1,1 @@
+../mpn/x86_64/skylake/avx/sub_err1_n.as

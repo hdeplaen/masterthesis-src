@@ -1,0 +1,186 @@
+\BOOKMARK [1][-]{section.1}{Changes}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Changes in version 1.2 from 1.1}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Changes in version 1.1 from 1.0}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Changes From SPDZ}{section.1}% 4
+\BOOKMARK [3][-]{subsubsection.1.3.1}{Things no longer supported}{subsection.1.3}% 5
+\BOOKMARK [3][-]{subsubsection.1.3.2}{Additions}{subsection.1.3}% 6
+\BOOKMARK [3][-]{subsubsection.1.3.3}{Changes}{subsection.1.3}% 7
+\BOOKMARK [1][-]{section.2}{Introduction}{}% 8
+\BOOKMARK [2][-]{subsection.2.1}{Architecture}{section.2}% 9
+\BOOKMARK [1][-]{section.3}{Installation and Setup}{}% 10
+\BOOKMARK [2][-]{subsection.3.1}{Installation}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.2}{Creating and Installing Certificates}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.3}{Running Setup}{section.3}% 13
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Data for networking}{subsection.3.3}% 14
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Data for secret sharing:}{subsection.3.3}% 15
+\BOOKMARK [1][-]{section.4}{Idiot's Installation}{}% 16
+\BOOKMARK [1][-]{section.5}{Simple Example}{}% 17
+\BOOKMARK [2][-]{subsection.5.1}{Compiling and running simple program}{section.5}% 18
+\BOOKMARK [2][-]{subsection.5.2}{The Test Scripts}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.3}{Run Time Switches for Player.x}{section.5}% 20
+\BOOKMARK [1][-]{section.6}{Run Time Subsystem}{}% 21
+\BOOKMARK [2][-]{subsection.6.1}{Overview}{section.6}% 22
+\BOOKMARK [2][-]{subsection.6.2}{Bytecode instructions}{section.6}% 23
+\BOOKMARK [2][-]{subsection.6.3}{Load, Store and Memory Instructions}{section.6}% 24
+\BOOKMARK [3][-]{subsubsection.6.3.1}{Basic Load/Store/Move Instructions:}{subsection.6.3}% 25
+\BOOKMARK [3][-]{subsubsection.6.3.2}{Loading to/from Memory:}{subsection.6.3}% 26
+\BOOKMARK [3][-]{subsubsection.6.3.3}{Accessing the integer stack:}{subsection.6.3}% 27
+\BOOKMARK [3][-]{subsubsection.6.3.4}{Data Conversion}{subsection.6.3}% 28
+\BOOKMARK [2][-]{subsection.6.4}{Preprocessing loading instructions}{section.6}% 29
+\BOOKMARK [2][-]{subsection.6.5}{Open instructions}{section.6}% 30
+\BOOKMARK [2][-]{subsection.6.6}{Threading tools}{section.6}% 31
+\BOOKMARK [2][-]{subsection.6.7}{Basic Arithmetic}{section.6}% 32
+\BOOKMARK [2][-]{subsection.6.8}{Advanced Arithmetic}{section.6}% 33
+\BOOKMARK [2][-]{subsection.6.9}{Debuging Output}{section.6}% 34
+\BOOKMARK [2][-]{subsection.6.10}{Data input and output}{section.6}% 35
+\BOOKMARK [2][-]{subsection.6.11}{Branching}{section.6}% 36
+\BOOKMARK [2][-]{subsection.6.12}{Other Commands}{section.6}% 37
+\BOOKMARK [1][-]{section.7}{New IO Class}{}% 38
+\BOOKMARK [2][-]{subsection.7.1}{Adding your own IO Processing}{section.7}% 39
+\BOOKMARK [2][-]{subsection.7.2}{Types of IO Processing}{section.7}% 40
+\BOOKMARK [3][-]{subsubsection.7.2.1}{Private Output}{subsection.7.2}% 41
+\BOOKMARK [3][-]{subsubsection.7.2.2}{Private Input}{subsection.7.2}% 42
+\BOOKMARK [3][-]{subsubsection.7.2.3}{Public Output}{subsection.7.2}% 43
+\BOOKMARK [3][-]{subsubsection.7.2.4}{Public Input}{subsection.7.2}% 44
+\BOOKMARK [3][-]{subsubsection.7.2.5}{Share Output}{subsection.7.2}% 45
+\BOOKMARK [3][-]{subsubsection.7.2.6}{Share Input}{subsection.7.2}% 46
+\BOOKMARK [2][-]{subsection.7.3}{Other IO Processing}{section.7}% 47
+\BOOKMARK [3][-]{subsubsection.7.3.1}{Opening and Closing Channels}{subsection.7.3}% 48
+\BOOKMARK [3][-]{subsubsection.7.3.2}{Trigger}{subsection.7.3}% 49
+\BOOKMARK [3][-]{subsubsection.7.3.3}{Debug Output}{subsection.7.3}% 50
+\BOOKMARK [3][-]{subsubsection.7.3.4}{Crashing}{subsection.7.3}% 51
+\BOOKMARK [2][-]{subsection.7.4}{MAMBA Hooks}{section.7}% 52
+\BOOKMARK [1][-]{section.8}{Programmatic Restarting}{}% 53
+\BOOKMARK [2][-]{subsection.8.1}{Memory Management While Restarting}{section.8}% 54
+\BOOKMARK [1][-]{section.9}{The MAMBA Programming Language}{}% 55
+\BOOKMARK [2][-]{subsection.9.1}{Getting Started}{section.9}% 56
+\BOOKMARK [3][-]{subsubsection.9.1.1}{Setup}{subsection.9.1}% 57
+\BOOKMARK [3][-]{subsubsection.9.1.2}{Understanding the compilation output}{subsection.9.1}% 58
+\BOOKMARK [3][-]{subsubsection.9.1.3}{Program Level Parameters}{subsection.9.1}% 59
+\BOOKMARK [3][-]{subsubsection.9.1.4}{Compilation comments regarding the tape enrollment:}{subsection.9.1}% 60
+\BOOKMARK [3][-]{subsubsection.9.1.5}{Offline data Requirements:}{subsection.9.1}% 61
+\BOOKMARK [2][-]{subsection.9.2}{Writing Programs}{section.9}% 62
+\BOOKMARK [3][-]{subsubsection.9.2.1}{Data Types}{subsection.9.2}% 63
+\BOOKMARK [3][-]{subsubsection.9.2.2}{Creating data}{subsection.9.2}% 64
+\BOOKMARK [3][-]{subsubsection.9.2.3}{Operations on Data Types}{subsection.9.2}% 65
+\BOOKMARK [3][-]{subsubsection.9.2.4}{Loading preprocessing data and sources of randomness}{subsection.9.2}% 66
+\BOOKMARK [3][-]{subsubsection.9.2.5}{Printing}{subsection.9.2}% 67
+\BOOKMARK [3][-]{subsubsection.9.2.6}{How to print Vectorized data}{subsection.9.2}% 68
+\BOOKMARK [2][-]{subsection.9.3}{Advanced Data Type Explanation}{section.9}% 69
+\BOOKMARK [3][-]{subsubsection.9.3.1}{class sfix}{subsection.9.3}% 70
+\BOOKMARK [3][-]{subsubsection.9.3.2}{class cfix}{subsection.9.3}% 71
+\BOOKMARK [3][-]{subsubsection.9.3.3}{class sfloat}{subsection.9.3}% 72
+\BOOKMARK [3][-]{subsubsection.9.3.4}{Branching and Looping}{subsection.9.3}% 73
+\BOOKMARK [3][-]{subsubsection.9.3.5}{Arrays}{subsection.9.3}% 74
+\BOOKMARK [3][-]{subsubsection.9.3.6}{Multi-threading}{subsection.9.3}% 75
+\BOOKMARK [3][-]{subsubsection.9.3.7}{Testing}{subsection.9.3}% 76
+\BOOKMARK [2][-]{subsection.9.4}{The Compilation Process}{section.9}% 77
+\BOOKMARK [3][-]{subsubsection.9.4.1}{Program Representation}{subsection.9.4}% 78
+\BOOKMARK [3][-]{subsubsection.9.4.2}{Optimizing Communication}{subsection.9.4}% 79
+\BOOKMARK [3][-]{subsubsection.9.4.3}{Register allocation}{subsection.9.4}% 80
+\BOOKMARK [3][-]{subsubsection.9.4.4}{Notes}{subsection.9.4}% 81
+\BOOKMARK [1][-]{section.10}{FHE Security}{}% 82
+\BOOKMARK [2][-]{subsection.10.1}{Main Security Parameters}{section.10}% 83
+\BOOKMARK [2][-]{subsection.10.2}{Distributions and Norms}{section.10}% 84
+\BOOKMARK [2][-]{subsection.10.3}{The FHE Scheme and Noise Analysis}{section.10}% 85
+\BOOKMARK [3][-]{subsubsection.10.3.1}{Key Generation:}{subsection.10.3}% 86
+\BOOKMARK [3][-]{subsubsection.10.3.2}{Encryption:}{subsection.10.3}% 87
+\BOOKMARK [3][-]{subsubsection.10.3.3}{SwitchModulus\(\(c\1370,c\1371\)\):}{subsection.10.3}% 88
+\BOOKMARK [3][-]{subsubsection.10.3.4}{Dec\137s\(c\):}{subsection.10.3}% 89
+\BOOKMARK [3][-]{subsubsection.10.3.5}{DistDec\137\173s\137i\175\(c\):}{subsection.10.3}% 90
+\BOOKMARK [3][-]{subsubsection.10.3.6}{SwitchKey\(d\1370,d\1371,d\1372\):}{subsection.10.3}% 91
+\BOOKMARK [3][-]{subsubsection.10.3.7}{Mult\(c,c'\):}{subsection.10.3}% 92
+\BOOKMARK [3][-]{subsubsection.10.3.8}{Application to the Offline Phase:}{subsection.10.3}% 93
+\BOOKMARK [2][-]{subsection.10.4}{Zero Knowledge Proof}{section.10}% 94
+\BOOKMARK [1][-]{section.11}{Advanced Protocols}{}% 95
+\BOOKMARK [2][-]{subsection.11.1}{Basic Protocols}{section.11}% 96
+\BOOKMARK [3][-]{subsubsection.11.1.1}{Inv\("426830A x "526930B \):}{subsection.11.1}% 97
+\BOOKMARK [3][-]{subsubsection.11.1.2}{Ran\137p*\(\):}{subsection.11.1}% 98
+\BOOKMARK [3][-]{subsubsection.11.1.3}{PreMult\("426830A a\1371 "526930B ,\203,"426830A a\137t "526930B ,T\):}{subsection.11.1}% 99
+\BOOKMARK [2][-]{subsection.11.2}{Bit Oriented Operations}{section.11}% 100
+\BOOKMARK [3][-]{subsubsection.11.2.1}{OR\("426830A a "526930B ,"426830A b "526930B \):}{subsection.11.2}% 101
+\BOOKMARK [3][-]{subsubsection.11.2.2}{XOR\("426830A a "526930B ,"426830A b "526930B \):}{subsection.11.2}% 102
+\BOOKMARK [3][-]{subsubsection.11.2.3}{KOp\(,"426830A a\1371 "526930B ,\203,"426830A a\137k "526930B ,k\):}{subsection.11.2}% 103
+\BOOKMARK [3][-]{subsubsection.11.2.4}{PreOp\(,"426830A a\1371 "526930B ,\203,"426830A a\137k "526930B ,k\):}{subsection.11.2}% 104
+\BOOKMARK [3][-]{subsubsection.11.2.5}{SolvedBits\(BitsList, k\):}{subsection.11.2}% 105
+\BOOKMARK [3][-]{subsubsection.11.2.6}{PRandM\(k,m,\):}{subsection.11.2}% 106
+\BOOKMARK [3][-]{subsubsection.11.2.7}{CarryOut\("426830A a "526930B \137B,"426830A b "526930B \137B,k\):}{subsection.11.2}% 107
+\BOOKMARK [3][-]{subsubsection.11.2.8}{CarryOutAux\("426830A d\137k "526930B \137B,\203,"426830A d\1371 "526930B \137B,k, \):}{subsection.11.2}% 108
+\BOOKMARK [3][-]{subsubsection.11.2.9}{BitAdd\(\("426830A a\137k-1 "526930B ,\203,"426830A a\1370 "526930B \), \("426830A b\137k-1 "526930B ,\203,"426830A b\1370 "526930B \),k\):}{subsection.11.2}% 109
+\BOOKMARK [3][-]{subsubsection.11.2.10}{BitLT\(a,"426830A b "526930B \137B,k\):}{subsection.11.2}% 110
+\BOOKMARK [3][-]{subsubsection.11.2.11}{BitDec\("426830A a "526930B ,k,m\):}{subsection.11.2}% 111
+\BOOKMARK [2][-]{subsection.11.3}{Arithmetic with Signed Integers}{section.11}% 112
+\BOOKMARK [3][-]{subsubsection.11.3.1}{TruncPR\("426830A a "526930B ,k,m, \):}{subsection.11.3}% 113
+\BOOKMARK [3][-]{subsubsection.11.3.2}{Mod2m\("426830A a\137prime "526930B , "426830A a "526930B ,k,m, , signed\):}{subsection.11.3}% 114
+\BOOKMARK [3][-]{subsubsection.11.3.3}{Trunc\("426830A a "526930B ,k,m, kappa\):}{subsection.11.3}% 115
+\BOOKMARK [3][-]{subsubsection.11.3.4}{Mod2\("426830A a "526930B ,k, , signed\):}{subsection.11.3}% 116
+\BOOKMARK [3][-]{subsubsection.11.3.5}{LTZ\("426830A a "526930B ,k, \):}{subsection.11.3}% 117
+\BOOKMARK [3][-]{subsubsection.11.3.6}{EQZ\("426830A a "526930B ,k, \):}{subsection.11.3}% 118
+\BOOKMARK [3][-]{subsubsection.11.3.7}{Comparison Operators:}{subsection.11.3}% 119
+\BOOKMARK [3][-]{subsubsection.11.3.8}{Addition, Multiplication in Z"426830A k "526930B }{subsection.11.3}% 120
+\BOOKMARK [3][-]{subsubsection.11.3.9}{Pow2\("426830A a "526930B ,k, \):}{subsection.11.3}% 121
+\BOOKMARK [3][-]{subsubsection.11.3.10}{B2U\("426830A a "526930B ,k, \):}{subsection.11.3}% 122
+\BOOKMARK [3][-]{subsubsection.11.3.11}{Trunc\("426830A a "526930B ,k,"426830A m "526930B , \):}{subsection.11.3}% 123
+\BOOKMARK [3][-]{subsubsection.11.3.12}{Mod2m\(a\137prime, "426830A a "526930B ,k,"426830A m "526930B , \):}{subsection.11.3}% 124
+\BOOKMARK [2][-]{subsection.11.4}{Arithmetic with Fixed Point Numbers}{section.11}% 125
+\BOOKMARK [3][-]{subsubsection.11.4.1}{Scale\("426830A a "526930B ,k,f\1371,f\1372\):}{subsection.11.4}% 126
+\BOOKMARK [3][-]{subsubsection.11.4.2}{FxEQZ, FxLTZ, FxEQ, FxLT, etc:}{subsection.11.4}% 127
+\BOOKMARK [3][-]{subsubsection.11.4.3}{FxAbs\("426830A a "526930B ,k,f\)}{subsection.11.4}% 128
+\BOOKMARK [3][-]{subsubsection.11.4.4}{FxNeg\("426830A a "526930B ,k,f\)}{subsection.11.4}% 129
+\BOOKMARK [3][-]{subsubsection.11.4.5}{FxAdd\("426830A a "526930B ,"426830A b "526930B ,k,f\):}{subsection.11.4}% 130
+\BOOKMARK [3][-]{subsubsection.11.4.6}{FxMult\("426830A a "526930B ,"426830A b "526930B ,k,f\):}{subsection.11.4}% 131
+\BOOKMARK [3][-]{subsubsection.11.4.7}{FxDiv\("426830A a "526930B ,b,k,f\):}{subsection.11.4}% 132
+\BOOKMARK [3][-]{subsubsection.11.4.8}{FxDiv\("426830A a "526930B ,"426830A b "526930B ,k,f\):}{subsection.11.4}% 133
+\BOOKMARK [3][-]{subsubsection.11.4.9}{AppRcr\("426830A b "526930B ,k,f\):}{subsection.11.4}% 134
+\BOOKMARK [3][-]{subsubsection.11.4.10}{MSB\("426830A b "526930B ,k\):}{subsection.11.4}% 135
+\BOOKMARK [3][-]{subsubsection.11.4.11}{Norm\("426830A b "526930B ,k,f\):}{subsection.11.4}% 136
+\BOOKMARK [3][-]{subsubsection.11.4.12}{NormSQ\("426830A b "526930B ,k\):}{subsection.11.4}% 137
+\BOOKMARK [3][-]{subsubsection.11.4.13}{SimplifiedNormSQ\("426830A b "526930B ,k\):}{subsection.11.4}% 138
+\BOOKMARK [2][-]{subsection.11.5}{Arithmetic with Floating Point Numbers}{section.11}% 139
+\BOOKMARK [3][-]{subsubsection.11.5.1}{FlowDetect\("426830A p "526930B ,"426830A err "526930B \):}{subsection.11.5}% 140
+\BOOKMARK [3][-]{subsubsection.11.5.2}{FLNeg\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \)\):}{subsection.11.5}% 141
+\BOOKMARK [3][-]{subsubsection.11.5.3}{FLAbs\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \)\):}{subsection.11.5}% 142
+\BOOKMARK [3][-]{subsubsection.11.5.4}{FLMult\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 143
+\BOOKMARK [3][-]{subsubsection.11.5.5}{FLAdd\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 144
+\BOOKMARK [3][-]{subsubsection.11.5.6}{SDiv\("426830A a "526930B ,"426830A b "526930B ,\):}{subsection.11.5}% 145
+\BOOKMARK [3][-]{subsubsection.11.5.7}{FLDiv\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 146
+\BOOKMARK [3][-]{subsubsection.11.5.8}{FLLTZ\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \)\):}{subsection.11.5}% 147
+\BOOKMARK [3][-]{subsubsection.11.5.9}{FLEQZ\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \)\):}{subsection.11.5}% 148
+\BOOKMARK [3][-]{subsubsection.11.5.10}{FLGTZ\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \)\):}{subsection.11.5}% 149
+\BOOKMARK [3][-]{subsubsection.11.5.11}{FLLEZ\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \)\):}{subsection.11.5}% 150
+\BOOKMARK [3][-]{subsubsection.11.5.12}{FLGEZ\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \)\):}{subsection.11.5}% 151
+\BOOKMARK [3][-]{subsubsection.11.5.13}{FLEQ\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 152
+\BOOKMARK [3][-]{subsubsection.11.5.14}{FLLT\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 153
+\BOOKMARK [3][-]{subsubsection.11.5.15}{FLGT\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 154
+\BOOKMARK [3][-]{subsubsection.11.5.16}{FLLET\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 155
+\BOOKMARK [3][-]{subsubsection.11.5.17}{FLGET\( \("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \), \("426830A v\1372 "526930B ,"426830A p\1372 "526930B ,"426830A z\1372 "526930B ,"426830A s\1372 "526930B ,"426830A err\1372 "526930B \)\):}{subsection.11.5}% 156
+\BOOKMARK [2][-]{subsection.11.6}{Conversion Routines}{section.11}% 157
+\BOOKMARK [3][-]{subsubsection.11.6.1}{FLRound\(\("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B ,mode\):}{subsection.11.6}% 158
+\BOOKMARK [3][-]{subsubsection.11.6.2}{Int2Fx\("426830A a "526930B ,k,f\):}{subsection.11.6}% 159
+\BOOKMARK [3][-]{subsubsection.11.6.3}{Int2FL\("426830A a "526930B ,,\):}{subsection.11.6}% 160
+\BOOKMARK [3][-]{subsubsection.11.6.4}{Fx2Int\("426830A a "526930B ,k,f\):}{subsection.11.6}% 161
+\BOOKMARK [3][-]{subsubsection.11.6.5}{FxFloor\("426830A a "526930B ,k,f\):}{subsection.11.6}% 162
+\BOOKMARK [3][-]{subsubsection.11.6.6}{Fx2FL\("426830A g "526930B ,,f,,k\):}{subsection.11.6}% 163
+\BOOKMARK [3][-]{subsubsection.11.6.7}{FL2Int\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \),,k,\):}{subsection.11.6}% 164
+\BOOKMARK [3][-]{subsubsection.11.6.8}{FL2Fx\(\("426830A v "526930B ,"426830A p "526930B ,"426830A z "526930B ,"426830A s "526930B ,"426830A err "526930B \),,k,,f\):}{subsection.11.6}% 165
+\BOOKMARK [2][-]{subsection.11.7}{SQRT Functions}{section.11}% 166
+\BOOKMARK [3][-]{subsubsection.11.7.1}{ParamFxSqrt\("426830A x "526930B ,k,f\):}{subsection.11.7}% 167
+\BOOKMARK [3][-]{subsubsection.11.7.2}{SimplifiedFxSqrt\("426830A x "526930B , k, f\):}{subsection.11.7}% 168
+\BOOKMARK [3][-]{subsubsection.11.7.3}{FxSqrt\("426830A x "526930B , k sfix.k, f sfix.f\):}{subsection.11.7}% 169
+\BOOKMARK [3][-]{subsubsection.11.7.4}{LinAppSQ\("426830A b "526930B ,k,f\):}{subsection.11.7}% 170
+\BOOKMARK [3][-]{subsubsection.11.7.5}{FLSqrt\(\("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \)\):}{subsection.11.7}% 171
+\BOOKMARK [2][-]{subsection.11.8}{EXP and LOG Functions}{section.11}% 172
+\BOOKMARK [3][-]{subsubsection.11.8.1}{FxExp2\("426830A a "526930B ,k,f\):}{subsection.11.8}% 173
+\BOOKMARK [3][-]{subsubsection.11.8.2}{FLExp2\(\("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \)\):}{subsection.11.8}% 174
+\BOOKMARK [3][-]{subsubsection.11.8.3}{FxLog2\("426830A a "526930B ,k,f\):}{subsection.11.8}% 175
+\BOOKMARK [3][-]{subsubsection.11.8.4}{FLLog2\(\("426830A v\1371 "526930B ,"426830A p\1371 "526930B ,"426830A z\1371 "526930B ,"426830A s\1371 "526930B ,"426830A err\1371 "526930B \)\):}{subsection.11.8}% 176
+\BOOKMARK [2][-]{subsection.11.9}{Trigonometic Functions}{section.11}% 177
+\BOOKMARK [3][-]{subsubsection.11.9.1}{FTrigSub\("426830A x "526930B \):}{subsection.11.9}% 178
+\BOOKMARK [3][-]{subsubsection.11.9.2}{FSin\("426830A x "526930B \)}{subsection.11.9}% 179
+\BOOKMARK [3][-]{subsubsection.11.9.3}{FCos\("426830A x "526930B \)}{subsection.11.9}% 180
+\BOOKMARK [3][-]{subsubsection.11.9.4}{FTan\("426830A x "526930B \)}{subsection.11.9}% 181
+\BOOKMARK [2][-]{subsection.11.10}{Inverse Trigonometric Functions}{section.11}% 182
+\BOOKMARK [3][-]{subsubsection.11.10.1}{FArcSin\("426830A x "526930B \)}{subsection.11.10}% 183
+\BOOKMARK [3][-]{subsubsection.11.10.2}{FArcCos\("426830A x "526930B \)}{subsection.11.10}% 184
+\BOOKMARK [3][-]{subsubsection.11.10.3}{FArcTan\("426830A x "526930B \)}{subsection.11.10}% 185
+\BOOKMARK [1][-]{lstnumber.-103.4}{References}{}% 186

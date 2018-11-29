@@ -14,27 +14,40 @@ benchmark_path = '../benchmark/' ;
 switch data_set
     case 'nsl-kdd'
         local_path = 'NSL-KDD/' ;
-        trainXY = readtable([benchmark_path local_path 'KDDTrain+_20Percent.txt']) ;
-        testXY  = readtable([benchmark_path local_path 'KDDTest-21.txt']) ;
+        trainXY = readtable([benchmark_path local_path 'KDDTrain+.txt']) ;
+        testXY  = readtable([benchmark_path local_path 'KDDTest+.txt']) ;
     otherwise
         error('Benchmark dataset not recognized') ;
 end
 
 %% CONVERT DATA TABLES TO NUMERICAL MATRICES
-[train_bin,test_bin] = cat2bin(trainXY.Var2,testXY.Var2) ;
+% [train_bin,test_bin] = cat2bin(trainXY.Var2,testXY.Var2) ;
+% testXY = [testXY(:,1) test_bin testXY(:,3:end)] ;
+% trainXY = [trainXY(:,1) train_bin trainXY(:,3:end)] ;
+% 
+% % [train_bin,test_bin] = cat2bin(trainXY.Var3,testXY.Var3) ;
+% % testXY = [testXY(:,1:4) test_bin testXY(:,6:end)] ;
+% % trainXY = [trainXY(:,1:4) train_bin trainXY(:,6:end)] ;
+% % 
+% % [train_bin,test_bin] = cat2bin(trainXY.Var4,testXY.Var4) ;
+% % testXY = [testXY(:,1:70) test_bin testXY(:,72:end)] ;
+% % trainXY = [trainXY(:,1:70) train_bin trainXY(:,72:end)] ;
+% 
+% testXY = [testXY(:,1:4) testXY(:,7:end)] ;
+% trainXY = [trainXY(:,1:4) trainXY(:,7:end)] ;
+
+[train_bin,test_bin] = cat2num(trainXY.Var2,testXY.Var2) ;
 testXY = [testXY(:,1) test_bin testXY(:,3:end)] ;
 trainXY = [trainXY(:,1) train_bin trainXY(:,3:end)] ;
 
-% [train_bin,test_bin] = cat2bin(trainXY.Var3,testXY.Var3) ;
-% testXY = [testXY(:,1:4) test_bin testXY(:,6:end)] ;
-% trainXY = [trainXY(:,1:4) train_bin trainXY(:,6:end)] ;
-% 
-% [train_bin,test_bin] = cat2bin(trainXY.Var4,testXY.Var4) ;
-% testXY = [testXY(:,1:70) test_bin testXY(:,72:end)] ;
-% trainXY = [trainXY(:,1:70) train_bin trainXY(:,72:end)] ;
+[train_bin,test_bin] = cat2num(trainXY.Var3,testXY.Var3) ;
+testXY = [testXY(:,1:2) test_bin testXY(:,4:end)] ;
+trainXY = [trainXY(:,1:2) train_bin trainXY(:,4:end)] ;
 
-testXY = [testXY(:,1:4) testXY(:,7:end)] ;
-trainXY = [trainXY(:,1:4) trainXY(:,7:end)] ;
+[train_bin,test_bin] = cat2num(trainXY.Var4,testXY.Var4) ;
+testXY = [testXY(:,1:3) test_bin testXY(:,5:end)] ;
+trainXY = [trainXY(:,1:3) train_bin trainXY(:,5:end)] ;
+
 
 %TABLES TO MATRICES
 trainX = trainXY(:,1:end-2) ; trainY = trainXY(:,end-1) ;
@@ -133,6 +146,10 @@ testX = table2array(testX) ;
 trainX = table2array(trainX) ; 
 %trainY = table2array(trainY) ;
 
+% transform time
+trainX(:,1) = log(trainX(:,1)+1) ;
+testX(:,1) = log(testX(:,1)+1) ;
+
 varargout{1} = trainX ; varargout{2} = trainY ;
 varargout{3} = testX ; varargout{4} = testY ;
 
@@ -170,5 +187,39 @@ end
 %% RETURN 
 varargout{1} = array2table(train_bin,'VariableNames',unique_poss) ;
 varargout{2} = array2table(test_bin,'VariableNames',unique_poss) ;
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function varargout = cat2num(varargin)
+%CAT2BIN Converts a categrocial cell list (of string) to a binary table
+%   Author: HENRI DE PLAEN
+
+
+%% PRELIMINARIES
+assert(nargin==2) ; assert(nargout==2) ;
+train_cat = varargin{1} ;
+test_cat = varargin{2} ;
+
+%% CONVERSION
+unique_poss = unique(train_cat) ;
+
+l_train = length(train_cat) ;
+l_test = length(test_cat) ;
+
+train_num = zeros(l_train,1) ;
+test_num = zeros(l_test,1) ;
+
+idx_max = length(unique_poss) ;
+
+for idx = 1:idx_max
+    train_num(strcmp(train_cat,unique_poss(idx))) = idx ;
+    test_num(strcmp(test_cat,unique_poss(idx))) = idx ;
+end
+
+%% RETURN 
+varargout{1} = array2table(train_num,'VariableNames',unique_poss(1)) ;
+varargout{2} = array2table(test_num,'VariableNames',unique_poss(1)) ;
 
 end
