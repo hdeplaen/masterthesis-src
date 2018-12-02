@@ -9,53 +9,36 @@ data_set = varargin{1} ;
 classes_red = varargin{2} ;
 
 %% LOAD DATA
-benchmark_path = '../benchmark/' ;
+benchmark_path = '../benchmark/' ;                                          % path of the benchmarking data-sets
 
-switch data_set
+switch data_set                                                             % choose data-sets
     case 'nsl-kdd'
-        local_path = 'NSL-KDD/' ;
-        trainXY = readtable([benchmark_path local_path 'KDDTrain+.txt']) ;
-        testXY  = readtable([benchmark_path local_path 'KDDTest+.txt']) ;
+        local_path = 'NSL-KDD/' ;                                           % subpath of chosen data-set
+        trainXY = readtable([benchmark_path local_path 'KDDTrain+.txt']) ;  % filename of the traning set
+        testXY  = readtable([benchmark_path local_path 'KDDTest+.txt']) ;   % filename of the test set
+        
+        %SELECT SETS
+        trainX = trainXY(:,1:end-2) ;                                               % select training set features
+        trainY = trainXY(:,end-1) ;                                                 % select training set classes
+        testX = testXY(:,1:end-2) ;                                                 % select test set features
+        testY = testXY(:,end-1) ;                                                   % select test set classes
+    case 'kdd-cup-99'
+        error('support implementation under construction') ;
+        local_path = 'KDD-CUP-99/' ;                                           % subpath of chosen data-set
+        trainX = readtable([benchmark_path local_path 'kddcup.data.corrected']) ;  % filename of the traning set
+        testX  = readtable([benchmark_path local_path 'KDDTest+.txt']) ;   % filename of the test set
+        
     otherwise
         error('Benchmark dataset not recognized') ;
 end
 
 %% CONVERT DATA TABLES TO NUMERICAL MATRICES
-% [train_bin,test_bin] = cat2bin(trainXY.Var2,testXY.Var2) ;
-% testXY = [testXY(:,1) test_bin testXY(:,3:end)] ;
-% trainXY = [trainXY(:,1) train_bin trainXY(:,3:end)] ;
-% 
-% % [train_bin,test_bin] = cat2bin(trainXY.Var3,testXY.Var3) ;
-% % testXY = [testXY(:,1:4) test_bin testXY(:,6:end)] ;
-% % trainXY = [trainXY(:,1:4) train_bin trainXY(:,6:end)] ;
-% % 
-% % [train_bin,test_bin] = cat2bin(trainXY.Var4,testXY.Var4) ;
-% % testXY = [testXY(:,1:70) test_bin testXY(:,72:end)] ;
-% % trainXY = [trainXY(:,1:70) train_bin trainXY(:,72:end)] ;
-% 
-% testXY = [testXY(:,1:4) testXY(:,7:end)] ;
-% trainXY = [trainXY(:,1:4) trainXY(:,7:end)] ;
-
-[train_bin,test_bin] = cat2num(trainXY.Var2,testXY.Var2) ;
-testXY = [testXY(:,1) test_bin testXY(:,3:end)] ;
-trainXY = [trainXY(:,1) train_bin trainXY(:,3:end)] ;
-
-[train_bin,test_bin] = cat2num(trainXY.Var3,testXY.Var3) ;
-testXY = [testXY(:,1:2) test_bin testXY(:,4:end)] ;
-trainXY = [trainXY(:,1:2) train_bin trainXY(:,4:end)] ;
-
-[train_bin,test_bin] = cat2num(trainXY.Var4,testXY.Var4) ;
-testXY = [testXY(:,1:3) test_bin testXY(:,5:end)] ;
-trainXY = [trainXY(:,1:3) train_bin trainXY(:,5:end)] ;
-
-
-%TABLES TO MATRICES
-trainX = trainXY(:,1:end-2) ; trainY = trainXY(:,end-1) ;
-testX = testXY(:,1:end-2) ; testY = testXY(:,end-1) ;
+%TREAT CATEGORICAL DATA
+[trainX, testX] = to_numeric(trainX, testX, 'cat2num') ;                    % or 'cat2bin'
 
 %% REDUCE OUTPUT CLASSES
-trainY = table2cell(trainY) ;
-testY = table2cell(testY) ;
+trainY = table2cell(trainY) ;                                               % convert classes training to char cells
+testY = table2cell(testY) ;                                                 % convert classes testing to chat cells
 
 if classes_red
     trainY(strcmp(trainY,'back')) = {'dos'} ;
@@ -119,9 +102,9 @@ if classes_red
     testY(strcmp(testY,'spy')) = {'r2l'} ;
     testY(strcmp(testY,'teardrop')) = {'dos'} ;
     testY(strcmp(testY,'warezclient')) = {'r2l'} ;
-    testY(strcmp(testY,'warezmaster')) = {'r2l'} ;    
+    testY(strcmp(testY,'warezmaster')) = {'r2l'} ;
     % following entries on sole test set
-    testY(strcmp(testY,'apache2')) = {'dos'} ; 
+    testY(strcmp(testY,'apache2')) = {'dos'} ;
     testY(strcmp(testY,'httptunnel')) = {'r2l'} ;
     testY(strcmp(testY,'mailbomb')) = {'dos'} ;
     testY(strcmp(testY,'mscan')) = {'probe'} ;
@@ -141,85 +124,16 @@ if classes_red
 end
 
 %% RETURN
-testX = table2array(testX) ; 
-%testY = table2array(testY) ;
-trainX = table2array(trainX) ; 
-%trainY = table2array(trainY) ;
+testX = table2array(testX) ;                                                % training features to numeric array
+trainX = table2array(trainX) ;                                              % test features to numeric array
 
 % transform time
 trainX(:,1) = log(trainX(:,1)+1) ;
 testX(:,1) = log(testX(:,1)+1) ;
 
-varargout{1} = trainX ; varargout{2} = trainY ;
-varargout{3} = testX ; varargout{4} = testY ;
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function varargout = cat2bin(varargin)
-%CAT2BIN Converts a categrocial cell list (of string) to a binary table
-%   Author: HENRI DE PLAEN
-
-
-%% PRELIMINARIES
-assert(nargin==2) ; assert(nargout==2) ;
-train_cat = varargin{1} ;
-test_cat = varargin{2} ;
-
-%% CONVERSION
-unique_poss = unique(train_cat) ;
-
-l_train = length(train_cat) ;
-l_test = length(test_cat) ;
-
-idx_max = length(unique_poss) ;
-
-%prealloc
-train_bin = zeros(l_train,idx_max) ;
-test_bin = zeros(l_test,idx_max) ;
-
-for idx = 1:idx_max
-    train_bin(:,idx) = strcmp(train_cat,unique_poss(idx)) ;
-    test_bin(:,idx) = strcmp(test_cat,unique_poss(idx)) ;
-end
-
-%% RETURN 
-varargout{1} = array2table(train_bin,'VariableNames',unique_poss) ;
-varargout{2} = array2table(test_bin,'VariableNames',unique_poss) ;
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function varargout = cat2num(varargin)
-%CAT2BIN Converts a categrocial cell list (of string) to a binary table
-%   Author: HENRI DE PLAEN
-
-
-%% PRELIMINARIES
-assert(nargin==2) ; assert(nargout==2) ;
-train_cat = varargin{1} ;
-test_cat = varargin{2} ;
-
-%% CONVERSION
-unique_poss = unique(train_cat) ;
-
-l_train = length(train_cat) ;
-l_test = length(test_cat) ;
-
-train_num = zeros(l_train,1) ;
-test_num = zeros(l_test,1) ;
-
-idx_max = length(unique_poss) ;
-
-for idx = 1:idx_max
-    train_num(strcmp(train_cat,unique_poss(idx))) = idx ;
-    test_num(strcmp(test_cat,unique_poss(idx))) = idx ;
-end
-
-%% RETURN 
-varargout{1} = array2table(train_num,'VariableNames',unique_poss(1)) ;
-varargout{2} = array2table(test_num,'VariableNames',unique_poss(1)) ;
+varargout{1} = trainX ;
+varargout{2} = trainY ;
+varargout{3} = testX ;
+varargout{4} = testY ;
 
 end

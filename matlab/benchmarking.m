@@ -1,7 +1,7 @@
 % BENCHMARK TESTS
 % Author: HENRI DE PLAEN
 
-close all ; clear all ; clc ;
+close all ; clear ; clc ;
 
 %% PARAMS
 data_set = 'nsl-kdd' ;
@@ -34,11 +34,24 @@ for idx_bag = 1:num_bags
     
     disp('_____________________________') ;
     disp(['Bag number ' num2str(idx_bag)]) ;
+    
+    expert_name = 'MyFirstExpert' ;
 
-    param = 5 ;
-    type = 'lssvm' ;
-    [Ytest_est] = ids_expert(locX,locY,locXtest,locYtest,type,param) ;
+    %% KNN EXPERT
+    params_knn.k = 5 ;
+    expert_knn = train_expert(locX,locY, 'knn', params_knn) ;
+    eval_knn = eval_expert(expert_knn, locXtest, locYtest) ;
+    export_expert(expert_knn, expert_name) ;
+    
+    %% LS-SVM EXPERT
+    params_lssvm = [] ;
+    expert_lssvm = train_expert(locX,locY, 'lssvm', params_lssvm) ;
+    eval_lssvm = eval_expert(expert_lssvm, locXtest, locYtest) ;
+    export_expert(expert_lssvm, expert_name) ;
+
+    %% SVM EXPERT
+    params_svm = [] ;
+    expert_svm = train_expert(locX,locY, 'svm', params_svm) ;
+    eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
+    export_expert(expert_svm, expert_name) ;
 end
-
-
-%% VISUALIZATIONS
