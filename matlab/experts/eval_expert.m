@@ -6,7 +6,7 @@ function varargout = eval_expert(varargin)
 % INPUTS
 %   expert      : Trained expert model structure
 %   TestX       : Features of test set
-%   TestY       : Classes of test set (optional)
+%   TestY       : Classes of test set (optional, [] if not wanted)
 %
 % OUTPUT
 %   TestY_eval  : Evaluation of the test set classes
@@ -15,9 +15,10 @@ function varargout = eval_expert(varargin)
 %Date: Nov, 2018
 
 %% PRELIMINARIES
-assert((nargin>1)&&(nargin<4),'Wrong number of input arguments (2 or 3)') ;
+assert(nargin==3,'Wrong number of input arguments (2 or 3)') ;
 expert      = varargin{1} ;     % recover trained expert model
 TestX       = varargin{2} ;     % recover test set features
+TestY       = varargin{3} ;     % recover optional test set classes
 
 type    = expert.type ;         % get model type
 models  = expert.models ;       % get trained model
@@ -40,7 +41,7 @@ switch type                                                 % for each TYPE
         
         for idx_model = 1:n_models                     % one-against-all model
             lssvm_results(:,idx_model) = eval_lssvm( ...
-                models{idx_model}, TestX, 'no') ;           % score for each class
+                models{idx_model}, TestX, 'no', TestY) ;           % score for each class
         end
         
         [~,idx_best] = max(lssvm_results,[],2) ;                % evaluate best score
@@ -52,10 +53,10 @@ switch type                                                 % for each TYPE
         
         for idx_model = 1:n_models                     % one-against-all model
             svm_results(:,idx_model) = eval_svm( ...
-                models{idx_model}, TestX, 'no') ;           % score for each class
+                models{idx_model}, TestX, 'no',TestY) ;           % score for each class
         end
         
-        [~,idx_best] = max(svm_results,[],2) ;                % evaluate best score
+        [~,idx_best] = max(svm_results,[],2) ;              % evaluate best score
         TestY_eval = classes(idx_best) ;                    % assign best score to corresponding class
         
     otherwise                                               % otherwise
@@ -67,14 +68,14 @@ assert(nargout==1, 'Wrong number of output arguments') ;
 varargout{1} = TestY_eval ;
 
 %% EVAL
-if nargin==3                    % if test set is given
+if ~isempty(TestY)                                              % if test set is given
     % GET & VERIFY TEST SET
     TestY   = varargin{3} ;
     assert(size(TestY,1)==n_test, ...
         'Number of elements not consistent in the test set') ;
     
     % COMPUTE RESULTS
-    acc = sum(strcmp(TestY,TestY_eval))/n_test ;       % accuracy
+    acc = sum(strcmp(TestY,TestY_eval))/n_test ;                % accuracy
     
     % PRINT RESULTS
     fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;

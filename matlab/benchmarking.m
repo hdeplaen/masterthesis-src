@@ -7,7 +7,7 @@ close all ; clear ; clc ;
 data_set = 'nsl-kdd' ;
 classes_red = true ;
 
-bag_size = 500 ;
+bag_size = 1500 ;
 num_bags = 1 ;
 
 %% PRELIMINARIES

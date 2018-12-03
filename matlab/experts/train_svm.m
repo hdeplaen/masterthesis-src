@@ -61,9 +61,10 @@ classLoss = kfoldLoss(CVSVMModel) ;
 
 % PRINT RESULTS
 fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
-fprintf('%%%%%%  SVM RESULTS  %%%%%% \n') ;
+fprintf('%%%%%%  SVM TRAINING  %%%%%% \n') ;
 fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
 fprintf(['sig2 = ' num2str(params.sig2) '\n \n']) ;
+fprintf(['Class : ' class{1} '\n']) ;
 
 fprintf('TRAINING RESULTS\n') ;
 fprintf(['Generalization rate = ' num2str((classLoss)*100) '%%\n']) ;

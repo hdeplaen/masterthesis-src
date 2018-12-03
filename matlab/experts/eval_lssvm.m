@@ -8,6 +8,7 @@ function varargout = eval_lssvm(varargin)
 %   model       : LS-SVM model structure            .alpha .b .class
 %   TestX       : Feature of test set               array(elements, features)
 %   bin_class   : [-1,1] only or shade inbetween    ('yes' or 'no')
+%   TestY       : Optional classes of test set      ([] if not wanted)
 %
 % OUTPUT
 %   TestY_est   : Estimated classes of test set     array(elements, 1)
@@ -16,15 +17,17 @@ function varargout = eval_lssvm(varargin)
 %Date: Nov, 2018
 
 %% PRELIMINARIES
-assert(nargin==3, 'Wrong number of input arguments') ;
+assert(nargin==4, 'Wrong number of input arguments') ;
 model       = varargin{1} ;                 % ls-svm model
 TestX       = varargin{2} ;                 % features of the test set
 bin_class   = varargin{3} ;                 % boolean ('yes' or 'no') to use sign() or leave the shade
+TestY       = varargin{4} ;                 % get optional classes of test set
 
 alpha           = model.alpha ;             % support vector values
 b               = model.b ;                 % independent term
 params          = model.params ;            % model parameters
 support_vectors = model.sv ;                % supoprt vectors of the model
+class           = model.class ;
 
 n_test  = size(TestX,1) ;                   % number of training elements
 
@@ -46,6 +49,29 @@ end
 %% RETURN
 assert(nargout==1, 'Wrong number of output arguments (1)') ;
 varargout{1} = TestY_est ;
+
+%% RESULTS
+if ~isempty(TestY)
+   assert(size(TestY,1)==n_test, ...
+        'Number of elements not consistent in the test set') ;
+    
+    % COMPUTE RESULTS
+    TestY_bin = (strcmp(TestY,class)) ;
+    TestY_est_bin = sign(TestY_est) ;
+    TestY_est_bin(TestY_est_bin==-1) = 0 ;
+    
+    acc = sum(TestY_bin==TestY_est_bin)/n_test ;       % accuracy
+    
+    % PRINT RESULTS
+    fopen(1) ;
+    fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
+    fprintf('%%%%%%  LSSVM TESTING  %%%%%% \n') ;
+    fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
+    fprintf(['Class : ' class{1} '\n']) ;
+    
+    fprintf('TESTING RESULTS\n') ;
+    fprintf(['Accuracy = ' num2str(acc*100) '%%\n \n']) ;    
+end
 
 end
 

@@ -10,7 +10,7 @@ function varargout = train_lssvm(varargin)
 %   class       : class to be classified
 %
 % OUTPUT
-%   model       : LS-SVM model                  
+%   model       : LS-SVM model
 %
 %Author: HENRI DE PLAEN, KU Leuven
 %Date: Nov, 2018
@@ -19,7 +19,7 @@ function varargout = train_lssvm(varargin)
 method = 'crossvalidatelssvm' ;
 
 assert(nargin==3,'Wrong number of input arguments (3)') ;
-TrainX = varargin{1} ; 
+TrainX = varargin{1} ;
 TrainY = varargin{2} ;
 class  = varargin{3} ;
 
@@ -76,10 +76,11 @@ acc     = (tp+tn)/(tp+tn+fp+fn) ;       % accuracy
 
 % PRINT RESULTS
 fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
-fprintf('%%%%%%  SVM RESULTS  %%%%%% \n') ;
+fprintf('%%%%  LSSVM TRAINING  %%%% \n') ;
 fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
 fprintf(['gam = ' num2str(gam) '\n']) ;
 fprintf(['sig2 = ' num2str(sig2) '\n \n']) ;
+fprintf(['Class : ' class{1} '\n']) ;
 
 fprintf('TRAINING RESULTS\n') ;
 fprintf(['Accuracy = ' num2str(acc*100) '%%\n']) ;
