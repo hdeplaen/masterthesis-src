@@ -28,17 +28,20 @@ b               = model.b ;                 % independent term
 params          = model.params ;            % model parameters
 support_vectors = model.sv ;                % supoprt vectors of the model
 class           = model.class ;
+SVMModel        = model.SVMModel ;
 
 n_test  = size(TestX,1) ;                   % number of training elements
 
 %% EVALUATE
 TestY_est = zeros(n_test,1) ;
 
-for idx = 1:n_test
-    TestY_est(idx) = transform_x(TestX(idx,:),support_vectors,params)'*alpha+b ;
-end
+% for idx = 1:n_test
+%     TestY_est(idx) = transform_x(TestX(idx,:),support_vectors,params)'*alpha+b ;
+% end
 
-% TestY_est = TestY_est-mean(TestY_est)/std(TestY_est) ;
+TestY_est = predict(SVMModel,TestX) ;
+
+%TestY_est = 2*(TestY_est)/(max(TestY_est)-min(TestY_est)) ;
 
 switch bin_class
     case 'yes' ; TestY_est = sign(TestY_est) ;
@@ -52,7 +55,7 @@ varargout{1} = TestY_est ;
 
 %% RESULTS
 if ~isempty(TestY)
-   assert(size(TestY,1)==n_test, ...
+    assert(size(TestY,1)==n_test, ...
         'Number of elements not consistent in the test set') ;
     
     % COMPUTE RESULTS
@@ -70,7 +73,7 @@ if ~isempty(TestY)
     fprintf(['Class : ' class{1} '\n']) ;
     
     fprintf('TESTING RESULTS\n') ;
-    fprintf(['Accuracy = ' num2str(acc*100) '%%\n \n']) ;    
+    fprintf(['Accuracy = ' num2str(acc*100) '%%\n \n']) ;
 end
 
 end

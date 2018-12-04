@@ -52,6 +52,7 @@ model.b         = SVMModel.Bias ;           % assign b
 model.class     = class ;       % assign class
 model.params    = params ;      % assign problem parameters
 model.sv        = TrainX(SVMModel.IsSupportVector,:) ;      % assign support vectors
+model.SVMModel  = SVMModel ;
 
 % assert(nargin==1, 'Wrong number of output arguments') ;
 varargout{1} = model ;

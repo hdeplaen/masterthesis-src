@@ -45,8 +45,7 @@ h = waitbar(0,'Initializing') ;                                   % starting wai
 for idx = 1:n_test                                              % for each element of the test set
     dist = sum((TrainX - ones(n_train,1)*TestX(idx,:)).^2,2) ;  % compute distances with elements of training set
     [~, idx_sortdist] = sort(dist) ;                            % sort the distances
-    occ = histcounts(TrainY_num(idx_sortdist(1:k))) ;           % classify the k first ones
-    [~, idx_best] = max(occ) ;                                  % evaluate which is the most present
+    idx_best = mode(TrainY_num(idx_sortdist(1:k))) ;
     TestY_est(idx) = classes(idx_best) ;                        % assign it to the element of the test set
     
     if mod(idx,100)==0                                          % updating waitbar

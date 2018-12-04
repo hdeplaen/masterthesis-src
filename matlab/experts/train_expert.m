@@ -40,6 +40,12 @@ switch type                                                 % for each TYPE
         models.TrainX = TrainX ;
         models.TrainY = TrainY ;
         
+    case 'oaa-knn'
+        disp('No training needed for (one-against-all) kNN model') ;          % no actions to be done except assignation
+        models.TrainX   = TrainX ;
+        models.TrainY   = TrainY ;
+        models.classes  = classes ;
+        
     case 'lssvm'                                            % TYPE LS-SVM
         models = cell(n_classes,1) ;                        % prealloc
         for idx_model = 1:n_classes                         % one-against-all model

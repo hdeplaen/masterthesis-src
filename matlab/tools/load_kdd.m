@@ -34,7 +34,7 @@ end
 
 %% CONVERT DATA TABLES TO NUMERICAL MATRICES
 %TREAT CATEGORICAL DATA
-[trainX, testX] = to_numeric(trainX, testX, 'cat2num') ;                    % or 'cat2bin'
+[trainX, testX] = to_numeric(trainX, testX, 'cat2freq') ;                   % or 'cat2bin'
 
 %% REDUCE OUTPUT CLASSES
 trainY = table2cell(trainY) ;                                               % convert classes training to char cells

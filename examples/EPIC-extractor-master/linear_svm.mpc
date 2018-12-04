@@ -1,0 +1,208 @@
+import numpy as np
+import sys
+from sklearn.kernel_approximation import RBFSampler
+
+from Compiler.program import Program
+
+program.set_bit_length(22)
+program.set_security(100)
+
+sys.setrecursionlimit(1000000)
+
+params = [int(_) for _ in sys.argv[4:]]
+n_total_runs = params[0]
+n_threads = params[1]
+multithread_tree = True
+
+chosen_type = 0
+if len(params) > 3:
+    chosen_type = int(params[3])
+
+if chosen_type == 0:
+    value_type = sint
+else:
+    value_type = sfix
+
+print "data: "
+svm_path = "./spdz_models/rbf2048_mit_svm" + ".npz"
+npz_file = np.load(svm_path)
+print npz_file.files
+# README: The structures has to be given in raw format, ie original SVM, 
+# from scikit-learn; no scaling involved
+def process_test_samples(xtest):
+    rbf = RBFSampler(gamma=2**-10.0, n_components=2048, random_state=0)
+    return rbf.fit_transform(xtest)
+
+inp_intercept_ = npz_file['intercept_']
+inp_coef_ = npz_file['coef_']
+inp_samples = process_test_samples(npz_file['xtest'])
+
+inp_targets = npz_file['ytest']
+n_samples = len(inp_samples) # 30
+feature_size = len(inp_samples[0])
+n_classes = int(params[2])
+samples = value_type.Matrix(n_samples, feature_size)
+targets = value_type.Array(n_samples)
+#import pdb; pdb.set_trace()
+coef_ = value_type.Matrix(n_classes, feature_size)
+intercept_ = value_type.Array(n_classes)
+def assign_type_value(val, scale_factor=8):
+    if value_type is sfix:
+        return sfix(float(val))
+    elif value_type is sint:
+        return sint(int(val * (2**scale_factor)))
+
+def load_default():
+    for i in range(n_samples):
+        targets[i] = assign_type_value(inp_targets[i])
+
+    for i in range(n_samples):
+        for j in range(feature_size):
+            samples[i][j] = assign_type_value(inp_samples[i][j])
+
+def load_data():
+    for i in range(n_classes):
+        intercept_[i] = assign_type_value(inp_intercept_[i], 16)
+
+    for i in range(n_classes):
+        for j in range(feature_size):
+            coef_[i][j] = assign_type_value(inp_coef_[i][j])
+
+load_default()
+load_data()
+
+def tree_arg_max_outer(a, b):
+    def tree_arg_max(seq, inds):
+        n = len(seq)
+        if n == 1:
+            return seq[0], inds[0]
+        else:
+            rounded_half = (n+1)/2
+            reduced_seq = [None for i in range(rounded_half)]
+            reduced_inds = [sint() for i in range(rounded_half)]
+
+            for i in range(n/2):
+                comparison_flag = seq[2*i] > seq[2*i+1]
+                win_val = comparison_flag.if_else(seq[2*i], seq[2*i+1])
+                win_ind = comparison_flag.if_else(inds[2*i], inds[2*i+1])
+
+                reduced_seq[i] = win_val
+                reduced_inds[i] = win_ind
+            if n % 2:
+                reduced_seq[rounded_half-1] = seq[n-1]
+                reduced_inds[rounded_half-1] = inds[n-1]
+            return tree_arg_max(reduced_seq, reduced_inds)
+
+    if multithread_tree is None:
+        return tree_arg_max(a, b)
+    else:
+
+        last_chunk_size = len(a) % n_threads
+        vals = value_type.Array(n_threads + int(last_chunk_size > 0))
+        inds = value_type.Array(n_threads + int(last_chunk_size > 0))
+
+        def thread():
+            i = get_arg()
+            n_per_thread = len(a) / n_threads
+            start = i * n_per_thread
+            chunk_vals = [a[start+j] for j in range(n_per_thread)]
+            chunk_inds = [b[start+j] for j in range(n_per_thread)]
+            vals[i], inds[i] = tree_arg_max(chunk_vals, chunk_inds)
+
+        tape = program.new_tape(thread)
+        threads = [program.run_tape(tape, i) for i in range(n_threads)]
+        for i in threads:
+            program.join_tape(i)
+
+        if last_chunk_size > 0:
+            begin = len(a) - last_chunk_size
+            chunk_vals = [a[begin + j] for j in range(last_chunk_size)]
+            chunk_inds = [b[begin + j] for j in range(last_chunk_size)]
+            vals[n_threads], inds[n_threads] = tree_arg_max(chunk_vals, chunk_inds)
+
+        return tree_arg_max(vals, inds)
+
+
+
+class SVM(object):
+    def __init__(self, coef_, intercept_, n_classes, feature_size):
+        self.num_classes = n_classes
+        self.num_features = feature_size
+        self.coef_ = value_type.Matrix(n_classes, feature_size)
+        @for_range(n_classes)
+        def f(i):
+            @for_range(feature_size)
+            def g(j):
+                self.coef_[i][j] = coef_[i][j]
+
+        self.intercept_ = value_type.Array(n_classes)
+        @for_range(n_classes)
+        def f(i):
+            self.intercept_[i] = intercept_[i]
+
+    def vertical_summing(self, sample):
+        num_features = self.num_features
+        num_classes = self.num_classes
+        sum_chunks = value_type.Matrix(num_classes, n_threads)
+        if num_features % n_threads:
+            raise Exception('Number of threads must divide the number of features')
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = num_features / n_threads
+            start_chunk = i * chunk_size
+            end_chunk = (i+1) * chunk_size
+
+            for k in range(num_classes):
+                sum_chunks[k][i] = sum(self.coef_[k][j + start_chunk] * sample[j + start_chunk] for j in range(chunk_size))
+
+        tape = program.new_tape(thread_chunk)
+        threads = [program.run_tape(tape, i) for i in range(n_threads)]
+        for i in threads:
+            program.join_tape(i)
+        # now final summing
+        sums = value_type.Array(num_classes)
+        for i in range(num_classes):
+            sums[i] = sum(sum_chunks[i][j] for j in range(n_threads)) + self.intercept_[i]
+
+        return sums
+
+    def horizontal_summing(self, sample):
+        # number of threads dependent on the number of classes
+        sums = value_type.Array(self.num_classes)
+        def thread_dot():
+            # would be cool to vectorize
+            i = get_arg()
+            sums[i] = sum(self.coef_[i][j] * sample[j] for j in range(self.num_features)) + intercept_[i]
+        tape = program.new_tape(thread_dot)
+        threads = [program.run_tape(tape, i) for i in range(self.num_classes)]
+        for i in threads:
+            program.join_tape(i)
+
+        return sums
+
+    def predict(self, sample):
+        # in case #classes is bigger, do multithread
+        sums = self.vertical_summing(sample)
+        inds = Array(self.num_classes, sint)
+        inds.assign([i for i in range(self.num_classes)])
+        result = tree_arg_max_outer(sums, inds)
+        return result
+
+def time_private_classifier(ntotal):
+    classifier = SVM(coef_, intercept_, n_classes, feature_size)
+    cur_sample = value_type.Array(feature_size)
+    for j in range(feature_size):
+        cur_sample[j] = samples[0][j]
+    start_timer(2)
+    @for_range(ntotal)
+    def f(i):
+        val, label = classifier.predict(cur_sample)
+#        print_ln('i: %s, label: %s', i, label.reveal())
+    stop_timer(2)
+        # print_ln('##############')
+        # print_ln('i: %s, label: %s', i, label.reveal())
+
+
+time_private_classifier(n_total_runs)
+
+# import ipdb; ipdb.set_trace()

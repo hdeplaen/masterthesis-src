@@ -16,17 +16,24 @@ tY = varargin{4} ;
 n_input = size(X,2) ;
 
 %% NORMALIZE (z-score)
-mean_X = mean(X,2) ;
-std_X = std(X,0,2) ;
+max_X = max(X,[],1) ;
+min_X = min(X,[],1) ;
+mean_X = mean(X,1) ;
 
 Xo = X ;
 tXo = tX ;
 
 for idx = 1:n_input
-    loc_mean = mean_X(idx) ;
-    loc_var = std_X(idx) ;
-    Xo(:,idx) = (X(:,idx)-loc_mean)/loc_var ;
-    tXo(:,idx) = (tX(:,idx)-loc_mean)/loc_var ;
+    loc_max = max_X(idx) ;
+    loc_min = min_X(idx) ;
+    if loc_max==loc_min
+        Xo(:,idx) = 0 ;
+        tXo(:,idx) = 0 ;
+    else
+        loc_mean = mean_X(idx) ;
+        Xo(:,idx) = 2*(X(:,idx)-loc_mean)/(loc_max-loc_min)-1 ;
+        tXo(:,idx) = 2*(tX(:,idx)-loc_mean)/(loc_max-loc_min)-1 ;
+    end
 end
 
 %% RETURN

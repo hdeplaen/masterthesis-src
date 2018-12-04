@@ -27,6 +27,7 @@ classes = expert.classes ;      % get different classes
 
 %% TYPE
 n_test = size(TestX,1) ;        % number of training elements
+TestY_eval = cell(n_test,1) ;   % prealloc
 
 % Different actions per type
 switch type                                                 % for each TYPE
@@ -35,6 +36,15 @@ switch type                                                 % for each TYPE
         TestY_eval = eval_knn(models.TrainX, ...
             models.TrainY, TestX, params.k) ;
         
+    case 'oaa-knn'
+        n_classes = numel(classes) ;                          % #models
+        oao_knn_results = zeros(n_test, n_classes) ;           % prealloc
+        
+        for idx_classe = 1:n_classes                     % one-against-all model
+            oao_knn_results(:,idx_classe) = eval_oaa_knn( ...
+                models, TestX, params.k, ...
+                models.classes{idx_classe}, TestY) ;           % score for each class
+        end
     case 'lssvm'                                            % TYPE LS-SVM
         n_models = size(models,1) ;                          % #models
         lssvm_results = zeros(n_test, n_models) ;           % prealloc
