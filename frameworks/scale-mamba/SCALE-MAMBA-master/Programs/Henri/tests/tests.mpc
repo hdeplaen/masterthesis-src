@@ -1,0 +1,57 @@
+import numpy as np
+import sys
+
+from Compiler.program import Program
+
+program.set_bit_length(22)
+program.set_security(100)
+
+sys.setrecursionlimit(1000000)
+
+value_type = sfix
+
+
+def assign_type_value(val, scale_factor=8):
+    if value_type is sfix:
+        return sfix(float(val))
+    elif value_type is sint:
+        return sint(int(val * (2**scale_factor)))
+
+
+def get_vectors(name):
+    path = 'thesis-data/' + name + '.csv'
+    vector = np.genfromtxt(path, delimiter=',')
+    return vector
+
+
+def add_arrays(arr1_, arr2_):
+    sum_vectors = value_type.Array(10)
+    for idx in range(10):
+        sum_vectors[idx] = arr1_[idx] + arr2_[idx]
+
+    return sum_vectors
+
+
+def compute_addition():
+    vector1 = get_vectors('vector1')
+    vector2 = get_vectors('vector2')
+
+    vector1_ = value_type.Array(10)
+    vector2_ = value_type.Array(10)
+
+    for idx in range(10):
+        vector1_[idx] = assign_type_value(vector1[idx])
+        vector2_[idx] = assign_type_value(vector2[idx])
+
+    return add_arrays(vector1_, vector2_)
+
+
+def print_array(arr_):
+    @for_range(len(arr_))
+    def range_body(idx):
+        print_ln("%s", arr_[idx].reveal())
+
+
+sum_vector_ = compute_addition()
+
+print_array(sum_vector_)
