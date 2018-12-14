@@ -1,0 +1,242 @@
+import csv
+import numpy as np
+import sys
+
+from Compiler.program import Program
+
+program.set_bit_length(22)
+program.set_security(100)
+
+sys.setrecursionlimit(1000000)
+
+n_total_runs = 1
+n_threads = 1
+multithread_tree = False
+k = 3
+
+
+def load_raw_data():
+    def open_csv(path):
+        return np.genfromtxt(path, delimiter=',')
+
+    folder_path = "./Thesis/data_knn/"
+    training_vectors_path = folder_path + "training_vec" + ".csv"
+    training_classes_path = folder_path + "training_classes" + ".csv"
+    testing_vectors_path = folder_path + "testing_vec" + ".csv"
+
+    training_vec = open_csv(training_vectors_path).astype("float")
+    training_classes = open_csv(training_classes_path).astype("int")
+    testing_vec = open_csv(testing_vectors_path).astype("float")
+
+    return training_vec, training_classes, testing_vec
+
+
+training_vec, training_classes, testing_vec = load_raw_data()
+
+
+def assign_type_value(val, type):
+    if type is sfix:
+        return sfix(float(val))
+    elif type is sint:
+        return sint(int(val))
+
+
+k_num = int(k)
+n_samples = int(len(training_vec))
+feature_size = int(len(testing_vec))
+n_classes = int(max(training_classes))
+samples = sfix.Matrix(n_samples, feature_size)
+classes = sint.Array(n_samples)
+test = sfix.Array(feature_size)
+
+
+def load_training():
+    for i in range(n_samples):
+        classes[i] = assign_type_value(
+            training_classes[i], sint)  # input targets
+
+    for i in range(n_samples):
+        for j in range(feature_size):
+            samples[i][j] = assign_type_value(
+                training_vec[i][j], sfix)  # input features
+
+
+def load_testing():
+    for i in range(feature_size):
+        test[i] = assign_type_value(
+            testing_vec[i], sfix)  # input features
+
+
+print_ln('######################')
+print_ln('LOADING DATA')
+start_timer(1)
+
+print_ln('Loading training data')
+start_timer(2)
+load_training()
+stop_timer(2)
+
+print_ln('Loading test data')
+start_timer(2)
+load_testing()
+stop_timer(2)
+
+print_ln('Time for whole loading')
+stop_timer(1)
+
+
+def print_vector(vec):
+    @for_range(len(vec))
+    def f(i):
+        print_ln('Vector value: %s', vec[i].reveal())
+
+
+def print_vectors(vec1, vec2):
+    @for_range(len(vec1))
+    def f(i):
+        print_ln('Vector value: %s and %s', vec1[i].reveal(), vec2[i].reveal())
+
+
+def quickselect(knn_obj, ia, ib, k):
+    def qs_partition(knn_obj, ia, ib, ip):
+        p_dist = knn_obj.dists[ip]
+        p_target = knn_obj.targets[ip]
+        l = regint(ia)
+        l.store_in_mem(1)
+
+        def swap_indices(knn_obj, i1, i2):
+            dist_temp = knn_obj.dists[i1]
+            target_temp = knn_obj.targets[i1]
+
+            knn_obj.dists[i1] = knn_obj.dists[i2]
+            knn_obj.targets[i1] = knn_obj.targets[i2]
+
+            knn_obj.dists[i2] = dist_temp
+            knn_obj.targets[i2] = target_temp
+
+        def loop_body(i):
+            is_below = knn_obj.dists[i] < p_dist
+
+            if is_below.reveal():
+                loc_l = regint.load_mem(1)
+                swap_indices(knn_obj, i, loc_l)
+                (loc_l + 1).store_in_mem(1)
+
+            swap_indices(knn_obj, ib, cint(l))
+
+        range_loop(loop_body, ia, ib)
+
+        return l
+
+    def if_true():
+        return knn_obj.dists[0:k], knn_obj.targets[0:k]
+
+    def if_false():
+        l = int((ia + ib) / 2)  # or alternatiely random
+        l = qs_partition(knn_obj, ia, ib, l)
+
+        if_then(k == l)
+        return knn_obj.dists[0:k], knn_obj.targets[0:k]
+        else_then()
+        if_then(k < l)
+        return quickselect(knn_obj, ia, l + 1, k)
+        else_then()
+        return quickselect(knn_obj, l + 1, ib, k)
+        end_if()
+        end_if()
+
+    if_statement(ia == ib, if_true, if_false)
+
+    singleton_list = ia == ib
+
+
+class KNN(object):
+    def __init__(self, samples, classes, num_samples, feature_size, k_num):
+        self.k_num = k_num
+        self.num_features = feature_size
+        self.num_samples = num_samples
+        self.training = sfix.Matrix(num_samples, feature_size)
+        self.dists = sfix.Array(num_samples)
+
+        @for_range(num_samples)
+        def f(i):
+            @for_range(feature_size)
+            def g(j):
+                self.training[i][j] = samples[i][j]
+
+        self.targets = sint.Array(num_samples)
+
+        @for_range(num_samples)
+        def f(i):
+            self.targets[i] = classes[i]
+
+        start_timer(2)
+        self.dists = self.compute_dists(test)
+        print_ln('Time for distances to be computed')
+        stop_timer(2)
+
+    def compute_dists(self, test):
+        # number of threads dependent on the number of classes
+
+        num_features = self.num_features
+        num_samples = self.num_samples
+        dists = sfix.Array(num_samples)
+        if num_samples % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of sample elements')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = num_samples / n_threads
+            start_chunk = i * chunk_size
+
+            for k in range(chunk_size):
+                dists[start_chunk + k] = sum((self.training[start_chunk + k][j]
+                                              - test[j])**2 for j in range(num_features))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i) for i in range(
+            n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return dists
+
+    def predict_alg(self, test):
+        print type(self)
+        print type(0)
+        print type(self.num_samples - 1)
+        print type(self.k_num - 1)
+
+        ia = 0
+        ib = self.num_samples - 1
+        k_qs = self.k_num - 1
+
+        start_timer(2)
+        knn_dists, knn_labels = quickselect(self, ia, ib, k_qs)
+        print_ln('Time for one knn search')
+        stop_timer(2)
+        print_ln('######################')
+
+        return knn_dists, knn_labels
+
+
+def time_private_classifier(ntotal):
+    classifier = KNN(samples, classes, n_samples, feature_size, k_num)
+    cur_sample = sfix.Array(feature_size)
+
+    start_timer(4)
+
+    # @for_range(ntotal)
+    # def f(i):
+    start_timer(3)
+    dists_knn, targets_knn = classifier.predict_alg(test)
+    print_ln('Time for one turn')
+    stop_timer(3)
+    print_ln('Whole algorithm time for %s turn', ntotal)
+    stop_timer(4)
+
+
+time_private_classifier(n_total_runs)
+
+# import ipdb; ipdb.set_trace()

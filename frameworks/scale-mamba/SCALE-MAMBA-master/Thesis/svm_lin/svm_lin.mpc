@@ -1,0 +1,158 @@
+import csv
+import numpy as np
+import sys
+
+from Compiler.program import Program
+
+program.set_bit_length(22)
+program.set_security(100)
+
+sys.setrecursionlimit(1000000)
+
+n_total_runs = 1
+n_threads = 1
+
+
+def load_raw_data():
+    def open_csv(path):
+        return np.genfromtxt(path, delimiter=',')
+
+    folder_path = "./Thesis/data_svm/svm_"
+    coeffs_path = folder_path + "coeffs" + ".csv"
+    intercept_path = folder_path + "intercept" + ".csv"
+    tests_path = folder_path + "tests" + ".csv"
+
+    coeffs = open_csv(coeffs_path).astype("float")
+    intercept = open_csv(intercept_path).astype("float")
+    tests = open_csv(tests_path).astype("float")
+
+    return coeffs, intercept, tests
+
+
+coeffs, intercept, tests = load_raw_data()
+
+tests = tests[1:3][:]
+
+feature_size = int(len(coeffs))
+num_tests = int(len(tests))
+intercept_ = sfix(intercept.item(0))
+coeffs_ = sfix.Array(feature_size)
+tests_ = sfix.Matrix(num_tests, feature_size)
+
+
+def loading_all():
+    print_ln('######################')
+    print_ln('######################')
+    print_ln('LOADING DATA')
+    start_timer(1)
+
+    for idx in range(feature_size):
+        coeffs_[idx] = sfix(coeffs[idx])
+
+    for idx1 in range(num_tests):
+        for idx2 in range(feature_size):
+            tests_[idx1][idx2] = sfix(tests[idx1][idx2])
+
+    print_ln('Time for whole loading')
+    stop_timer(1)
+
+
+def print_vector(vec):
+    @for_range(len(vec))
+    def f(i):
+        print_ln('Vector value: %s', vec[i].reveal())
+
+
+class SVM(object):
+    def __init__(self, coeffs_, intercept_):
+        self.coeffs = sfix.Array(feature_size)
+        self.intercept = intercept_
+
+        @for_range(feature_size)
+        def f(idx):
+            self.coeffs[idx] = coeffs_[idx]
+
+    def predict_alg_points(self, tests):
+        sol = sfix.Array(num_tests)
+
+        self.intercept.store_in_mem(1)
+
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of test points')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = num_tests / n_threads
+            start_chunk = i * chunk_size
+
+
+            for idx1 in range(chunk_size):
+                sol[start_chunk + idx1] = sum((self.coeffs[idx2] * tests[start_chunk + idx1][idx2])
+                                              for idx2 in range(feature_size)) + sfix.load_mem(1)
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i) for i in range(
+            n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return sol
+
+    def predict_alg_features(self, tests):
+        sol = sfix.Array(num_tests)
+
+        self.intercept.store_in_mem(1)
+
+        sum_chunks = sfix.Matrix(num_tests, n_threads)
+
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of features')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = feature_size / n_threads
+            start_chunk = i * chunk_size
+            end_chunk = (i + 1) * chunk_size
+
+            for k in range(num_tests):
+                sum_chunks[k][i] = sum(self.coeffs[j + start_chunk] * tests[k][j + start_chunk] for j in range(chunk_size))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i)
+                   for i in range(n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+        # now final summing
+        sums = sfix.Array(num_tests)
+        for i in range(num_tests):
+            sums[i] = sum(sum_chunks[i][j]
+                          for j in range(n_threads)) + self.intercept
+
+        return sums
+
+
+def time_private_classifier(ntotal):
+    classifier = SVM(coeffs_, intercept_)
+
+    start_timer(4)
+
+    print_ln('######################')
+
+    @for_range(ntotal)
+    def f(i):
+        output = classifier.predict_alg_features(tests_)
+        print_vector(output)
+
+    print_ln('Whole algorithm time for %s turn', ntotal)
+    stop_timer(4)
+
+    print_ln('######################')
+    print_ln('######################')
+
+
+loading_all()
+time_private_classifier(n_total_runs)
+
+# import ipdb; ipdb.set_trace()

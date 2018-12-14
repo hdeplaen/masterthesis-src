@@ -19,11 +19,11 @@ class MPCThread(object):
         self.args = args
         self.runtime_arg = runtime_arg
         self.running = 0
-    
+
     def start(self, runtime_arg = None):
         self.running += 1
         program.start_thread(self, runtime_arg or self.runtime_arg)
-    
+
     def join(self):
         if not self.running:
             raise CompilerError('Thread %s is not running' % self.name)
@@ -330,7 +330,7 @@ class cint(_clear, _int):
         return cls._load_mem(address, ldmc, ldmci)
 
     def store_in_mem(self, address):
-        r"""Stores the cint value x to the address 
+        r"""Stores the cint value x to the address
               x.store_in_mem(address)
         """
         self._store_in_mem(address, stmc, stmci)
@@ -350,7 +350,7 @@ class cint(_clear, _int):
         res = cls()
         input_clear(res,channel)
         return res
-    
+
     def public_output(self,channel=0):
         r"""Send public output to IO channel c
                  x.public_output(c)
@@ -497,12 +497,12 @@ class regint(_register, _int):
         return cls._load_mem(address, ldmint, ldminti)
 
     def store_in_mem(self, address):
-        r"""Stores the regint value x to the address 
+        r"""Stores the regint value x to the address
               x.store_in_mem(address)
         """
         self._store_in_mem(address, stmint, stminti)
 
-    
+
     @classmethod
     def public_input(cls,channel=0):
         r"""Get public input from IO channel c
@@ -511,7 +511,7 @@ class regint(_register, _int):
         res = cls()
         input_int(res,channel)
         return res
-    
+
     def public_output(self,channel=0):
         r"""Send public output to IO channel c
                  x.public_output(c)
@@ -810,7 +810,7 @@ class sint(_secret, _int):
 
     @vectorized_classmethod
     def get_random_int(cls, bits):
-        r""" 
+        r"""
           Usage
                a=sint.get_private_input_from(n)
           assigns a to be a random integer in the range [0..,2^n]
@@ -821,7 +821,7 @@ class sint(_secret, _int):
 
     @classmethod
     def get_private_input_from(cls, player,channel=0):
-        r""" 
+        r"""
           Usage
                a=sint.get_private_input_from(p,c)
           obtains a from player p using IO channel c
@@ -838,7 +838,7 @@ class sint(_secret, _int):
         return cls._load_mem(address, ldms, ldmsi)
 
     def store_in_mem(self, address):
-        r"""Stores the sint value x to the address 
+        r"""Stores the sint value x to the address
               x.store_in_mem(address)
         """
         self._store_in_mem(address, stms, stmsi)
@@ -1041,7 +1041,7 @@ class cfix(_number):
         return self
 
     def store_in_mem(self, address):
-        r"""Stores the cfix value x to the cint memory with address 
+        r"""Stores the cfix value x to the cint memory with address
               x.store_in_mem(address)
         """
         self.v.store_in_mem(address)
@@ -1059,7 +1059,7 @@ class cfix(_number):
         else:
             raise CompilerError('Invalid type %s for cfix.__add__' % type(other))
 
-    @vectorize 
+    @vectorize
     def mul(self, other):
         other = parse_type(other)
         if isinstance(other, cfix):
@@ -1072,7 +1072,7 @@ class cfix(_number):
             return res
         else:
             raise CompilerError('Invalid type %s for cfix.__mul__' % type(other))
-    
+
     @vectorize
     def __sub__(self, other):
         other = parse_type(other)
@@ -1087,7 +1087,7 @@ class cfix(_number):
     def __neg__(self):
         # cfix type always has .v
         return cfix(-self.v)
-    
+
     def __rsub__(self, other):
         return -self + other
 
@@ -1228,14 +1228,14 @@ class sfix(_number):
             self.v = _v.v
         elif isinstance(_v, regint):
             self.v = sint(_v, size=self.size) * 2**f
-        self.kappa = sfix.kappa 
+        self.kappa = sfix.kappa
 
     @vectorize
     def load_int(self, v):
         self.v = sint(v) * (2**self.f)
 
     def store_in_mem(self, address):
-        r"""Stores the sfix value x to the sint memory with address 
+        r"""Stores the sfix value x to the sint memory with address
               x.store_in_mem(address)
         """
         self.v.store_in_mem(address)
@@ -1243,7 +1243,7 @@ class sfix(_number):
     def sizeof(self):
         return self.size * 4
 
-    @vectorize 
+    @vectorize
     def add(self, other):
         other = parse_type(other)
         if isinstance(other, (sfix, cfix)):
@@ -1254,7 +1254,7 @@ class sfix(_number):
         else:
             raise CompilerError('Invalid type %s for sfix.__add__' % type(other))
 
-    @vectorize 
+    @vectorize
     def mul(self, other):
         other = parse_type(other)
         if isinstance(other, (sfix, cfix)):
@@ -1266,7 +1266,7 @@ class sfix(_number):
         else:
             raise CompilerError('Invalid type %s for sfix.__mul__' % type(other))
 
-    @vectorize 
+    @vectorize
     def __sub__(self, other):
         other = parse_type(other)
         return self + (-other)
@@ -1294,7 +1294,7 @@ class sfix(_number):
         else:
             raise NotImplementedError
 
-    @vectorize 
+    @vectorize
     def __lt__(self, other):
         other = parse_type(other)
         if isinstance(other, (cfix, sfix)):
@@ -1356,7 +1356,7 @@ cfix.set_precision(fixed_lower, fixed_upper)
 
 class sfloat(_number):
     """ Shared floating point data type, representing (1 - 2s)*(1 - z)*v*2^p.
-        
+
         v: significand
         p: exponent
         z: zero flag
@@ -1548,7 +1548,7 @@ class sfloat(_number):
             return sfloat(v, p, z, s)
         else:
             return NotImplemented
-    
+
     @vectorize
     def mul(self, other):
         if isinstance(other, sfloat):
@@ -1571,10 +1571,10 @@ class sfloat(_number):
             return sfloat(v2, p, z, s)
         else:
             return NotImplemented
-    
+
     def __sub__(self, other):
         return self + -other
-    
+
     def __rsub__(self, other):
         raise NotImplementedError()
 
@@ -1596,7 +1596,7 @@ class sfloat(_number):
     @vectorize
     def __neg__(self):
         return sfloat(self.v, self.p,  self.z, (1 - self.s) * (1 - self.z))
-    
+
     @vectorize
     def __lt__(self, other):
         if isinstance(other, sfloat):
@@ -1617,7 +1617,7 @@ class sfloat(_number):
             return b
         else:
             return NotImplemented
-    
+
     def __ge__(self, other):
         return 1 - (self < other)
 
@@ -2123,4 +2123,3 @@ def get_generic_array(value_type):
 # generate MultiArray for every type
 for value_type in [cint, cfix, sint, sfloat, sfix]:
     value_type.MultiArray = get_generic_array(value_type)
-
