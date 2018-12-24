@@ -39,7 +39,8 @@ TestY_est = zeros(n_test,1) ;
 %     TestY_est(idx) = transform_x(TestX(idx,:),support_vectors,params)'*alpha+b ;
 % end
 
-TestY_est = predict(SVMModel,TestX) ;
+[~,TestY_est] = predict(SVMModel,TestX) ;
+TestY_est = TestY_est(:,2) ;
 
 %TestY_est = 2*(TestY_est)/(max(TestY_est)-min(TestY_est)) ;
 
@@ -66,14 +67,12 @@ if ~isempty(TestY)
     acc = sum(TestY_bin==TestY_est_bin)/n_test ;       % accuracy
     
     % PRINT RESULTS
-    fopen(1) ;
-    fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
-    fprintf('%%%%%%   SVM TESTING   %%%%%% \n') ;
-    fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
-    fprintf(['Class : ' class{1} '\n']) ;
-    
-    fprintf('TESTING RESULTS\n') ;
-    fprintf(['Accuracy = ' num2str(acc*100) '%%\n \n']) ;
+%     fopen(1) ;
+%     fprintf('%%%%%%   SVM TESTING   %%%%%% \n') ;
+%     fprintf(['Class : ' class{1} '\n']) ;
+%     
+%     fprintf('TESTING RESULTS\n') ;
+%     fprintf(['Accuracy = ' num2str(acc*100) '%%\n \n']) ;
 end
 
 end

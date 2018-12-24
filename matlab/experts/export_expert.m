@@ -52,7 +52,7 @@ switch type                                                 % for each TYPE
             csvwrite([loc_name 'sig2.csv'], ...
                 models{idx_model}.params.sig2) ;
         end
-    case 'svm'                                              % TYPE SVM
+    case 'par-svm'                                              % TYPE SVM
         n_models = size(models,1) ;                         % #models
         
         for idx_model = 1:n_models                          % one-against-all model

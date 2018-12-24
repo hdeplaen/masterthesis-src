@@ -11,7 +11,7 @@ function varargout = bagging(varargin)
 %   TrainY      : a training set output
 %
 % OUTPUTS
-%   BagtrainX{} : the different bags inputs
+%   BagTrainX{} : the different bags inputs
 %   BagTrainY{} : the different bags outputs
 %
 %Author: HENRI DE PLAEN, KU Leuven
@@ -47,12 +47,14 @@ function [Xb,Yb] = draw_bag(X,Y,bag_size)
 %% DEFINE PROPORTIONS
 types_output = unique(Y) ;                              % output classes
 n_types = length(types_output) ;                        % number of output classes
+idx_normal = find(strcmp(types_output, 'normal')) ;
 
 n_restant = n_types ;                                   % number of classes above the threshold
 num_unique = zeros(n_types,1) ;                         % prealloc
-threshold = round(bag_size/n_types) ;                   % minimum number of elements needed
+num_unique(idx_normal) = round(.3*bag_size) ;
+threshold = round(bag_size*.3/(n_types-1)) ;            % minimum number of elements needed
 
-for idx_t = 1:n_types
+for idx_t = setdiff(1:n_types,idx_normal)
     num_idx = sum(strcmp(Y,types_output(idx_t))) ;      % number of element of a class
     if num_idx < threshold                              % verify if this number is under the threshold
         num_unique(idx_t) = num_idx ;                   % if so, get all instances possible 

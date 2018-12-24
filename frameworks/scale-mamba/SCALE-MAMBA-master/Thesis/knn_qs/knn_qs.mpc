@@ -32,6 +32,8 @@ def load_raw_data():
 
 
 training_vec, training_classes, testing_vec = load_raw_data()
+training_vec = training_vec[0:15]
+training_classes = training_classes[0:15]
 
 
 def assign_type_value(val, type):
@@ -97,58 +99,69 @@ def print_vectors(vec1, vec2):
         print_ln('Vector value: %s and %s', vec1[i].reveal(), vec2[i].reveal())
 
 
-def quickselect(knn_obj, ia, ib, k):
-    def qs_partition(knn_obj, ia, ib, ip):
-        p_dist = knn_obj.dists[ip]
-        p_target = knn_obj.targets[ip]
+def quickselect(dists, targets, ia, ib, k):
+    def qs_partition(dists, targets, ia, ib, ip):
+        p_dist = dists[ip]
+        p_target = targets[ip]
         l = regint(ia)
         l.store_in_mem(1)
 
-        def swap_indices(knn_obj, i1, i2):
-            dist_temp = knn_obj.dists[i1]
-            target_temp = knn_obj.targets[i1]
+        def swap_indices(dists, targets, i1, i2):
+            dist_temp = dists[i1]
+            target_temp = targets[i1]
 
-            knn_obj.dists[i1] = knn_obj.dists[i2]
-            knn_obj.targets[i1] = knn_obj.targets[i2]
+            dists[i1] = dists[i2]
+            targets[i1] = targets[i2]
 
-            knn_obj.dists[i2] = dist_temp
-            knn_obj.targets[i2] = target_temp
+            dists[i2] = dist_temp
+            targets[i2] = target_temp
+
+        swap_indices(dists, targets, ip, ib)
 
         def loop_body(i):
-            is_below = knn_obj.dists[i] < p_dist
+            is_below = dists[i] < p_dist
 
-            if is_below.reveal():
-                loc_l = regint.load_mem(1)
-                swap_indices(knn_obj, i, loc_l)
-                (loc_l + 1).store_in_mem(1)
-
-            swap_indices(knn_obj, ib, cint(l))
+            if_then(is_below.reveal())
+            loc_l = regint.load_mem(1)
+            swap_indices(dists, targets, i, loc_l)
+            loc_l = loc_l + 1
+            loc_l.store_in_mem(1)
+            end_if()
 
         range_loop(loop_body, ia, ib)
+        swap_indices(dists, targets, ib, regint.load_mem(1))
 
-        return l
+        return regint.load_mem(1)
 
-    def if_true():
-        return knn_obj.dists[0:k], knn_obj.targets[0:k]
+    def if_true1():
+        return dists[0:k + 1], targets[0:k + 1]
 
-    def if_false():
-        l = int((ia + ib) / 2)  # or alternatiely random
-        l = qs_partition(knn_obj, ia, ib, l)
+    def if_false1():
+        l = (ia + ib) / 2  # or alternatiely random
+        print_ln('l: %s', l)
+        l = qs_partition(dists, targets, ia, ib, l)
 
-        if_then(k == l)
-        return knn_obj.dists[0:k], knn_obj.targets[0:k]
-        else_then()
-        if_then(k < l)
-        return quickselect(knn_obj, ia, l + 1, k)
-        else_then()
-        return quickselect(knn_obj, l + 1, ib, k)
-        end_if()
-        end_if()
+        print_ln('QS')
+        print_vectors(dists, targets)
+        print_ln('l: %s', l)
 
-    if_statement(ia == ib, if_true, if_false)
+        def if_true2():
+            return dists[0:k + 1], targets[0:k + 1]
 
-    singleton_list = ia == ib
+        def if_false2():
 
+            def if_true3():
+                return quickselect(dists, targets, ia, l + 1, k)
+            def if_false3():
+                return quickselect(dists, targets, l + 1, ib, k)
+
+            if_statement(k<l, if_true3, if_false3)
+
+        if_statement(k==l, if_true2, if_false2)
+
+    if_statement(ia==ib, if_true1, if_false1)
+
+    return 0, 0
 
 class KNN(object):
     def __init__(self, samples, classes, num_samples, feature_size, k_num):
@@ -212,8 +225,12 @@ class KNN(object):
         ib = self.num_samples - 1
         k_qs = self.k_num - 1
 
+        print_ln('Original')
+        print_vectors(self.dists, self.targets)
+
         start_timer(2)
-        knn_dists, knn_labels = quickselect(self, ia, ib, k_qs)
+        knn_dists, knn_labels = quickselect(
+            self.dists, self.targets, ia, ib, k_qs)
         print_ln('Time for one knn search')
         stop_timer(2)
         print_ln('######################')
@@ -231,6 +248,7 @@ def time_private_classifier(ntotal):
     # def f(i):
     start_timer(3)
     dists_knn, targets_knn = classifier.predict_alg(test)
+    print_vectors(dists_knn, targets_knn)
     print_ln('Time for one turn')
     stop_timer(3)
     print_ln('Whole algorithm time for %s turn', ntotal)

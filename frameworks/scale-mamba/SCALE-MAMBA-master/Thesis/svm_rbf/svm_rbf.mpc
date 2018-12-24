@@ -11,7 +11,7 @@ program.set_security(100)
 sys.setrecursionlimit(1000000)
 
 n_total_runs = 1
-n_threads = 1
+n_threads = 5
 n_exp = 10
 
 
@@ -102,24 +102,39 @@ class RBF_SVM(object):
 
     def transform_data(self, tests):
         transform_tests = sfix.Matrix(self.num_tests, self.num_sv)
+        sig2 = self.sig2
+        sig2.store_in_mem(0)
 
-        def dist_sv(vec1, vec2):
-            return sum((vec1[idx] - vec2[idx])**2 for idx in range(self.num_features))
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of features')
 
-        def gauss_sv(val):
-            sol = sfix(0)
-            val = -val / self.sig2
+        def thread_chunk():
+            def dist_sv(vec1, vec2):
+                return sum((vec1[idx] - vec2[idx])**2 for idx in range(self.num_features))
 
-            for idx in range(n_exp):
-                sol = sol + (val**idx) / math.factorial(idx)
+            def gauss_sv(dist):
+                sol = sfix(0)
+                val = -dist / sfix.load_mem(0)
 
-            return sol
+                sol = sum((val**idx) / sint(math.factorial(idx)) for idx in range(n_exp))
 
-        @for_range(self.num_tests)
-        def f(idx1):
-            @for_range(self.num_sv)
-            def g(idx2):
-                transform_tests[idx1][idx2] = gauss_sv(dist_sv(tests[idx1], self.sv[idx2]))
+                return sol
+
+            i = get_arg()
+            chunk_size = self.num_sv / n_threads
+            start_chunk = i * chunk_size
+            end_chunk = (i + 1) * chunk_size
+
+            for idx1 in range(num_tests):
+                for idx2 in range(chunk_size):
+                    transform_tests[idx1][start_chunk+idx2] = gauss_sv(dist_sv(tests[idx1], self.sv[start_chunk+idx2]))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i)
+                   for i in range(n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
 
         return transform_tests
 

@@ -41,7 +41,7 @@ switch type                                                 % for each TYPE
         models.TrainY = TrainY ;
         
     case 'oaa-knn'
-        disp('No training needed for (one-against-all) kNN model') ;          % no actions to be done except assignation
+        disp('No training needed for (one-against-all) kNN model') ;          % no actions to be done except from  assignation
         models.TrainX   = TrainX ;
         models.TrainY   = TrainY ;
         models.classes  = classes ;
@@ -53,11 +53,24 @@ switch type                                                 % for each TYPE
                 TrainX,TrainY,classes(idx_model)) ;
             models{idx_model} = loc_model ;                 % assign each ls-svm
         end
-    case 'svm'                                              % TYPE SVM
+    case 'par-svm'                                          % TYPE PARALLEL SVM
+        type_svm = params.type ;
         models = cell(n_classes,1) ;                        % prealloc
         for idx_model = 1:n_classes                         % one-against-all model
             loc_model = train_svm( ...                      % train each ls-svm apart
-                TrainX,TrainY,classes(idx_model)) ;
+                TrainX,TrainY,classes(idx_model),type_svm) ;
+            models{idx_model} = loc_model ;                 % assign each ls-svm
+        end
+    case 'seq-svm'                                          % TYPE SEQUENTIAL SVM
+        type_svm = params.type ;
+        in_seq = params.seq ;
+        [X_out, Y_out] = generate_seq(TrainX,TrainY, in_seq) ;
+        for idx_model = 1:n_classes-1                       % one-against-all model
+            loc_model = train_svm( ...                      % train each ls-svm apart
+                X_out{idx_model}, ...
+                Y_out{idx_model}, ...
+                in_seq(idx_model), ...
+                type_svm) ;
             models{idx_model} = loc_model ;                 % assign each ls-svm
         end
     otherwise                                               % otherwise
@@ -65,7 +78,7 @@ switch type                                                 % for each TYPE
 end
 
 %% RETURN
-expert = struct() ;           % prealloc
+expert = struct() ;             % prealloc
 expert.type = type ;            % assign type
 expert.params = params ;        % assign model parameters
 expert.models = models ;        % assign models
@@ -76,3 +89,24 @@ varargout{1} = expert ;
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [X_out,Y_out] = generate_seq(X,Y,in_seq)
+% Creates bag by respecting original proportions
+
+%% DEFINE PROPORTIONS
+n_types = length(in_seq) ;                          % number of output classes
+X_out = cell(n_types-1,1) ;
+Y_out = cell(n_types-1,1) ;
+
+for idx_t = 1:n_types-1                             % for each class
+    loc_idx = find(strcmp(Y,in_seq(idx_t))) ;       % index of elements of that class
+    
+    X_out{idx_t} = X ;                              % add them to the bag (output)
+    Y_out{idx_t} = Y ;
+           
+    X(loc_idx,:) = [] ;
+    Y(loc_idx) = [] ;
+end
+
+end

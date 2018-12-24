@@ -1,7 +1,7 @@
 function varargout = cat2num(varargin)
 %Converts a categrocial cell list (of string) to an integer table
 %
-%TestY_eval = CAT2NUM (expert, TestX, TestY)
+%[TrainY_num,TestY_num,num_classes] = CAT2NUM (TrainY_cat, TestY_cat)
 %
 % INPUTS
 %   TrainY_cat      : Cell of string classes of training set
@@ -17,12 +17,16 @@ function varargout = cat2num(varargin)
 
 
 %% PRELIMINARIES
-assert(nargin==2) ; assert(nargout==3) ;
+assert(nargin>=2) ; assert(nargout==3) ;
 train_cat = table2cell(varargin{1}) ;
 test_cat = table2cell(varargin{2}) ;
 
 %% CONVERSION
-unique_poss = unique(train_cat) ;
+if nargin==2
+    unique_poss = unique(train_cat) ;
+else
+    unique_poss = varargin{3} ;
+end
 
 l_train = length(train_cat) ;
 l_test = length(test_cat) ;

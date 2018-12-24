@@ -7,7 +7,7 @@ close all ; clear ; clc ;
 data_set = 'nsl-kdd' ;
 classes_red = true ;
 
-bag_size = 15000 ;
+bag_size = 100000 ;
 num_bags = 1 ;
 n_pca = 8 ;
 
@@ -39,16 +39,18 @@ for idx_bag = 1:num_bags
     
     expert_name = 'MyFirstExpert' ;
 
-%     %% KNN EXPERT
-%     params_knn.k = 5 ;
+    %% KNN EXPERT
+%     params_knn.k = 1 ;
 %     expert_knn = train_expert(locX,locY, 'knn', params_knn) ;
 %     eval_knn = eval_expert(expert_knn, locXtest, locYtest) ;
+%     plot_perf(eval_knn,locYtest) ;
 %     export_expert(expert_knn, expert_name) ;
-
-    %% ONE-AGAINST-ALL KNN EXPERT
-    params_knn.k = 5 ;
-    expert_knn = train_expert(locX,locY, 'oaa-knn', params_knn) ;
-    eval_knn = eval_expert(expert_knn, locXtest, locYtest) ;
+    
+% 
+%     %% ONE-AGAINST-ALL KNN EXPERT
+%     params_knn.k = 5 ;
+%     expert_knn = train_expert(locX,locY, 'oaa-knn', params_knn) ;
+%     eval_knn = eval_expert(expert_knn, locXtest, locYtest) ;
     
 %     
 %     %% LS-SVM EXPERT
@@ -56,10 +58,12 @@ for idx_bag = 1:num_bags
 %     expert_lssvm = train_expert(locX,locY, 'lssvm', params_lssvm) ;
 %     eval_lssvm = eval_expert(expert_lssvm, locXtest, locYtest) ;
 %     export_expert(expert_lssvm, expert_name) ;
-% 
-%     %% SVM EXPERT
-%     params_svm = [] ;
-%     expert_svm = train_expert(locX,locY, 'svm', params_svm) ;
-%     eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
-%     export_expert(expert_svm, expert_name) ;
+
+    %% SVM EXPERT
+    params_svm = {'normal','dos','probe','r2l','u2r'} ;
+    %params_svm = {'u2r','r2l','dos','probe','normal'} ;
+    expert_svm = train_expert(locX,locY, 'par-svm', params_svm) ;
+    eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
+    % export_expert(expert_svm, expert_name) ;
+    plot_perf(eval_svm,locYtest) ;
 end

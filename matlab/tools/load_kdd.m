@@ -14,7 +14,7 @@ benchmark_path = '../benchmark/' ;                                          % pa
 switch data_set                                                             % choose data-sets
     case 'nsl-kdd'
         local_path = 'NSL-KDD/' ;                                           % subpath of chosen data-set
-        trainXY = readtable([benchmark_path local_path 'KDDTrain+.txt']) ;  % filename of the traning set
+        trainXY = readtable([benchmark_path local_path 'KDDTrain+.txt']) ;  % filename of the training set
         testXY  = readtable([benchmark_path local_path 'KDDTest+.txt']) ;   % filename of the test set
         
         %SELECT SETS
@@ -33,7 +33,22 @@ switch data_set                                                             % ch
 end
 
 %% CONVERT DATA TABLES TO NUMERICAL MATRICES
-%TREAT CATEGORICAL DATA
+%SPECIALIZED TREATING OF CATEGORCIAL DATA
+% PROTOCOL
+idx = 2 ;
+[train_bin,test_bin,idx_protocol] = protocol2bin(trainX(:,idx),testX(:,idx)) ;               % change column to numeric
+
+trainX    = [trainX(:,1:idx-1) train_bin trainX(:,idx+1:end)] ;                                % replace new numeric column in table (training)
+testX     = [testX(:,1:idx-1)  test_bin  testX(:,idx+1:end)] ;                                 % replace new numeric column in table (testing)
+
+%TERMINATION FLAG
+% idx = 4 + idx_protocol - 1 ;
+% [train_bin,test_bin,~] = flag2bin(trainX(:,idx),testX(:,idx)) ;               % change column to numeric
+% 
+% trainX    = [trainX(:,1:idx-1) train_bin trainX(:,idx+1:end)] ;                                % replace new numeric column in table (training)
+% testX     = [testX(:,1:idx-1)  test_bin  testX(:,idx+1:end)] ;                                 % replace new numeric column in table (testing)
+
+%GENERAL TREATING OF CATEGORICAL DATA
 [trainX, testX] = to_numeric(trainX, testX, 'cat2freq') ;                   % or 'cat2bin'
 
 %% REDUCE OUTPUT CLASSES
@@ -128,8 +143,13 @@ testX = table2array(testX) ;                                                % tr
 trainX = table2array(trainX) ;                                              % test features to numeric array
 
 % transform time
-trainX(:,1) = log(trainX(:,1)+1) ;
-testX(:,1) = log(testX(:,1)+1) ;
+%trainX(:,1) = log(trainX(:,1)+1) ;
+%testX(:,1) = log(testX(:,1)+1) ;
+
+% varargout{1} = trainX(1:100000,:) ;
+% varargout{2} = trainY(1:100000) ;
+% varargout{3} = trainX(100001:end,:) ;
+% varargout{4} = trainY(100001:end) ;
 
 varargout{1} = trainX ;
 varargout{2} = trainY ;
