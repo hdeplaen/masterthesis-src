@@ -69,6 +69,18 @@ switch type                                                 % for each TYPE
         [~,idx_best] = max(svm_results,[],2) ;              % evaluate best score
         TestY_eval = classes(idx_best) ;                    % assign best score to corresponding class
         
+    case 'par-svm-chi2'                                              % TYPE SVM
+        n_models = size(models,1) ;                          % #models
+        svm_results = zeros(n_test, n_models) ;           % prealloc
+        
+        for idx_model = 1:n_models                     % one-against-all model
+            svm_results(:,idx_model) = eval_svm_chi2( ...
+                models{idx_model}, TestX, 'no',TestY) ;           % score for each class
+        end
+        
+        [~,idx_best] = max(svm_results,[],2) ;              % evaluate best score
+        TestY_eval = classes(idx_best) ;                    % assign best score to corresponding class
+        
     case 'seq-svm'                                              % TYPE SVM
         seq_in = params.seq ;
         n_models = numel(models) ;                          % #models
@@ -76,6 +88,30 @@ switch type                                                 % for each TYPE
         
         for idx_model = 1:n_models                     % one-against-all model
             svm_results(:,idx_model) = eval_svm( ...
+                models{idx_model}, TestX, 'no',TestY) ;           % score for each class
+        end
+        
+        svm_results = sign(svm_results) ;              % evaluate best score
+        for idx_test = 1:size(TestX,1)
+            for idx_class = 1:numel(seq_in)
+                if idx_class == numel(seq_in)
+                    TestY_eval{idx_test} = seq_in{idx_class} ;
+                else
+                    if svm_results(idx_test,idx_class) == 1
+                        TestY_eval{idx_test} = seq_in{idx_class} ;
+                        break ;
+                    end
+                end
+            end
+        end
+        
+    case 'seq-svm-chi2'                                              % TYPE SVM
+        seq_in = params.seq ;
+        n_models = numel(models) ;                          % #models
+        svm_results = zeros(n_test, n_models) ;           % prealloc
+        
+        for idx_model = 1:n_models                     % one-against-all model
+            svm_results(:,idx_model) = eval_svm_chi2( ...
                 models{idx_model}, TestX, 'no',TestY) ;           % score for each class
         end
         
@@ -109,16 +145,16 @@ if ~isempty(TestY)                                              % if test set is
         'Number of elements not consistent in the test set') ;
     
     % COMPUTE RESULTS
-%    acc = sum(strcmp(TestY,TestY_eval))/n_test ;                % accuracy
+    %    acc = sum(strcmp(TestY,TestY_eval))/n_test ;                % accuracy
     
     % PRINT RESULTS
-%     fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
-%     fprintf('%%%%%%  EXPERT RESULTS  %%%%%% \n') ;
-%     fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
-%     fprintf(['Type : ' type '\n \n']) ;
-%     
-%     fprintf('TESTING RESULTS\n') ;
-%     fprintf(['Accuracy = ' num2str(acc*100) '%%\n']) ;
+    %     fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
+    %     fprintf('%%%%%%  EXPERT RESULTS  %%%%%% \n') ;
+    %     fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
+    %     fprintf(['Type : ' type '\n \n']) ;
+    %
+    %     fprintf('TESTING RESULTS\n') ;
+    %     fprintf(['Accuracy = ' num2str(acc*100) '%%\n']) ;
 end
 
 end

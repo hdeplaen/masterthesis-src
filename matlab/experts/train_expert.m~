@@ -31,7 +31,6 @@ assert(size(TrainY,1)==n_train, ...
 %% TYPE
 classes = unique(TrainY) ;
 n_classes = numel(classes) ;
-tot_sv = 0 ;
 
 % Different actions per type
 switch type                                                 % for each TYPE
@@ -60,17 +59,15 @@ switch type                                                 % for each TYPE
         for idx_model = 1:n_classes                         % one-against-all model
             loc_model = train_svm( ...                      % train each ls-svm apart
                 TrainX,TrainY,classes(idx_model),type_svm) ;
-            tot_sv = tot_sv + loc_model.num_sv ;
             models{idx_model} = loc_model ;                 % assign each ls-svm
         end
     case 'par-svm-chi2'                                          % TYPE PARALLEL SVM
         type_svm = params.type ;
         models = cell(n_classes,1) ;                        % prealloc
         for idx_model = 1:n_classes                         % one-against-all model
-            load(['chi2/archive_par/chi2_' ...
-                num2str(classes{idx_model})],'chi2') ;
+            load('chi2/archive_par/chi2_' num2str(class,'chi2') ;
             loc_model = train_svm_chi2( ...                      % train each ls-svm apart
-                TrainX,TrainY,classes(idx_model),type_svm, chi2) ;
+                TrainX,TrainY,classes(idx_model),type_svm) ;
             models{idx_model} = loc_model ;                 % assign each ls-svm
         end
     case 'seq-svm'                                          % TYPE SEQUENTIAL SVM
@@ -83,7 +80,6 @@ switch type                                                 % for each TYPE
                 Y_out{idx_model}, ...
                 in_seq(idx_model), ...
                 type_svm) ;
-            tot_sv = tot_sv + loc_model.num_sv ;
             models{idx_model} = loc_model ;                 % assign each ls-svm
         end
     case 'seq-svm-chi2'                                          % TYPE SEQUENTIAL SVM
@@ -91,13 +87,11 @@ switch type                                                 % for each TYPE
         in_seq = params.seq ;
         [X_out, Y_out] = generate_seq(TrainX,TrainY, in_seq) ;
         for idx_model = 1:n_classes-1                       % one-against-all model
-            load(['chi2/archive_seq/chi2_' ...
-                num2str(classes{idx_model})],'chi2') ;
             loc_model = train_svm_chi2( ...                      % train each ls-svm apart
                 X_out{idx_model}, ...
                 Y_out{idx_model}, ...
                 in_seq(idx_model), ...
-                type_svm, chi2) ;
+                type_svm) ;
             models{idx_model} = loc_model ;                 % assign each ls-svm
         end
     otherwise                                               % otherwise
@@ -110,7 +104,6 @@ expert.type = type ;            % assign type
 expert.params = params ;        % assign model parameters
 expert.models = models ;        % assign models
 expert.classes = classes ;      % assign classes
-expert.num_sv  = tot_sv ;
 
 assert(nargout==1, 'Wrong number of output arguments') ;
 varargout{1} = expert ;

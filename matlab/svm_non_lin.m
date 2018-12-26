@@ -10,31 +10,31 @@ format short ;
 %% PRELIMINARIES
 data_set = 'nsl-kdd' ;
 classes_red = true ;
-n_pca = 4:4:28 ;
-%n_pca = [6 8] ;
+n_pca = 10 ;
 plot_pca = false ;
 
 [trainX,trainY,testX,testY] = load_kdd(data_set,classes_red) ;
 
-%% PARAMS
-%n = [500 2000 5000 10000 15000 30000 50000 100000] ;
-n = [5000] ;
-num_bags = 5 ;
-params_svm.type = 'linear' ;
+%% PARAMS 
+n = [500 2000 5000 10000 15000 30000 50000 100000] ;
+%n = [499 501 ] ;
+num_bags = 1 ;
+params_svm.type = 'rbf' ;
 
-corr = zeros(3,length(n_pca),num_bags,5,5);
-accm = zeros(3,length(n_pca),num_bags,5);
-mccm = zeros(3,length(n_pca),num_bags,5);
-kappam = zeros(3,length(n_pca),num_bags,5);
-acc = zeros(3,length(n_pca),num_bags);
-mcc = zeros(3,length(n_pca),num_bags);
-kappa = zeros(3,length(n_pca),num_bags);
+corr = zeros(3,length(n),num_bags,5,5);
+accm = zeros(3,length(n),num_bags,5);
+mccm = zeros(3,length(n),num_bags,5);
+kappam = zeros(3,length(n),num_bags,5);
+acc = zeros(3,length(n),num_bags);
+mcc = zeros(3,length(n),num_bags);
+kappa = zeros(3,length(n),num_bags);
+num_sv = zeros(3,length(n),num_bags);
 
 h = waitbar(0,'Initializing') ;
 
-for idx_pca = 1:length(n_pca)
+for idxn = 1:length(n)
     disp('_____________________________') ;
-    disp(n_pca(idx_pca)) ;
+    disp(n(idxn)) ;
     
     %% PRE-PROCESS
     idx_perm = randperm(length(trainY)) ;
@@ -49,7 +49,7 @@ for idx_pca = 1:length(n_pca)
 %     testY_bis = testY ;
     
     % bagging
-    [BagTrainX,BagTrainY] = bagging(n, num_bags, trainX_bis, trainY_bis) ;
+    [BagTrainX,BagTrainY] = bagging(n(idxn), num_bags, trainX_bis, trainY_bis) ;
     [BagTestX,BagTestY] = bagging(10000, num_bags, testX_bis, testY_bis) ;
     
     %% EXECUTION
@@ -66,7 +66,7 @@ for idx_pca = 1:length(n_pca)
         %[locX,locY,locXtest,locYtest] = standardize_data(locX,locY,locXtest,locYtest) ;
         
         % PCA
-        [locX,locXtest] = pca_reduction(locX,locXtest,n_pca(idx_pca),plot_pca) ;
+        [locX,locXtest] = pca_reduction(locX,locXtest,n_pca,plot_pca) ;
         
         disp(['Bag number ' num2str(idx_bag)]) ;
         
@@ -78,13 +78,14 @@ for idx_pca = 1:length(n_pca)
         eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
         [corr_, accm_, mccm_, kappam_, acc_, mcc_, kappa_] = plot_perf(eval_svm,locYtest) ;
         
-        corr(1,idx_pca,idx_bag,:,:) = corr_ ;
-        accm(1,idx_pca,idx_bag,:) = accm_ ;
-        mccm(1,idx_pca,idx_bag,:) = mccm_ ;
-        kappam(1,idx_pca,idx_bag,:) = kappam_ ;
-        acc(1,idx_pca,idx_bag) = acc_ ;
-        mcc(1,idx_pca,idx_bag) = mcc_ ;
-        kappa(1,idx_pca,idx_bag) = kappa_ ;
+        corr(1,idxn,idx_bag,:,:) = corr_ ;
+        accm(1,idxn,idx_bag,:) = accm_ ;
+        mccm(1,idxn,idx_bag,:) = mccm_ ;
+        kappam(1,idxn,idx_bag,:) = kappam_ ;
+        acc(1,idxn,idx_bag) = acc_ ;
+        mcc(1,idxn,idx_bag) = mcc_ ;
+        kappa(1,idxn,idx_bag) = kappa_ ;
+        num_sv(1,idxn,idx_bag) = expert_svm.num_sv ;
         
         
         %% SVM SEQ 2 EXPERT
@@ -93,29 +94,31 @@ for idx_pca = 1:length(n_pca)
         eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
         [corr_, accm_, mccm_, kappam_, acc_, mcc_, kappa_] = plot_perf(eval_svm,locYtest) ;
         
-        corr(2,idx_pca,idx_bag,:,:) = corr_ ;
-        accm(2,idx_pca,idx_bag,:) = accm_ ;
-        mccm(2,idx_pca,idx_bag,:) = mccm_ ;
-        kappam(2,idx_pca,idx_bag,:) = kappam_ ;
-        acc(2,idx_pca,idx_bag) = acc_ ;
-        mcc(2,idx_pca,idx_bag) = mcc_ ;
-        kappa(2,idx_pca,idx_bag) = kappa_ ;
+        corr(2,idxn,idx_bag,:,:) = corr_ ;
+        accm(2,idxn,idx_bag,:) = accm_ ;
+        mccm(2,idxn,idx_bag,:) = mccm_ ;
+        kappam(2,idxn,idx_bag,:) = kappam_ ;
+        acc(2,idxn,idx_bag) = acc_ ;
+        mcc(2,idxn,idx_bag) = mcc_ ;
+        kappa(2,idxn,idx_bag) = kappa_ ;
+        num_sv(2,idxn,idx_bag) = expert_svm.num_sv ;
         
         %% SVM PAR EXPERT
         expert_svm = train_expert(locX,locY, 'par-svm', params_svm) ;
         eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
         [corr_, accm_, mccm_, kappam_, acc_, mcc_, kappa_] = plot_perf(eval_svm,locYtest) ;
         
-        corr(3,idx_pca,idx_bag,:,:) = corr_ ;
-        accm(3,idx_pca,idx_bag,:) = accm_ ;
-        mccm(3,idx_pca,idx_bag,:) = mccm_ ;
-        kappam(3,idx_pca,idx_bag,:) = kappam_ ;
-        acc(3,idx_pca,idx_bag) = acc_ ;
-        mcc(3,idx_pca,idx_bag) = mcc_ ;
-        kappa(3,idx_pca,idx_bag) = kappa_ ;
+        corr(3,idxn,idx_bag,:,:) = corr_ ;
+        accm(3,idxn,idx_bag,:) = accm_ ;
+        mccm(3,idxn,idx_bag,:) = mccm_ ;
+        kappam(3,idxn,idx_bag,:) = kappam_ ;
+        acc(3,idxn,idx_bag) = acc_ ;
+        mcc(3,idxn,idx_bag) = mcc_ ;
+        kappa(3,idxn,idx_bag) = kappa_ ;
+        num_sv(3,idxn,idx_bag) = expert_svm.num_sv ;
         
-        waitbar(((idx_pca-1)*num_bags + idx_bag)/(numel(n)*num_bags),h,...
-            ['#pca = ' num2str(n_pca(idx_pca)) newline 'bag = ' num2str(idx_bag)]);
+        waitbar(((idxn-1)*num_bags + idx_bag)/(numel(n)*num_bags),h,...
+            ['n = ' num2str(n(idxn)) newline 'bag = ' num2str(idx_bag)]);
     end
 end
 
@@ -129,38 +132,39 @@ kappam = mean(kappam(:,:,:,:),3);
 acc = mean(acc(:,:,:),3);
 mcc = mean(mcc(:,:,:),3);
 kappa = mean(kappa(:,:,:),3);
+num_svm = mean(num_sv(:,:,:),3);
 
-save('svm_pca.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
+save('svm_nnon_lin.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
 
 % par
 disp('O-A-A') ;
 disp('acc');
-disp(squeeze(accm(3,length(n_pca),:,:))');
+disp(squeeze(accm(3,length(n),:,:))');
 disp('mcc') ;
-disp(squeeze(mccm(3,length(n_pca),:,:))');
+disp(squeeze(mccm(3,length(n),:,:))');
 disp('kappa') ;
-disp(squeeze(kappam(3,length(n_pca),:,:))');
+disp(squeeze(kappam(3,length(n),:,:))');
 disp('corr') ;
-disp(squeeze(corr(3,length(n_pca),:,:,:))) ;
+disp(squeeze(corr(3,length(n),:,:,:))) ;
 
 % seq
 disp('TREE') ;
 disp('acc');
-disp(squeeze(accm(1,length(n_pca),:,:))');
+disp(squeeze(accm(1,length(n),:,:))');
 disp('mcc') ;
-disp(squeeze(mccm(1,length(n_pca),:,:))');
+disp(squeeze(mccm(1,length(n),:,:))');
 disp('kappa') ;
-disp(squeeze(kappam(1,length(n_pca),:,:))');
+disp(squeeze(kappam(1,length(n),:,:))');
 disp('corr') ;
-disp(squeeze(corr(1,length(n_pca),:,:,:))) ;
+disp(squeeze(corr(1,length(n),:,:,:))) ;
 
 
 %% PLOT
 figure ; hold on ;
-semilogx(n_pca,acc(1,:,:),'-k','LineWidth',2) ;
-semilogx(n_pca,acc(2,:,:),':k','LineWidth',2) ;
-semilogx(n_pca,acc(3,:,:),'-.k','LineWidth',2) ;
-ylabel('Accuracy') ; xlabel('Number of principal components') ;
+semilogx(n,acc(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,acc(2,:,:),':k','LineWidth',2) ;
+semilogx(n,acc(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Accuracy') ; xlabel('Training set size') ;
 ax = gca ;
 %ax.XAxisLocation = 'origin' ;
 %ax.YAxisLocation = 'origin' ;
@@ -175,10 +179,10 @@ set(leg,'visible','off') ;
 
 figure ; hold on ;
 % TP/(TN+FN)
-semilogx(n_pca,mcc(1,:,:),'-k','LineWidth',2) ;
-semilogx(n_pca,mcc(2,:,:),':k','LineWidth',2) ;
-semilogx(n_pca,mcc(3,:,:),'-.k','LineWidth',2) ;
-ylabel('Matthews Corr. Coeff.') ; xlabel('Number of principal components') ;
+semilogx(n,mcc(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,mcc(2,:,:),':k','LineWidth',2) ;
+semilogx(n,mcc(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Matthews Corr. Coeff.') ; xlabel('Training set size') ;
 ax = gca ;
 %ax.XAxisLocation = 'origin' ;
 %ax.YAxisLocation = 'origin' ;
@@ -192,10 +196,27 @@ leg = legend() ;
 set(leg,'visible','off') ;
 
 figure ; hold on ;
-semilogx(n_pca,kappa(1,:,:),'-k','LineWidth',2) ;
-semilogx(n_pca,kappa(2,:,:),':k','LineWidth',2) ;
-semilogx(n_pca,kappa(3,:,:),'-.k','LineWidth',2) ;
-ylabel('Kappa Coeff.') ; xlabel('Number of principal components') ;
+semilogx(n,kappa(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,kappa(2,:,:),':k','LineWidth',2) ;
+semilogx(n,kappa(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Kappa Coeff.') ; xlabel('Training set size') ;
+ax = gca ;
+%ax.XAxisLocation = 'origin' ;
+%ax.YAxisLocation = 'origin' ;
+set(0,'DefaultLineColor','k') ;
+set(gca,'box','off') ;
+set(gca, 'FontName', 'Baskervald ADF Std') ;
+set(gca, 'FontSize', 23) ;
+set(gca,'LineWidth',2) ;
+%axis([0 it(end) -20 5]) ;
+leg = legend() ;
+set(leg,'visible','off') ;
+
+figure ; hold on ;
+semilogx(n,num_sv(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,num_sv(2,:,:),':k','LineWidth',2) ;
+semilogx(n,num_sv(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Number of support vectors') ; xlabel('Training set size') ;
 ax = gca ;
 %ax.XAxisLocation = 'origin' ;
 %ax.YAxisLocation = 'origin' ;

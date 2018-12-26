@@ -24,8 +24,8 @@ varargout{2} = tX * reduced_dimension ;
 if disp_plots
     %% PLOT FEATURES
     figure ;
-    bar(coeff(:,1:4),'FaceColor','flat') ;
-    ylabel('Coefficient') ; xlabel('Feature') ;
+    barh(abs(sum(coeff(:,1:6),2)),'FaceColor','k') ;
+    xlabel('Contribution') ; ylabel('Feature') ;
     ax = gca ;
     %ax.XAxisLocation = 'origin' ;
     %ax.YAxisLocation = 'origin' ;
@@ -37,7 +37,7 @@ if disp_plots
     %axis([0 it(end) -20 5]) ;
     leg = legend() ;
     set(leg,'visible','off') ;
-    set(gca,'XTick',1:size(coeff,1));
+    set(gca,'YTick',1:size(coeff,1));
     
     %% PLOT VAR
     figure ;

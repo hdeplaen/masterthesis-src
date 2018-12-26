@@ -1,4 +1,4 @@
-function varargout = train_svm(varargin)
+function varargout = train_svm_chi2(varargin)
 %Trains a binary SVM algorithm on a unique class. To construct a
 %multi-class classifier, please use one-against-all model or other.
 %
@@ -32,75 +32,51 @@ assert(sum(strcmp(unique(TrainY),class))==1, ...
     'Wanted class does not exist in the training set' ) ;
 
 idx_class = strcmp(TrainY,class) ;
-TrainY_bin = ones(n_train,1) ;
-TrainY_bin(~idx_class) = -1 ;
+TrainY = ones(n_train,1) ;
+TrainY(~idx_class) = 0 ;
 
 %% TUNE LSSVM
 gam = 10 ;      % initial regression parameter guess
 sig2 = 1 ;      % initial RBF sigma^2 parameter guess
 
-%C = 10.^(-2:.5:10) ;
 C = 10 ;
 
-% prealloc
-SVMModel = cell(numel(C),1) ;
-CVSVMModel = cell(numel(C),1) ;
-classLoss = zeros(numel(C),1) ;
+% features
+num_features = size(TrainX,2) ;
+chi2 = zeros(num_features,1) ;
 
-%c_opts = cvpartition(n_train,'KFold',5) ;
-%opts = struct('Optimizer', 'gridsearch', 'ShowPlots', true, 'Verbose', 2, 'UseParallel', true, 'CVPartition', c_opts) ;
+% crossval
+idx_perm = randperm(size(TrainX,1)) ;
+max_tr = round((1-0.2)*numel(idx_perm)) ;
+idx_tr = idx_perm(1:max_tr) ;
+idx_te = idx_perm(max_tr+1:end) ;
 
-for idx_C = 1:numel(C)
-    %     SVMModel{idx_C} = fitcsvm(TrainX,TrainY_bin, 'Standardize', false, ...
-    %         'KernelFunction', 'RBF', 'OptimizeHyperparameters', {'KernelScale','BoxConstraint'}, ... %'BoxConstraint',C(idx_C), ...
-    %         'HyperparameterOptimizationOptions', opts) ;
+trX = TrainX(idx_tr,:) ;
+trY = TrainY(idx_tr) ;
+teX = TrainX(idx_te,:) ;
+teY = TrainY(idx_te) ;
+
+if class={''} ;
+for idx_f = 1:num_features
+    SVMModel = fitcsvm(trX(:,idx_f),trY, 'Standardize', false, ...
+        'KernelFunction', type, 'KernelScale', 'auto','BoxConstraint',C) ;
     
-    SVMModel{idx_C} = fitcsvm(TrainX,TrainY_bin, 'Standardize', false, ...
-        'KernelFunction', type, 'KernelScale', 'auto','BoxConstraint',C(idx_C)) ;
-    
-    CVSVMModel{idx_C} = crossval(SVMModel{idx_C},'KFold',2) ;
-    classLoss(idx_C) = 1-kfoldLoss(CVSVMModel{idx_C}, 'lossfun', 'classiferror') ;
-    %disp(classLoss(idx_C)) ;
+    eval_teY = predict(SVMModel,teX(:,idx_f)) ;
+    chi2(idx_f) = compute_chi2(teY, eval_teY) ;
 end
 
-num_sv = mean_sv(CVSVMModel) ;
+save(['chi2_' class{1} '.mat'],'chi2') ;
 
-%% PLOT
-% figure ;
-% subplot(2,1,1) ;
-% loglog(C,classLoss,'-k','LineWidth',2) ;
-% ylabel('Class. error') ;
-% ax = gca ;
-% %ax.XAxisLocation = 'origin' ;
-% %ax.YAxisLocation = 'origin' ;
-% set(0,'DefaultLineColor','k') ;
-% set(gca,'box','off') ;
-% set(gca, 'FontName', 'Baskervald ADF Std') ;
-% set(gca, 'FontSize', 23) ;
-% set(gca,'LineWidth',2) ;
-% %axis([0 it(end) -20 5]) ;
-% leg = legend() ;
-% set(leg,'visible','off') ;
-%
-% subplot(2,1,2) ;
-% loglog(C,num_sv,'-k','LineWidth',2) ;
-% xlabel('C') ;
-% ylabel('#SV') ;
-% ax = gca ;
-% %ax.XAxisLocation = 'origin' ;
-% %ax.YAxisLocation = 'origin' ;
-% set(0,'DefaultLineColor','k') ;
-% set(gca,'box','off') ;
-% set(gca, 'FontName', 'Baskervald ADF Std') ;
-% set(gca, 'FontSize', 23) ;
-% set(gca,'LineWidth',2) ;
-% %axis([0 it(end) -20 5]) ;
-% leg = legend() ;
-% set(leg,'visible','off') ;
+idx_chosen = chi2>1e-2 ;
+disp(sum(idx_chosen)) ;
+
+SVMModel = fitcsvm(TrainX(:,idx_chosen),TrainY, 'Standardize', false, ...
+    'KernelFunction', type, 'KernelScale', 'auto','BoxConstraint',C) ;
+
+CVSVMModel = crossval(SVMModel,'KFold',5) ;
+classLoss = 1-kfoldLoss(CVSVMModel, 'lossfun', 'classiferror') ;
 
 %% RETURN
-[~,idx_min] = min(classLoss) ;
-SVMModel = CVSVMModel{idx_min}.Trained{1} ;
 params.gam = [] ;
 params.sig2 = SVMModel.KernelParameters.Scale ;
 
@@ -111,7 +87,7 @@ model.class     = class ;       % assign class
 model.params    = params ;      % assign problem parameters
 model.sv        = SVMModel.SupportVectors ; %TrainX(SVMModel.IsSupportVector,:) ;      % assign support vectors
 model.SVMModel  = SVMModel ;
-model.num_sv     = num_sv ;
+model.idx_chosen = idx_chosen ;
 
 % assert(nargin==1, 'Wrong number of output arguments') ;
 varargout{1} = model ;
@@ -122,16 +98,16 @@ sv  = SVMModel.SupportVectors ;
 
 %% PERFORMANCE ON TRAINING SET
 % classLoss = kfoldLoss(CVSVMModel{idx_min}) ;
-% 
+%
 % %[a,b] = predict(SVMModel,TrainX) ;
-% 
+%
 % % PRINT RESULTS
 % fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n') ;
 % fprintf('%%%%%%  SVM TRAINING  %%%%%% \n') ;
 % fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n \n') ;
 % fprintf(['sig2 = ' num2str(params.sig2) '\n \n']) ;
 % fprintf(['Class : ' class{1} '\n']) ;
-% 
+%
 % fprintf('TRAINING RESULTS\n') ;
 % fprintf(['Generalization rate = ' num2str((classLoss)*100) '%%\n']) ;
 
@@ -141,18 +117,24 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function out = mean_sv(CVSVMModel)
+function chi2_metric = compute_chi2(teY, eval_teY)
 
-num_c = numel(CVSVMModel) ;
+t = @(c,e) ((c-e).^2)./e ;
 
-out = zeros(num_c,1) ;
-for idx_c = 1:num_c
-    nfold = CVSVMModel{idx_c}.KFold ;
-    num_sv = zeros(nfold,1) ;
-    for idx = 1:nfold
-        num_sv(idx) = size(CVSVMModel{idx_c}.Trained{idx}.SupportVectors,1) ;
-    end
-    out(idx_c) = mean(num_sv) ;
-end
+adder = eval_teY + teY ;
+TP  = sum(adder== 2) + 1e-4 ;      % true positives
+TN  = sum(adder== 0) + 1e-4;      % ture negatives
+
+substr = eval_teY - teY ;
+FP  = sum(substr== 1) + 1e-4;     % false positives
+FN  = sum(substr==-1) + 1e-4;     % false negatives
+
+PPos = sum(teY==1)/numel(teY) ;
+PNeg = sum(teY==0)/numel(teY) ;
+
+chi2_metric = t(TP,(TP+FP)*PPos) + ...
+    t(FN,(FN+TN)*PPos) + ...
+    t(FP,(TP+FP)*PNeg) + ...
+    t(TN,(FN+TN)*PNeg) ;
 
 end
