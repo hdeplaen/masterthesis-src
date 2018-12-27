@@ -133,6 +133,7 @@ kappam = mean(kappam(:,:,:,:),3);
 acc = mean(acc(:,:,:),3);
 mcc = mean(mcc(:,:,:),3);
 kappa = mean(kappa(:,:,:),3);
+num_sv = mean(num_sv(:,:,:),3);
 
 save('svm_pca_nl.mat','corr','accm','mccm','kappam','acc','mcc','kappa','num_sv') ;
 
@@ -200,6 +201,23 @@ figure ; hold on ;
 semilogx(n_pca,kappa(1,:,:),'-k','LineWidth',2) ;
 semilogx(n_pca,kappa(2,:,:),':k','LineWidth',2) ;
 semilogx(n_pca,kappa(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Kappa Coeff.') ; xlabel('Number of principal components') ;
+ax = gca ;
+%ax.XAxisLocation = 'origin' ;
+%ax.YAxisLocation = 'origin' ;
+set(0,'DefaultLineColor','k') ;
+set(gca,'box','off') ;
+set(gca, 'FontName', 'Baskervald ADF Std') ;
+set(gca, 'FontSize', 23) ;
+set(gca,'LineWidth',2) ;
+%axis([0 it(end) -20 5]) ;
+leg = legend() ;
+set(leg,'visible','off') ;
+
+figure ; hold on ;
+semilogx(n_pca,num_sv(1,:,:),'-k','LineWidth',2) ;
+semilogx(n_pca,num_sv(2,:,:),':k','LineWidth',2) ;
+semilogx(n_pca,num_sv(3,:,:),'-.k','LineWidth',2) ;
 ylabel('Kappa Coeff.') ; xlabel('Number of principal components') ;
 ax = gca ;
 %ax.XAxisLocation = 'origin' ;
