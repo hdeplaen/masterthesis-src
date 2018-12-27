@@ -18,9 +18,9 @@ plot_pca = false ;
 
 %% PARAMS
 %n = [500 2000 5000 10000 15000 30000 50000 100000] ;
-n = [5000] ;
+n = [15000] ;
 num_bags = 5 ;
-params_svm.type = 'linear' ;
+params_svm.type = 'rbf' ;
 
 corr = zeros(3,length(n_pca),num_bags,5,5);
 accm = zeros(3,length(n_pca),num_bags,5);
@@ -29,6 +29,7 @@ kappam = zeros(3,length(n_pca),num_bags,5);
 acc = zeros(3,length(n_pca),num_bags);
 mcc = zeros(3,length(n_pca),num_bags);
 kappa = zeros(3,length(n_pca),num_bags);
+num_sv = zeros(3,length(n_pca),num_bags);
 
 h = waitbar(0,'Initializing') ;
 
@@ -85,6 +86,7 @@ for idx_pca = 1:length(n_pca)
         acc(1,idx_pca,idx_bag) = acc_ ;
         mcc(1,idx_pca,idx_bag) = mcc_ ;
         kappa(1,idx_pca,idx_bag) = kappa_ ;
+        num_sv(1,idx_pca,idx_bag) = expert_svm.num_sv ;
         
         
         %% SVM SEQ 2 EXPERT
@@ -100,6 +102,7 @@ for idx_pca = 1:length(n_pca)
         acc(2,idx_pca,idx_bag) = acc_ ;
         mcc(2,idx_pca,idx_bag) = mcc_ ;
         kappa(2,idx_pca,idx_bag) = kappa_ ;
+        num_sv(2,idx_pca,idx_bag) = expert_svm.num_sv ;
         
         %% SVM PAR EXPERT
         expert_svm = train_expert(locX,locY, 'par-svm', params_svm) ;
@@ -113,6 +116,7 @@ for idx_pca = 1:length(n_pca)
         acc(3,idx_pca,idx_bag) = acc_ ;
         mcc(3,idx_pca,idx_bag) = mcc_ ;
         kappa(3,idx_pca,idx_bag) = kappa_ ;
+        num_sv(3,idx_pca,idx_bag) = expert_svm.num_sv ;
         
         waitbar(((idx_pca-1)*num_bags + idx_bag)/(numel(n)*num_bags),h,...
             ['#pca = ' num2str(n_pca(idx_pca)) newline 'bag = ' num2str(idx_bag)]);
@@ -130,29 +134,30 @@ acc = mean(acc(:,:,:),3);
 mcc = mean(mcc(:,:,:),3);
 kappa = mean(kappa(:,:,:),3);
 
-save('svm_pca.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
+save('svm_pca_nl.mat','corr','accm','mccm','kappam','acc','mcc','kappa','num_sv') ;
 
+print_pca = length(n_pca) ;
 % par
 disp('O-A-A') ;
 disp('acc');
-disp(squeeze(accm(3,length(n_pca),:,:))');
+print_latex(squeeze(100*accm(3,print_pca,:,:)));
 disp('mcc') ;
-disp(squeeze(mccm(3,length(n_pca),:,:))');
+print_latex(squeeze(100*mccm(3,print_pca,:,:)));
 disp('kappa') ;
-disp(squeeze(kappam(3,length(n_pca),:,:))');
+print_latex(squeeze(100*kappam(3,print_pca,:,:)));
 disp('corr') ;
-disp(squeeze(corr(3,length(n_pca),:,:,:))) ;
+print_latex(squeeze(corr(3,print_pca,:,:,:))) ;
 
 % seq
 disp('TREE') ;
 disp('acc');
-disp(squeeze(accm(1,length(n_pca),:,:))');
+print_latex(squeeze(100*accm(2,print_pca,:,:)));
 disp('mcc') ;
-disp(squeeze(mccm(1,length(n_pca),:,:))');
+print_latex(squeeze(100*mccm(2,print_pca,:,:)));
 disp('kappa') ;
-disp(squeeze(kappam(1,length(n_pca),:,:))');
+print_latex(squeeze(100*kappam(2,print_pca,:,:)));
 disp('corr') ;
-disp(squeeze(corr(1,length(n_pca),:,:,:))) ;
+print_latex(squeeze(corr(2,print_pca,:,:,:))) ;
 
 
 %% PLOT

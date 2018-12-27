@@ -39,8 +39,9 @@ TrainY_bin(~idx_class) = -1 ;
 gam = 10 ;      % initial regression parameter guess
 sig2 = 1 ;      % initial RBF sigma^2 parameter guess
 
-%C = 10.^(-2:.5:10) ;
-C = 10 ;
+%C = 10.^(-2:.5:3) ;
+%C = 10 ;
+C = 1000 ;
 
 % prealloc
 SVMModel = cell(numel(C),1) ;
@@ -50,6 +51,7 @@ classLoss = zeros(numel(C),1) ;
 %c_opts = cvpartition(n_train,'KFold',5) ;
 %opts = struct('Optimizer', 'gridsearch', 'ShowPlots', true, 'Verbose', 2, 'UseParallel', true, 'CVPartition', c_opts) ;
 
+h = waitbar(0,'Support Vectors') ;
 for idx_C = 1:numel(C)
     %     SVMModel{idx_C} = fitcsvm(TrainX,TrainY_bin, 'Standardize', false, ...
     %         'KernelFunction', 'RBF', 'OptimizeHyperparameters', {'KernelScale','BoxConstraint'}, ... %'BoxConstraint',C(idx_C), ...
@@ -58,10 +60,12 @@ for idx_C = 1:numel(C)
     SVMModel{idx_C} = fitcsvm(TrainX,TrainY_bin, 'Standardize', false, ...
         'KernelFunction', type, 'KernelScale', 'auto','BoxConstraint',C(idx_C)) ;
     
-    CVSVMModel{idx_C} = crossval(SVMModel{idx_C},'KFold',2) ;
+    CVSVMModel{idx_C} = crossval(SVMModel{idx_C},'KFold',5) ;
     classLoss(idx_C) = 1-kfoldLoss(CVSVMModel{idx_C}, 'lossfun', 'classiferror') ;
     %disp(classLoss(idx_C)) ;
+    waitbar(idx_C/numel(C),h,'Support Vectors') ;
 end
+delete(h) ;
 
 num_sv = mean_sv(CVSVMModel) ;
 
@@ -81,7 +85,7 @@ num_sv = mean_sv(CVSVMModel) ;
 % %axis([0 it(end) -20 5]) ;
 % leg = legend() ;
 % set(leg,'visible','off') ;
-%
+% 
 % subplot(2,1,2) ;
 % loglog(C,num_sv,'-k','LineWidth',2) ;
 % xlabel('C') ;

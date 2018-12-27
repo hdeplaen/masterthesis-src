@@ -16,8 +16,8 @@ plot_pca = false ;
 [trainX,trainY,testX,testY] = load_kdd(data_set,classes_red) ;
 
 %% PARAMS 
-%n = [500 2000 5000 10000 15000 30000 50000 100000] ;
-n = [100000] ;
+n = [500 2000 5000 10000 15000 30000 50000 100000] ;
+%n = [100000] ;
 num_bags = 1 ;
 params_svm.type = 'linear' ;
 
@@ -131,27 +131,39 @@ kappa = mean(kappa(:,:,:),3);
 
 save('svm_n_pca.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
 
+
+% seq 1
+disp('TREE 1') ;
+disp('acc');
+print_latex(100*squeeze(accm(1,2,:,:)));
+disp('mcc') ;
+print_latex(100*squeeze(mccm(1,2,:,:)));
+disp('kappa') ;
+print_latex(100*squeeze(kappam(1,2,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(1,2,:,:,:))) ;
+
+% seq 2
+disp('TREE 2') ;
+disp('acc');
+print_latex(100*squeeze(accm(3,2,:,:)));
+disp('mcc') ;
+print_latex(100*squeeze(mccm(3,2,:,:)));
+disp('kappa') ;
+print_latex(100*squeeze(kappam(3,2,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(3,2,:,:,:))) ;
+
 % par
 disp('O-A-A') ;
 disp('acc');
-disp(squeeze(accm(3,length(n),:,:))');
+print_latex(100*squeeze(accm(2,2,:,:)));
 disp('mcc') ;
-disp(squeeze(mccm(3,length(n),:,:))');
+print_latex(100*squeeze(mccm(2,2,:,:)));
 disp('kappa') ;
-disp(squeeze(kappam(3,length(n),:,:))');
+print_latex(100*squeeze(kappam(2,2,:,:)));
 disp('corr') ;
-disp(squeeze(corr(3,length(n),:,:,:))) ;
-
-% seq
-disp('TREE') ;
-disp('acc');
-disp(squeeze(accm(1,length(n),:,:))');
-disp('mcc') ;
-disp(squeeze(mccm(1,length(n),:,:))');
-disp('kappa') ;
-disp(squeeze(kappam(1,length(n),:,:))');
-disp('corr') ;
-disp(squeeze(corr(1,length(n),:,:,:))) ;
+print_latex(squeeze(corr(2,2,:,:,:))) ;
 
 
 %% PLOT

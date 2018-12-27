@@ -16,9 +16,9 @@ plot_pca = false ;
 [trainX,trainY,testX,testY] = load_kdd(data_set,classes_red) ;
 
 %% PARAMS 
-n = [500 2000 5000 10000 15000 30000 50000 100000] ;
-%n = [499 501 ] ;
-num_bags = 1 ;
+%n = [500 2000 5000 10000 15000 30000 50000 100000] ;
+n = [15000] ;
+num_bags = 5 ;
 params_svm.type = 'rbf' ;
 
 corr = zeros(3,length(n),num_bags,5,5);
@@ -66,7 +66,7 @@ for idxn = 1:length(n)
         %[locX,locY,locXtest,locYtest] = standardize_data(locX,locY,locXtest,locYtest) ;
         
         % PCA
-        [locX,locXtest] = pca_reduction(locX,locXtest,n_pca,plot_pca) ;
+        %[locX,locXtest] = pca_reduction(locX,locXtest,n_pca,plot_pca) ;
         
         disp(['Bag number ' num2str(idx_bag)]) ;
         
@@ -132,31 +132,44 @@ kappam = mean(kappam(:,:,:,:),3);
 acc = mean(acc(:,:,:),3);
 mcc = mean(mcc(:,:,:),3);
 kappa = mean(kappa(:,:,:),3);
-num_svm = mean(num_sv(:,:,:),3);
+num_sv = mean(num_sv(:,:,:),3);
 
-save('svm_nnon_lin.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
+save('svm_nnon_lin_red.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
+
+print_n = 1 ;
+
+% seq
+disp('TREE 1') ;
+disp('acc');
+print_latex(squeeze(100*accm(1,print_n,:,:)));
+disp('mcc') ;
+print_latex(squeeze(100*mccm(1,print_n,:,:)));
+disp('kappa') ;
+print_latex(squeeze(100*kappam(1,print_n,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(1,print_n,:,:,:))) ;
+
+% seq
+disp('TREE 2') ;
+disp('acc');
+print_latex(squeeze(100*accm(2,print_n,:,:)));
+disp('mcc') ;
+print_latex(squeeze(100*mccm(2,print_n,:,:)));
+disp('kappa') ;
+print_latex(squeeze(100*kappam(2,print_n,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(2,print_n,:,:,:))) ;
 
 % par
 disp('O-A-A') ;
 disp('acc');
-disp(squeeze(accm(3,length(n),:,:))');
+print_latex(squeeze(100*accm(3,print_n,:,:)));
 disp('mcc') ;
-disp(squeeze(mccm(3,length(n),:,:))');
+print_latex(squeeze(100*mccm(3,print_n,:,:)));
 disp('kappa') ;
-disp(squeeze(kappam(3,length(n),:,:))');
+print_latex(squeeze(100*kappam(3,print_n,:,:)));
 disp('corr') ;
-disp(squeeze(corr(3,length(n),:,:,:))) ;
-
-% seq
-disp('TREE') ;
-disp('acc');
-disp(squeeze(accm(1,length(n),:,:))');
-disp('mcc') ;
-disp(squeeze(mccm(1,length(n),:,:))');
-disp('kappa') ;
-disp(squeeze(kappam(1,length(n),:,:))');
-disp('corr') ;
-disp(squeeze(corr(1,length(n),:,:,:))) ;
+print_latex(squeeze(corr(3,print_n,:,:,:))) ;
 
 
 %% PLOT

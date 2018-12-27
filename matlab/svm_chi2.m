@@ -113,78 +113,112 @@ kappam = mean(kappam(:,:,:,:),3);
 acc = mean(acc(:,:,:),3);
 mcc = mean(mcc(:,:,:),3);
 kappa = mean(kappa(:,:,:),3);
+num_sv = mean(num_sv(:,:,:),3);
 
-save('svm_chi2.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
+save('svm_chi2_rbf.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
+
+print_n = 1 ;
+
+% seq
+disp('TREE 1') ;
+disp('acc');
+print_latex(squeeze(100*accm(1,print_n,:,:)));
+disp('mcc') ;
+print_latex(squeeze(100*mccm(1,print_n,:,:)));
+disp('kappa') ;
+print_latex(squeeze(100*kappam(1,print_n,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(1,print_n,:,:,:))) ;
+
+% seq
+disp('TREE 2') ;
+disp('acc');
+print_latex(squeeze(100*accm(2,print_n,:,:)));
+disp('mcc') ;
+print_latex(squeeze(100*mccm(2,print_n,:,:)));
+disp('kappa') ;
+print_latex(squeeze(100*kappam(2,print_n,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(2,print_n,:,:,:))) ;
 
 % par
 disp('O-A-A') ;
 disp('acc');
-print_latex(100*squeeze(accm(2,length(n),:,:)));
+print_latex(squeeze(100*accm(3,print_n,:,:)));
 disp('mcc') ;
-print_latex(100*squeeze(mccm(2,length(n),:,:)));
+print_latex(squeeze(100*mccm(3,print_n,:,:)));
 disp('kappa') ;
-print_latex(100*squeeze(kappam(2,length(n),:,:)));
+print_latex(squeeze(100*kappam(3,print_n,:,:)));
 disp('corr') ;
-print_latex(squeeze(corr(2,length(n),:,:,:))) ;
-
-% seq
-disp('TREE') ;
-disp('acc');
-print_latex(100*squeeze(accm(1,length(n),:,:)));
-disp('mcc') ;
-print_latex(100*squeeze(mccm(1,length(n),:,:)));
-disp('kappa') ;
-print_latex(100*squeeze(kappam(1,length(n),:,:)));
-disp('corr') ;
-print_latex(squeeze(corr(1,length(n),:,:,:))) ;
+print_latex(squeeze(corr(3,print_n,:,:,:))) ;
 
 
-% %% PLOT
-% figure ; hold on ;
-% semilogx(n,acc(1,:,:),'-k','LineWidth',2) ;
-% semilogx(n,acc(2,:,:),':k','LineWidth',2) ;
-% ylabel('Accuracy') ; xlabel('Training set size') ;
-% ax = gca ;
-% %ax.XAxisLocation = 'origin' ;
-% %ax.YAxisLocation = 'origin' ;
-% set(0,'DefaultLineColor','k') ;
-% set(gca,'box','off') ;
-% set(gca, 'FontName', 'Baskervald ADF Std') ;
-% set(gca, 'FontSize', 23) ;
-% set(gca,'LineWidth',2) ;
-% %axis([0 it(end) -20 5]) ;
-% leg = legend() ;
-% set(leg,'visible','off') ;
-% 
-% figure ; hold on ;
-% % TP/(TN+FN)
-% semilogx(n,mcc(1,:,:),'-k','LineWidth',2) ;
-% semilogx(n,mcc(2,:,:),':k','LineWidth',2) ;
-% ylabel('Matthews Corr. Coeff.') ; xlabel('Training set size') ;
-% ax = gca ;
-% %ax.XAxisLocation = 'origin' ;
-% %ax.YAxisLocation = 'origin' ;
-% set(0,'DefaultLineColor','k') ;
-% set(gca,'box','off') ;
-% set(gca, 'FontName', 'Baskervald ADF Std') ;
-% set(gca, 'FontSize', 23) ;
-% set(gca,'LineWidth',2) ;
-% %axis([0 it(end) -20 5]) ;
-% leg = legend() ;
-% set(leg,'visible','off') ;
-% 
-% figure ; hold on ;
-% semilogx(n,kappa(1,:,:),'-k','LineWidth',2) ;
-% semilogx(n,kappa(2,:,:),':k','LineWidth',2) ;
-% ylabel('Kappa Coeff.') ; xlabel('Training set size') ;
-% ax = gca ;
-% %ax.XAxisLocation = 'origin' ;
-% %ax.YAxisLocation = 'origin' ;
-% set(0,'DefaultLineColor','k') ;
-% set(gca,'box','off') ;
-% set(gca, 'FontName', 'Baskervald ADF Std') ;
-% set(gca, 'FontSize', 23) ;
-% set(gca,'LineWidth',2) ;
-% %axis([0 it(end) -20 5]) ;
-% leg = legend() ;
-% set(leg,'visible','off') ;
+%% PLOT
+figure ; hold on ;
+semilogx(n,acc(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,acc(2,:,:),':k','LineWidth',2) ;
+semilogx(n,acc(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Accuracy') ; xlabel('Training set size') ;
+ax = gca ;
+%ax.XAxisLocation = 'origin' ;
+%ax.YAxisLocation = 'origin' ;
+set(0,'DefaultLineColor','k') ;
+set(gca,'box','off') ;
+set(gca, 'FontName', 'Baskervald ADF Std') ;
+set(gca, 'FontSize', 23) ;
+set(gca,'LineWidth',2) ;
+%axis([0 it(end) -20 5]) ;
+leg = legend() ;
+set(leg,'visible','off') ;
+
+figure ; hold on ;
+% TP/(TN+FN)
+semilogx(n,mcc(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,mcc(2,:,:),':k','LineWidth',2) ;
+semilogx(n,mcc(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Matthews Corr. Coeff.') ; xlabel('Training set size') ;
+ax = gca ;
+%ax.XAxisLocation = 'origin' ;
+%ax.YAxisLocation = 'origin' ;
+set(0,'DefaultLineColor','k') ;
+set(gca,'box','off') ;
+set(gca, 'FontName', 'Baskervald ADF Std') ;
+set(gca, 'FontSize', 23) ;
+set(gca,'LineWidth',2) ;
+%axis([0 it(end) -20 5]) ;
+leg = legend() ;
+set(leg,'visible','off') ;
+
+figure ; hold on ;
+semilogx(n,kappa(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,kappa(2,:,:),':k','LineWidth',2) ;
+semilogx(n,kappa(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Kappa Coeff.') ; xlabel('Training set size') ;
+ax = gca ;
+%ax.XAxisLocation = 'origin' ;
+%ax.YAxisLocation = 'origin' ;
+set(0,'DefaultLineColor','k') ;
+set(gca,'box','off') ;
+set(gca, 'FontName', 'Baskervald ADF Std') ;
+set(gca, 'FontSize', 23) ;
+set(gca,'LineWidth',2) ;
+%axis([0 it(end) -20 5]) ;
+leg = legend() ;
+set(leg,'visible','off') ;
+
+figure ; hold on ;
+semilogx(n,num_sv(1,:,:),'-k','LineWidth',2) ;
+semilogx(n,num_sv(2,:,:),':k','LineWidth',2) ;
+semilogx(n,num_sv(3,:,:),'-.k','LineWidth',2) ;
+ylabel('Number of support vectors') ; xlabel('Training set size') ;
+ax = gca ;
+%ax.XAxisLocation = 'origin' ;
+%ax.YAxisLocation = 'origin' ;
+set(0,'DefaultLineColor','k') ;
+set(gca,'box','off') ;
+set(gca, 'FontName', 'Baskervald ADF Std') ;
+set(gca, 'FontSize', 23) ;
+set(gca,'LineWidth',2) ;
+%axis([0 it(end) -20 5]) ;
+leg = legend() ;
+set(leg,'visible','off') ;

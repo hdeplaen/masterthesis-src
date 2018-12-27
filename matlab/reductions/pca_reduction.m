@@ -24,7 +24,7 @@ varargout{2} = tX * reduced_dimension ;
 if disp_plots
     %% PLOT FEATURES
     figure ;
-    barh(abs(sum(coeff(:,1:6),2)),'FaceColor','k') ;
+    bar(abs(sum(coeff(:,1:12),2)),'FaceColor','k') ;
     xlabel('Contribution') ; ylabel('Feature') ;
     ax = gca ;
     %ax.XAxisLocation = 'origin' ;
