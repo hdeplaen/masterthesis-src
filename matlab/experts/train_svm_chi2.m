@@ -41,7 +41,7 @@ sig2 = 1 ;      % initial RBF sigma^2 parameter guess
 
 C = 1000 ;
 
-if 1 %nargin==4
+if nargin==4
     % features
     num_features = size(TrainX,2) ;
     chi2 = zeros(num_features,1) ;
@@ -73,27 +73,6 @@ if 1 %nargin==4
 else
     %chi2 = varargin{5} ;
     chi2 = [1
-   1
-   1
-   1
-   1
-   1
-   1
-   1
-   0
-   1
-   1
-   1
-   1
-   1
-   1
-   1
-   0
-   1
-   0
-   1
-   0
-   0
    0
    1
    1
@@ -102,18 +81,39 @@ else
    1
    1
    0
+   0
+   0
    1
-   1
+   0
    1
    1
    1
    0
    1
    1
-   1
-   1
-   1
    0
+   0
+   0
+   0
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
    1] ;
 end
 

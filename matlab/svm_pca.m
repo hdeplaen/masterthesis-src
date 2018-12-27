@@ -137,7 +137,29 @@ num_sv = mean(num_sv(:,:,:),3);
 
 save('svm_pca_nl.mat','corr','accm','mccm','kappam','acc','mcc','kappa','num_sv') ;
 
-print_pca = length(n_pca) ;
+print_pca = 4 ;
+% seq
+disp('TREE 1') ;
+disp('acc');
+print_latex(squeeze(100*accm(1,print_pca,:,:)));
+disp('mcc') ;
+print_latex(squeeze(100*mccm(1,print_pca,:,:)));
+disp('kappa') ;
+print_latex(squeeze(100*kappam(1,print_pca,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(1,print_pca,:,:,:))) ;
+
+% seq
+disp('TREE 2') ;
+disp('acc');
+print_latex(squeeze(100*accm(2,print_pca,:,:)));
+disp('mcc') ;
+print_latex(squeeze(100*mccm(2,print_pca,:,:)));
+disp('kappa') ;
+print_latex(squeeze(100*kappam(2,print_pca,:,:)));
+disp('corr') ;
+print_latex(squeeze(corr(2,print_pca,:,:,:))) ;
+
 % par
 disp('O-A-A') ;
 disp('acc');
@@ -148,17 +170,6 @@ disp('kappa') ;
 print_latex(squeeze(100*kappam(3,print_pca,:,:)));
 disp('corr') ;
 print_latex(squeeze(corr(3,print_pca,:,:,:))) ;
-
-% seq
-disp('TREE') ;
-disp('acc');
-print_latex(squeeze(100*accm(2,print_pca,:,:)));
-disp('mcc') ;
-print_latex(squeeze(100*mccm(2,print_pca,:,:)));
-disp('kappa') ;
-print_latex(squeeze(100*kappam(2,print_pca,:,:)));
-disp('corr') ;
-print_latex(squeeze(corr(2,print_pca,:,:,:))) ;
 
 
 %% PLOT
@@ -218,7 +229,7 @@ figure ; hold on ;
 semilogx(n_pca,num_sv(1,:,:),'-k','LineWidth',2) ;
 semilogx(n_pca,num_sv(2,:,:),':k','LineWidth',2) ;
 semilogx(n_pca,num_sv(3,:,:),'-.k','LineWidth',2) ;
-ylabel('Kappa Coeff.') ; xlabel('Number of principal components') ;
+ylabel('#SV') ; xlabel('Number of principal components') ;
 ax = gca ;
 %ax.XAxisLocation = 'origin' ;
 %ax.YAxisLocation = 'origin' ;
