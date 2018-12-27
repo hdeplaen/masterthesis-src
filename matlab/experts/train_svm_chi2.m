@@ -39,9 +39,9 @@ TrainY(~idx_class) = 0 ;
 gam = 10 ;      % initial regression parameter guess
 sig2 = 1 ;      % initial RBF sigma^2 parameter guess
 
-C = 10 ;
+C = 1000 ;
 
-if nargin==4
+if 1 %nargin==4
     % features
     num_features = size(TrainX,2) ;
     chi2 = zeros(num_features,1) ;
@@ -57,7 +57,7 @@ if nargin==4
     teX = TrainX(idx_te,:) ;
     teY = TrainY(idx_te) ;
     
-    if strcmp(class,'u2r')
+    if ~strcmp(class,'yolo')
         for idx_f = 1:num_features
             SVMModel = fitcsvm(trX(:,idx_f),trY, 'Standardize', false, ...
                 'KernelFunction', type, 'KernelScale', 'auto','BoxConstraint',C) ;
@@ -69,7 +69,7 @@ if nargin==4
         chi2 = ones(num_features,1) ;
     end
     
-    save(['chi2_' class{1} '.mat'],'chi2') ;
+    save(['chi2_nl_' class{1} '.mat'],'chi2') ;
 else
     %chi2 = varargin{5} ;
     chi2 = [1

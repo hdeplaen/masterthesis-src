@@ -17,9 +17,9 @@ plot_pca = false ;
 
 %% PARAMS 
 %n = [500 2000 5000 10000 15000 30000 50000 100000] ;
-n = 30000 ;
+n = 15000 ;
 num_bags = 1 ;
-params_svm.type = 'linear' ;
+params_svm.type = 'rbf' ;
 
 corr = zeros(2,length(n),num_bags,5,5);
 accm = zeros(2,length(n),num_bags,5);
@@ -28,6 +28,7 @@ kappam = zeros(2,length(n),num_bags,5);
 acc = zeros(2,length(n),num_bags);
 mcc = zeros(2,length(n),num_bags);
 kappa = zeros(2,length(n),num_bags);
+num_sv = zeros(3,length(n),num_bags);
 
 h = waitbar(0,'Initializing') ;
 
@@ -84,19 +85,20 @@ for idxn = 1:length(n)
         acc(1,idxn,idx_bag) = acc_ ;
         mcc(1,idxn,idx_bag) = mcc_ ;
         kappa(1,idxn,idx_bag) = kappa_ ;
+        num_sv(1,idxn,idx_bag) = expert_svm.num_sv ;
         
-        %% SVM PAR EXPERT
-        expert_svm = train_expert(locX,locY, 'par-svm-chi2', params_svm) ;
-        eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
-        [corr_, accm_, mccm_, kappam_, acc_, mcc_, kappa_] = plot_perf(eval_svm,locYtest) ;
-        
-        corr(2,idxn,idx_bag,:,:) = corr_ ;
-        accm(2,idxn,idx_bag,:) = accm_ ;
-        mccm(2,idxn,idx_bag,:) = mccm_ ;
-        kappam(2,idxn,idx_bag,:) = kappam_ ;
-        acc(2,idxn,idx_bag) = acc_ ;
-        mcc(2,idxn,idx_bag) = mcc_ ;
-        kappa(2,idxn,idx_bag) = kappa_ ;
+%         %% SVM PAR EXPERT
+%         expert_svm = train_expert(locX,locY, 'par-svm-chi2', params_svm) ;
+%         eval_svm = eval_expert(expert_svm, locXtest, locYtest) ;
+%         [corr_, accm_, mccm_, kappam_, acc_, mcc_, kappa_] = plot_perf(eval_svm,locYtest) ;
+%         
+%         corr(2,idxn,idx_bag,:,:) = corr_ ;
+%         accm(2,idxn,idx_bag,:) = accm_ ;
+%         mccm(2,idxn,idx_bag,:) = mccm_ ;
+%         kappam(2,idxn,idx_bag,:) = kappam_ ;
+%         acc(2,idxn,idx_bag) = acc_ ;
+%         mcc(2,idxn,idx_bag) = mcc_ ;
+%         kappa(2,idxn,idx_bag) = kappa_ ;
         
         waitbar(((idxn-1)*num_bags + idx_bag)/(numel(n)*num_bags),h,...
             ['n = ' num2str(n(idxn)) newline 'bag = ' num2str(idx_bag)]);
@@ -115,7 +117,7 @@ mcc = mean(mcc(:,:,:),3);
 kappa = mean(kappa(:,:,:),3);
 num_sv = mean(num_sv(:,:,:),3);
 
-save('svm_chi2_rbf.mat','corr','accm','mccm','kappam','acc','mcc','kappa') ;
+save('svm_chi2_rbf.mat','corr','accm','mccm','kappam','acc','mcc','kappa','num_sv') ;
 
 print_n = 1 ;
 
