@@ -41,6 +41,15 @@ switch type                                                 % for each TYPE
         models.TrainX = TrainX ;
         models.TrainY = TrainY ;
         
+    case 'kmeans-knn'                                              % TYPE kNN
+        [TrainX,TrainY] = kmeans_clustering(TrainX,TrainY,0) ;
+        models.TrainX = TrainX ;
+        models.TrainY = TrainY ;
+        
+    case 'cnn-knn'                                              % TYPE kNN
+        models = train_cnn(TrainX,TrainY) ;
+        tot_sv = models.num_nb ;
+        
     case 'oaa-knn'
         disp('No training needed for (one-against-all) kNN model') ;          % no actions to be done except from  assignation
         models.TrainX   = TrainX ;

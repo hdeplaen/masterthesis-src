@@ -40,19 +40,22 @@ classes = unique(TrainY) ;                                      % different clas
     cell2table(TrainY), cell2table(TrainY)) ;
 TrainY_num = table2array(TrainY_num) ;
 
-h = waitbar(0,'Initializing') ;                                   % starting waitbar
+model = fitcknn(TrainX,TrainY,'NumNeighbors',k,'Standardize',0) ;
+TestY_est = predict(model,TestX) ;
 
-for idx = 1:n_test                                              % for each element of the test set
-    dist = sum((TrainX - ones(n_train,1)*TestX(idx,:)).^2,2) ;  % compute distances with elements of training set
-    [~, idx_sortdist] = sort(dist) ;                            % sort the distances
-    idx_best = mode(TrainY_num(idx_sortdist(1:k))) ;
-    TestY_est(idx) = classes(idx_best) ;                        % assign it to the element of the test set
-    
-    if mod(idx,100)==0                                          % updating waitbar
-        waitbar(idx/n_test,h,'Computing kNN') ;
-    end
-end
-delete(h) ;                                                     % closing waitbar
+% h = waitbar(0,'Initializing') ;                                   % starting waitbar
+% 
+% for idx = 1:n_test                                              % for each element of the test set
+%     dist = sum((TrainX - ones(n_train,1)*TestX(idx,:)).^2,2) ;  % compute distances with elements of training set
+%     [~, idx_sortdist] = sort(dist) ;                            % sort the distances
+%     idx_best = mode(TrainY_num(idx_sortdist(1:k))) ;
+%     TestY_est(idx) = classes(idx_best) ;                        % assign it to the element of the test set
+%     
+%     if mod(idx,100)==0                                          % updating waitbar
+%         waitbar(idx/n_test,h,'Computing kNN') ;
+%     end
+% end
+% delete(h) ;                                                     % closing waitbar
 
 %% RETURN
 assert(nargout==1, 'Sole one output argument needed') ;
