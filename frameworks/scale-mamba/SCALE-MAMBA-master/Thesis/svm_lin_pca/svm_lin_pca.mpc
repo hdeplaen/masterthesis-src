@@ -1,0 +1,227 @@
+import csv
+import numpy as np
+import sys
+
+from Compiler.program import Program
+
+program.set_bit_length(22)
+program.set_security(100)
+
+sys.setrecursionlimit(1000000)
+
+num_tests_to_do = 10
+num_classes = 4
+n_total_runs = 1
+n_threads = 2
+n_pca = 16
+
+
+def load_raw_data():
+    def open_csv(path):
+        return np.genfromtxt(path, delimiter=',')
+
+    def get_values(folder_path, number):
+        loc_path = folder_path + str(number) + "_"
+        coeffs_loc = open_csv(loc_path + "w.csv").astype("float")
+        intercept_loc = open_csv(loc_path + "b.csv").astype("float")
+        return coeffs_loc, intercept_loc
+
+    folder_path = "./Thesis/svm_lin_pca/data16/LSVM_seq-svm_"
+
+    coeffs = np.empty([num_classes, n_pca])
+    intercept = np.empty(num_classes)
+
+    tests_path = folder_path + "tests" + ".csv"
+    tests = open_csv(tests_path).astype("float")
+
+    pca_path = folder_path + "pca" + ".csv"
+    pca = open_csv(pca_path).astype("float")
+
+    for idx in range(num_classes):
+        coeffs_loc, intercept_loc = get_values(folder_path, idx + 1)
+        coeffs[idx, :] = coeffs_loc
+        intercept[idx] = intercept_loc
+
+    return coeffs, pca, intercept, tests
+
+
+coeffs, pca, intercept, tests = load_raw_data()
+
+tests = tests[0:num_tests_to_do][:]
+
+pca_tr_bis = tests.dot(pca.transpose())
+
+feature_size = int(len(pca[0]))
+num_classes = int(len(coeffs))
+num_tests = int(len(tests))
+intercept_ = sfix.Array(num_classes)
+coeffs_ = sfix.Matrix(num_classes, n_pca)
+coeffs_pca_ = sfix.Matrix(n_pca, feature_size)
+tests_ = sfix.Matrix(num_tests, feature_size)
+pca_tr_bis_ = sfix.Matrix(num_tests, n_pca)
+
+
+def loading_all():
+    print_ln('######################')
+    print_ln('######################')
+    print_ln('LOADING DATA')
+    start_timer(1)
+
+    for idx_class in range(num_classes):
+        intercept_[idx_class] = sfix(intercept[idx_class])
+        for idx_pca in range(n_pca):
+            coeffs_[idx_class][idx_pca] = sfix(coeffs[idx_class][idx_pca])
+
+    for idx_f in range(feature_size):
+        for idx_t in range(num_tests):
+            tests_[idx_t][idx_f] = sfix(tests[idx_t][idx_f])
+        for idx_pca in range(n_pca):
+            coeffs_pca_[idx_pca][idx_f] = sfix(pca[idx_pca][idx_f])
+
+    for idx_t in range(num_tests):
+        for idx_pca in range(n_pca):
+            pca_tr_bis_[idx_t][idx_pca] = sfix(pca_tr_bis[idx_t][idx_pca])
+
+    print_ln('Time for whole loading')
+    stop_timer(1)
+
+
+def print_vector(vec):
+    @for_range(len(vec))
+    def f(i):
+        print_ln('Vector value: %s', vec[i].reveal())
+
+
+class SVM(object):
+    def __init__(self, coeffs_, coeffs_pca_, num_classes, intercept_):
+        self.coeffs_pca = sfix.Matrix(n_pca, feature_size)
+        self.coeffs = sfix.Matrix(num_classes, n_pca)
+        self.intercept = sfix.Array(num_classes)
+        self.num_classes = num_classes
+
+        @for_range(num_classes)
+        def f(idx_class):
+            self.intercept[idx_class] = intercept_[idx_class]
+
+            @for_range(n_pca)
+            def g(idx_pca):
+                self.coeffs[idx_class][idx_pca] = coeffs_[idx_class][idx_pca]
+
+        @for_range(n_pca)
+        def f(idx_pca):
+
+            @for_range(feature_size)
+            def g(idx_f):
+                self.coeffs_pca[idx_pca][idx_f] = coeffs_pca_[idx_pca][idx_f]
+
+        #print_vector(self.coeffs_pca[0])
+
+
+    def compute_svm(self, pca_tr):
+        sol = sfix.Matrix(num_classes, num_tests)
+
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of test points')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = num_tests / n_threads
+            start_chunk = i * chunk_size
+
+            for idx1 in range(chunk_size):
+                for idx_class in range(num_classes):
+                    sol[idx_class][start_chunk + idx1] = sum((self.coeffs[idx_class][idx_pca] * pca_tr[start_chunk + idx1][idx_pca])
+                                                             for idx_pca in range(n_pca)) + self.intercept[idx_class]
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i) for i in range(
+            n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return sol
+
+    def compute_pca(self, tests):
+        pca_tr = sfix.Matrix(num_tests, n_pca)
+
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of test points')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = num_tests / n_threads
+            start_chunk = i * chunk_size
+
+            for idx_chunk in range(chunk_size):
+                for idx_pca in range(n_pca):
+                    pca_tr[start_chunk + idx_chunk][idx_pca] = sum((self.coeffs_pca[idx_pca][idx_f] * tests[start_chunk + idx_chunk][idx_f])
+                                                                   for idx_f in range(feature_size))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i) for i in range(
+            n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return pca_tr
+
+    def predict_par(self, pca_tr):
+        sol = self.compute_svm(pca_tr)
+        inds = Array(self.num_classes, sint)
+        inds.assign([i+1 for i in range(self.num_classes)])
+        win_val = sint.Array(num_tests)
+
+        for idx_test in range(num_tests):
+            current_max = sfix(-1000)
+
+            for idx_class in range(num_classes):
+                is_bigger = sol[idx_class][idx_test] > current_max
+                win_val[idx_test] = is_bigger.if_else(
+                    inds[idx_class], win_val[idx_test])
+                current_max = is_bigger.if_else(
+                    sol[idx_class][idx_test], current_max)
+
+        return win_val
+
+    def predict_seq(self, pca_tr):
+        sol = self.compute_svm(pca_tr)
+        inds = Array(self.num_classes, sint)
+        inds.assign([i+1 for i in range(self.num_classes)])
+        win_val = sint.Array(num_tests)
+
+        for idx_test in range(num_tests):
+            for idx_class in reversed(range(num_classes)):
+                is_bigger = sol[idx_class][idx_test] > 0
+                win_val[idx_test] = is_bigger.if_else(
+                    inds[idx_class], win_val[idx_test])
+
+        return win_val
+
+
+def time_private_classifier(ntotal):
+    classifier = SVM(coeffs_, coeffs_pca_, num_classes, intercept_)
+
+    start_timer(4)
+
+    print_ln('######################')
+
+    @for_range(ntotal)
+    def f(i):
+        pca_tr_ = classifier.compute_pca(tests_)
+        #print_vector(pca_tr_[0])
+        output = classifier.predict_seq(pca_tr_)
+        #print_vector(output)
+
+    print_ln('Whole algorithm time for %s turn', ntotal)
+    stop_timer(4)
+
+    print_ln('######################')
+    print_ln('######################')
+
+
+loading_all()
+time_private_classifier(n_total_runs)
+
+# import ipdb; ipdb.set_trace(context=5)

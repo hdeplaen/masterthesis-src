@@ -5,74 +5,90 @@ import math
 
 from Compiler.program import Program
 
-program.set_bit_length(22)
-program.set_security(100)
+#program.set_bit_length(56)
+#program.set_security(66)
 
 sys.setrecursionlimit(1000000)
 
 n_total_runs = 1
-n_threads = 5
-n_exp = 10
+n_threads = 1
+n_exp = 5
+num_tests = 1
+feature_size = 43
+n_svm = 5
 
 
-def load_raw_data():
-    def open_csv(path):
-        return np.genfromtxt(path, delimiter=',')
+def load_hidden_svm(number):
 
-    folder_path = "./Thesis/data_svm/svm_rbf_"
+    def load_raw_svm(number):
+        def open_csv(path):
+            return np.genfromtxt(path, delimiter=',')
 
-    sv_path = folder_path + "sv" + ".csv"
-    coeffs_path = folder_path + "coeffs" + ".csv"
-    intercept_path = folder_path + "intercept" + ".csv"
-    tests_path = folder_path + "tests" + ".csv"
-    sig2_path = folder_path + "sig2" + ".csv"
+        folder_path = "./Thesis/svm_rbf/data/RBFSVM_par-svm_"
+        loc_path = folder_path + str(number) + "_"
 
-    sv = open_csv(sv_path).astype("float")
-    coeffs = open_csv(coeffs_path).astype("float")
-    intercept = open_csv(intercept_path).astype("float")
-    tests = open_csv(tests_path).astype("float")
-    sig2 = open_csv(sig2_path).astype("float")
+        coeffs_loc = open_csv(loc_path + "alpha.csv").astype("float")
+        intercept_loc = open_csv(loc_path + "b.csv").astype("float")
+        sv_loc = open_csv(loc_path + "sv.csv").astype("float")
+        sig2_loc = open_csv(loc_path + "sig2.csv").astype("float")
 
-    return sv, coeffs, intercept, tests, sig2
+        num_sv = 3
+        sv_loc = sv_loc[0:num_sv][:]
+        coeffs_loc = coeffs_loc[0:num_sv]
 
+        return sv_loc, coeffs_loc, intercept_loc, sig2_loc
 
-sv, coeffs, intercept, tests, sig2 = load_raw_data()
+    sv, coeffs, intercept, sig2 = load_raw_svm(number)
 
-tests = tests[0:5][:]
-
-num_sv = int(len(sv))
-feature_size = int(len(sv[0]))
-num_tests = int(len(tests))
-intercept_ = sfix(intercept.item(0))
-sig2_ = sfix(sig2.item(0))
-coeffs_ = sfix.Array(num_sv)
-tests_ = sfix.Matrix(num_tests, feature_size)
-sv_ = sfix.Matrix(num_sv, feature_size)
-
-
-def loading_all():
-    print_ln('######################')
-    print_ln('######################')
-    print_ln('LOADING DATA')
-    start_timer(1)
+    num_sv = int(len(sv))
+    intercept_ = sfix(intercept.item(0))
+    sig2_ = sfix(sig2.item(0))
+    coeffs_ = sfix.Array(num_sv)
+    sv_ = sfix.Matrix(num_sv, feature_size)
 
     for idx1 in range(num_sv):
         coeffs_[idx1] = sfix(coeffs[idx1])
         for idx2 in range(feature_size):
             sv_[idx1][idx2] = sfix(sv[idx1][idx2])
 
-    for idx1 in range(num_tests):
-        for idx2 in range(feature_size):
-            tests_[idx1][idx2] = sfix(tests[idx1][idx2])
+    classifier = RBF_SVM(coeffs_, intercept_, sv_, sig2_,
+                         num_sv, feature_size, num_tests)
 
-    print_ln('Time for whole loading')
-    stop_timer(1)
+    return classifier
+
+def load_hidden_tests():
+    def load_raw_tests():
+        def open_csv(path):
+            return np.genfromtxt(path, delimiter=',')
+
+        folder_path = "./Thesis/svm_rbf/data/RBFSVM_"
+
+        tests_loc = open_csv(folder_path + "tests.csv").astype("float")
+        #norm_coeff = open_csv(folder_path + "nc.csv").astype("float")
+        #norm_intercept = open_csv(folder_path + "ni.csv").astype("float")
+
+        return tests_loc #, norm_coeff, norm_intercept
+
+    #tests, norm_coeff, norm_intercept = load_raw_tests()
+    tests = load_raw_tests()
+
+    tests = tests[0:num_tests][:]
+
+    tests_ = sfix.Matrix(num_tests, feature_size)
+    #norm_coeff_ = sfix.Array(feature_size)
+    #norm_intercept_ = sfix(norm_intercept)
+
+    for idx_f in range(feature_size):
+        #norm_coeff_[idx_f] = sfix(norm_coeff[idx_f])
+        for idx_t in range(num_tests):
+            tests_[idx_t][idx_f] = sfix(tests[idx_t][idx_f])
+
+    return tests_ #, norm_coeff_, norm_intercept_
 
 def print_vector(vec):
     @for_range(len(vec))
     def f(i):
         print_ln('Vector value: %s', vec[i].reveal())
-
 
 class RBF_SVM(object):
     def __init__(self, coeffs_, intercept_, sv_, sig2_, num_sv, num_features, num_tests):
@@ -95,11 +111,6 @@ class RBF_SVM(object):
             def g(idx2):
                 self.sv[idx1][idx2] = sv_[idx1][idx2]
 
-    def print_vector(vec):
-        @for_range(len(vec))
-        def f(i):
-            print_ln('Vector value: %s', vec[i].reveal())
-
     def transform_data(self, tests):
         transform_tests = sfix.Matrix(self.num_tests, self.num_sv)
         sig2 = self.sig2
@@ -117,7 +128,8 @@ class RBF_SVM(object):
                 sol = sfix(0)
                 val = -dist / sfix.load_mem(0)
 
-                sol = sum((val**idx) / sint(math.factorial(idx)) for idx in range(n_exp))
+                sol = sum((val**idx) / sint(math.factorial(idx))
+                          for idx in range(n_exp))
 
                 return sol
 
@@ -128,7 +140,8 @@ class RBF_SVM(object):
 
             for idx1 in range(num_tests):
                 for idx2 in range(chunk_size):
-                    transform_tests[idx1][start_chunk+idx2] = gauss_sv(dist_sv(tests[idx1], self.sv[start_chunk+idx2]))
+                    transform_tests[idx1][start_chunk + idx2] = gauss_sv(
+                        dist_sv(tests[idx1], self.sv[start_chunk + idx2]))
 
         tape = program.new_tape(thread_chunk)  # define what function executes
         threads = [program.run_tape(tape, i)
@@ -138,7 +151,7 @@ class RBF_SVM(object):
 
         return transform_tests
 
-    def predict_alg_points(self, tests):
+    def predict_rbfsvm_points(self, tests):
         tr = self.transform_data(tests)
 
         sol = sfix.Array(self.num_tests)
@@ -166,7 +179,7 @@ class RBF_SVM(object):
 
         return sol
 
-    def predict_alg_sv(self, tests):
+    def predict_rbfsvm_sv(self, tests):
         tr = self.transform_data(tests)
 
         sol = sfix.Array(num_tests)
@@ -201,28 +214,61 @@ class RBF_SVM(object):
 
         return sol
 
+def predict_par(sol):
+    inds = Array(n_svm, sint)
+    inds.assign([i+1 for i in range(n_svm)])
+    win_val = sint.Array(num_tests)
 
-def time_private_classifier(ntotal):
-    classifier = RBF_SVM(coeffs_, intercept_, sv_, sig2_,
-                         num_sv, feature_size, num_tests)
+    for idx_test in range(num_tests):
+        current_max = sfix(-1000)
 
-    start_timer(4)
+        for idx_class in range(n_svm):
+            is_bigger = sol[idx_class][idx_test] > current_max
+            win_val[idx_test] = is_bigger.if_else(
+                inds[idx_class], win_val[idx_test])
+            current_max = is_bigger.if_else(
+                sol[idx_class][idx_test], current_max)
+
+    return win_val
+
+def predict_seq(sol):
+    inds = Array(n_svm, sint)
+    inds.assign([i+1 for i in range(n_svm)])
+    win_val = sint.Array(num_tests)
+
+    for idx_test in range(num_tests):
+        for idx_class in reversed(range(n_svm)):
+            is_bigger = sol[idx_class][idx_test] > 0
+            win_val[idx_test] = is_bigger.if_else(
+                inds[idx_class], win_val[idx_test])
+
+    return win_val
+
+def time_private_classifier():
+
+    #tests_, norm_coeff_, norm_intercept_ = load_hidden_tests()
+    tests_ = load_hidden_tests()
+    print_vector(tests_[0])
+    sol = sfix.Matrix(n_svm, num_tests)
 
     print_ln('######################')
+    start_timer(4)
+    #@for_range(n_svm)
+    #def f(idx_svm):
+    for idx_svm in range(n_svm):
+        classifier = load_hidden_svm(idx_svm+1)
+        sol[idx_svm][:] = classifier.predict_rbfsvm_sv(tests_)
+        #print_vector(output)
 
-    @for_range(ntotal)
-    def f(i):
-        output = classifier.predict_alg_sv(tests_)
-        print_vector(output)
+    win_val = predict_par(sol)
+    #print_vector(win_val)
 
-    print_ln('Whole algorithm time for %s turn', ntotal)
+    print_ln('Whole algorithm time for %s turn', 1)
     stop_timer(4)
 
     print_ln('######################')
     print_ln('######################')
 
-
-loading_all()
-time_private_classifier(n_total_runs)
+time_private_classifier()
 
 # import ipdb; ipdb.set_trace()

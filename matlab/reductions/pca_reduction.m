@@ -21,6 +21,8 @@ reduced_dimension = coeff(:,1:dim_chosen) ;
 varargout{1} = X * reduced_dimension ;
 varargout{2} = tX * reduced_dimension ;
 
+csvwrite('exports/pca/pca.csv', reduced_dimension') ;
+
 if disp_plots
     %% PLOT FEATURES
     figure ;

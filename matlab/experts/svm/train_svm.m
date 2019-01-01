@@ -51,7 +51,7 @@ classLoss = zeros(numel(C),1) ;
 %c_opts = cvpartition(n_train,'KFold',5) ;
 %opts = struct('Optimizer', 'gridsearch', 'ShowPlots', true, 'Verbose', 2, 'UseParallel', true, 'CVPartition', c_opts) ;
 
-h = waitbar(0,'Support Vectors') ;
+%h = waitbar(0,'Support Vectors') ;
 for idx_C = 1:numel(C)
     %     SVMModel{idx_C} = fitcsvm(TrainX,TrainY_bin, 'Standardize', false, ...
     %         'KernelFunction', 'RBF', 'OptimizeHyperparameters', {'KernelScale','BoxConstraint'}, ... %'BoxConstraint',C(idx_C), ...
@@ -60,14 +60,15 @@ for idx_C = 1:numel(C)
     SVMModel{idx_C} = fitcsvm(TrainX,TrainY_bin, 'Standardize', false, ...
         'KernelFunction', type, 'KernelScale', 'auto','BoxConstraint',C(idx_C)) ;
     
-    CVSVMModel{idx_C} = crossval(SVMModel{idx_C},'KFold',5) ;
-    classLoss(idx_C) = 1-kfoldLoss(CVSVMModel{idx_C}, 'lossfun', 'classiferror') ;
+    %CVSVMModel{idx_C} = crossval(SVMModel{idx_C},'KFold',5) ;
+    %classLoss(idx_C) = 1-kfoldLoss(CVSVMModel{idx_C}, 'lossfun', 'classiferror') ;
     %disp(classLoss(idx_C)) ;
-    waitbar(idx_C/numel(C),h,'Support Vectors') ;
+    %waitbar(idx_C/numel(C),h,'Support Vectors') ;
 end
-delete(h) ;
+%delete(h) ;
 
-num_sv = mean_sv(CVSVMModel) ;
+%um_sv = mean_sv(CVSVMModel) ;
+num_sv = 0 ;
 
 %% PLOT
 % figure ;
@@ -103,26 +104,29 @@ num_sv = mean_sv(CVSVMModel) ;
 % set(leg,'visible','off') ;
 
 %% RETURN
-[~,idx_min] = min(classLoss) ;
-SVMModel = CVSVMModel{idx_min}.Trained{1} ;
+%[~,idx_min] = min(classLoss) ;
+%SVMModel = CVSVMModel{idx_min}.Trained{1} ;
+SVMModel = SVMModel{1} ;
 params.gam = [] ;
 params.sig2 = SVMModel.KernelParameters.Scale ;
 
+alpha = SVMModel.Alpha ;
+labels = SVMModel.SupportVectorLabels ;
+sv  = SVMModel.SupportVectors ;
+w = (alpha.*labels)'*sv ;
+
 model           = struct ;      % prealloc
-model.alpha     = SVMModel.Alpha ;       % assign alpha
+model.alpha     = SVMModel.Alpha.*SVMModel.SupportVectorLabels ;       % assign alpha
 model.b         = SVMModel.Bias ;           % assign b
 model.class     = class ;       % assign class
 model.params    = params ;      % assign problem parameters
 model.sv        = SVMModel.SupportVectors ; %TrainX(SVMModel.IsSupportVector,:) ;      % assign support vectors
 model.SVMModel  = SVMModel ;
-model.num_sv     = num_sv ;
+model.num_sv    = num_sv ;
+model.w         = w ;
 
 % assert(nargin==1, 'Wrong number of output arguments') ;
 varargout{1} = model ;
-
-alpha = SVMModel.Alpha ;
-labels = SVMModel.SupportVectorLabels ;
-sv  = SVMModel.SupportVectors ;
 
 %% PERFORMANCE ON TRAINING SET
 % classLoss = kfoldLoss(CVSVMModel{idx_min}) ;

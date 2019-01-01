@@ -9,34 +9,48 @@ program.set_security(100)
 
 sys.setrecursionlimit(1000000)
 
+num_tests_to_do = 10
+num_classes_in_problem = 5
+num_features_in_problem = 43
 n_total_runs = 1
-n_threads = 1
+n_threads = 2
 
 
 def load_raw_data():
     def open_csv(path):
         return np.genfromtxt(path, delimiter=',')
 
-    folder_path = "./Thesis/data_svm/svm_"
-    coeffs_path = folder_path + "coeffs" + ".csv"
-    intercept_path = folder_path + "intercept" + ".csv"
-    tests_path = folder_path + "tests" + ".csv"
+    def get_values(folder_path, number):
+        loc_path = folder_path + str(number) + "_"
+        coeffs_loc = open_csv(loc_path + "w.csv").astype("float")
+        intercept_loc = open_csv(loc_path + "b.csv").astype("float")
+        return coeffs_loc, intercept_loc
 
-    coeffs = open_csv(coeffs_path).astype("float")
-    intercept = open_csv(intercept_path).astype("float")
+    folder_path = "./Thesis/svm_lin/data/LSVM_par-svm_"
+
+    coeffs = np.empty([num_classes_in_problem, num_features_in_problem])
+    intercept = np.empty(num_classes_in_problem)
+
+    tests_path = folder_path + "tests" + ".csv"
     tests = open_csv(tests_path).astype("float")
+
+    for idx in range(num_classes_in_problem):
+        coeffs_loc, intercept_loc = get_values(folder_path, idx + 1)
+        coeffs[idx, :] = coeffs_loc
+        intercept[idx] = intercept_loc
 
     return coeffs, intercept, tests
 
 
 coeffs, intercept, tests = load_raw_data()
 
-tests = tests[1:3][:]
+tests = tests[0:num_tests_to_do][:]
 
-feature_size = int(len(coeffs))
+feature_size = int(len(coeffs[0]))
+num_classes = int(len(coeffs))
 num_tests = int(len(tests))
-intercept_ = sfix(intercept.item(0))
-coeffs_ = sfix.Array(feature_size)
+intercept_ = sfix.Array(num_classes)
+coeffs_ = sfix.Matrix(num_classes, feature_size)
 tests_ = sfix.Matrix(num_tests, feature_size)
 
 
@@ -46,8 +60,10 @@ def loading_all():
     print_ln('LOADING DATA')
     start_timer(1)
 
-    for idx in range(feature_size):
-        coeffs_[idx] = sfix(coeffs[idx])
+    for idx1 in range(num_classes):
+        intercept_[idx1] = sfix(intercept[idx1])
+        for idx2 in range(feature_size):
+            coeffs_[idx1][idx2] = sfix(coeffs[idx1][idx2])
 
     for idx1 in range(num_tests):
         for idx2 in range(feature_size):
@@ -64,18 +80,21 @@ def print_vector(vec):
 
 
 class SVM(object):
-    def __init__(self, coeffs_, intercept_):
-        self.coeffs = sfix.Array(feature_size)
-        self.intercept = intercept_
+    def __init__(self, coeffs_, num_classes, intercept_):
+        self.coeffs = sfix.Matrix(num_classes, feature_size)
+        self.intercept = sfix.Array(num_classes)
+        self.num_classes = num_classes
 
-        @for_range(feature_size)
-        def f(idx):
-            self.coeffs[idx] = coeffs_[idx]
+        @for_range(num_classes)
+        def f(idx_class):
+            self.intercept[idx_class] = intercept_[idx_class]
 
-    def predict_alg_points(self, tests):
-        sol = sfix.Array(num_tests)
+            @for_range(feature_size)
+            def g(idx_f):
+                self.coeffs[idx_class][idx_f] = coeffs_[idx_class][idx_f]
 
-        self.intercept.store_in_mem(1)
+    def compute_svm(self, tests):
+        sol = sfix.Matrix(num_classes, num_tests)
 
         if num_tests % n_threads:
             raise Exception(
@@ -86,10 +105,10 @@ class SVM(object):
             chunk_size = num_tests / n_threads
             start_chunk = i * chunk_size
 
-
             for idx1 in range(chunk_size):
-                sol[start_chunk + idx1] = sum((self.coeffs[idx2] * tests[start_chunk + idx1][idx2])
-                                              for idx2 in range(feature_size)) + sfix.load_mem(1)
+                for idx_class in range(num_classes):
+                    sol[idx_class][start_chunk + idx1] = sum((self.coeffs[idx_class][idx2] * tests[start_chunk + idx1][idx2])
+                                                             for idx2 in range(feature_size)) + self.intercept[idx_class]
 
         tape = program.new_tape(thread_chunk)  # define what function executes
         threads = [program.run_tape(tape, i) for i in range(
@@ -99,42 +118,41 @@ class SVM(object):
 
         return sol
 
-    def predict_alg_features(self, tests):
-        sol = sfix.Array(num_tests)
+    def predict_par(self, tests):
+        sol = self.compute_svm(tests_)
+        inds = Array(self.num_classes, sint)
+        inds.assign([i+1 for i in range(self.num_classes)])
+        win_val = sint.Array(num_tests)
 
-        self.intercept.store_in_mem(1)
+        for idx_test in range(num_tests):
+            current_max = sfix(-1000)
 
-        sum_chunks = sfix.Matrix(num_tests, n_threads)
+            for idx_class in range(num_classes):
+                is_bigger = sol[idx_class][idx_test] > current_max
+                win_val[idx_test] = is_bigger.if_else(
+                    inds[idx_class], win_val[idx_test])
+                current_max = is_bigger.if_else(
+                    sol[idx_class][idx_test], current_max)
 
-        if num_tests % n_threads:
-            raise Exception(
-                'Number of threads must divide the number of features')
+        return win_val
 
-        def thread_chunk():
-            i = get_arg()
-            chunk_size = feature_size / n_threads
-            start_chunk = i * chunk_size
-            end_chunk = (i + 1) * chunk_size
+    def predict_seq(self, tests):
+        sol = self.compute_svm(tests_)
+        inds = Array(self.num_classes, sint)
+        inds.assign([i+1 for i in range(self.num_classes)])
+        win_val = sint.Array(num_tests)
 
-            for k in range(num_tests):
-                sum_chunks[k][i] = sum(self.coeffs[j + start_chunk] * tests[k][j + start_chunk] for j in range(chunk_size))
+        for idx_test in range(num_tests):
+            for idx_class in reversed(range(num_classes)):
+                is_bigger = sol[idx_class][idx_test] > 0
+                win_val[idx_test] = is_bigger.if_else(
+                    inds[idx_class], win_val[idx_test])
 
-        tape = program.new_tape(thread_chunk)  # define what function executes
-        threads = [program.run_tape(tape, i)
-                   for i in range(n_threads)]  # execute each thread
-        for i in threads:
-            program.join_tape(i)  # wait until tape i has finished
-        # now final summing
-        sums = sfix.Array(num_tests)
-        for i in range(num_tests):
-            sums[i] = sum(sum_chunks[i][j]
-                          for j in range(n_threads)) + self.intercept
-
-        return sums
+        return win_val
 
 
 def time_private_classifier(ntotal):
-    classifier = SVM(coeffs_, intercept_)
+    classifier = SVM(coeffs_, num_classes, intercept_)
 
     start_timer(4)
 
@@ -142,8 +160,8 @@ def time_private_classifier(ntotal):
 
     @for_range(ntotal)
     def f(i):
-        output = classifier.predict_alg_features(tests_)
-        print_vector(output)
+        output = classifier.predict_par(tests_)
+        #print_vector(output)
 
     print_ln('Whole algorithm time for %s turn', ntotal)
     stop_timer(4)

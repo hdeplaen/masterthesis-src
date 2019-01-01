@@ -31,4 +31,4 @@ set(gca,'LineWidth',2) ;
 %axis([0 it(end) -20 5]) ;
 leg = legend() ;
 set(leg,'visible','off') ;
-set(gca,'YTick',1:size(coeff,1));
+%set(gca,'YTick',1:size(coeff,1));

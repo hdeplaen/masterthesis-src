@@ -1,0 +1,314 @@
+import csv
+import numpy as np
+import sys
+
+from Compiler.program import Program
+
+program.set_bit_length(22)
+program.set_security(100)
+
+sys.setrecursionlimit(1000000)
+
+n_total_runs = 1
+n_threads = 10
+multithread_tree = True
+number_nn = 1000
+k = 3
+
+
+def load_raw_data():
+    def open_csv(path):
+        return np.genfromtxt(path, delimiter=',')
+
+    folder_path = "./Thesis/knn_n/data/"
+    training_vectors_path = folder_path + "training_vec" + ".csv"
+    training_classes_path = folder_path + "training_classes" + ".csv"
+    testing_vectors_path = folder_path + "testing_vec" + ".csv"
+
+    training_vec = open_csv(training_vectors_path).astype("float")
+    training_classes = open_csv(training_classes_path).astype("int")
+    testing_vec = open_csv(testing_vectors_path).astype("float")
+
+    testing_vec = testing_vec[0]
+    training_classes = training_classes[0:number_nn]
+    training_vec = training_vec[0:number_nn][:]
+
+    return training_vec, training_classes, testing_vec
+
+
+
+training_vec, training_classes, testing_vec = load_raw_data()
+
+k_num = int(k)
+n_samples = int(len(training_vec))
+feature_size = len(testing_vec)
+n_classes = int(max(training_classes))
+samples = sfix.Matrix(n_samples, feature_size)
+classes = sint.Array(n_samples)
+test = sfix.Array(feature_size)
+
+
+
+def loading_all():
+
+    def assign_type_value(val, type):
+        if type is sfix:
+            return sfix(float(val))
+        elif type is sint:
+            return sint(int(val))
+
+    def load_training():
+        for i in range(n_samples):
+            classes[i] = assign_type_value(
+                training_classes[i], sint)  # input targets
+
+        for i in range(n_samples):
+            for j in range(feature_size):
+                samples[i][j] = assign_type_value(
+                    training_vec[i][j], sfix)  # input features
+
+    def load_testing():
+        for i in range(feature_size):
+            test[i] = assign_type_value(
+                testing_vec[i], sfix)  # input features
+
+    print_ln('######################')
+    print_ln('######################')
+    print_ln('LOADING DATA')
+    start_timer(1)
+
+    print_ln('Loading training data')
+    start_timer(2)
+    load_training()
+    stop_timer(2)
+
+    print_ln('Loading test data')
+    start_timer(2)
+    load_testing()
+    stop_timer(2)
+
+    print_ln('Time for whole loading')
+    stop_timer(1)
+
+
+def print_vector(vec):
+    @for_range(len(vec))
+    def f(i):
+        print_ln('Vector value: %s', vec[i].reveal())
+
+
+def print_vectors(vec1, vec2):
+    @for_range(len(vec1))
+    def f(i):
+        print_ln('Vector value: %s and %s', vec1[i].reveal(), vec2[i].reveal())
+
+
+def _min(dist, targets, dist_min):
+    def _min_sub(dist, targets, dist_min):
+        n = len(dist)
+        if n == 1:
+            return dist[0], targets[0]
+        else:
+            rounded_half = (n + 1) / 2
+            reduced_dist = [None for i in range(rounded_half)]
+            reduced_targets = [None for i in range(rounded_half)]
+
+            for i in range(n / 2):
+                comparison_flag = dist[2 * i] < dist[2 * i + 1]
+                win_dist = comparison_flag.if_else(
+                    dist[2 * i], dist[2 * i + 1])
+                win_target = comparison_flag.if_else(
+                    targets[2 * i], targets[2 * i + 1])
+                lost_dist = comparison_flag.if_else(
+                    dist[2 * i + 1], dist[2 * i])
+                lost_target = comparison_flag.if_else(
+                    targets[2 * i + 1], targets[2 * i])
+
+                is_greater_than_min = win_dist > dist_min
+                final_dist = is_greater_than_min.if_else(win_dist, lost_dist)
+                final_target = is_greater_than_min.if_else(
+                    win_target, lost_target)
+
+                reduced_dist[i] = final_dist
+                reduced_targets[i] = final_target
+            if n % 2:
+                reduced_dist[rounded_half - 1] = dist[n - 1]
+                reduced_targets[rounded_half - 1] = targets[n - 1]
+            return _min_sub(reduced_dist, reduced_targets, dist_min)
+
+    if multithread_tree is None:
+        return _min_sub(dist, targets, dist_min)
+    else:
+        dist_min_loc = dist_min
+        dist_min_loc.store_in_mem(0)
+
+        last_chunk_size = len(dist) % n_threads
+        threads_dist = sfix.Array(n_threads + int(last_chunk_size > 0))
+        threads_targets = sint.Array(n_threads + int(last_chunk_size > 0))
+
+        def thread():
+            i = get_arg()
+            dist_min_thread = sfix.load_mem(0)
+            n_per_thread = len(dist) / n_threads
+            start = i * n_per_thread
+            chunk_dist = [dist[start + j] for j in range(n_per_thread)]
+            chunk_targets = [targets[start + j] for j in range(n_per_thread)]
+            threads_dist[i], threads_targets[i] = _min_sub(
+                chunk_dist, chunk_targets, dist_min_thread)
+
+        tape = program.new_tape(thread)
+        threads = [program.run_tape(tape, i) for i in range(n_threads)]
+        for i in threads:
+            program.join_tape(i)
+
+        if last_chunk_size > 0:
+            begin = len(dist) - last_chunk_size
+            chunk_dist = [dist[begin + j] for j in range(last_chunk_size)]
+            chunk_targets = [targets[begin + j]
+                             for j in range(last_chunk_size)]
+            threads_dist[n_threads], threads_targets[n_threads] = _min_sub(
+                chunk_dist, chunk_targets, dist_min)
+
+        return _min_sub(threads_dist, threads_targets, dist_min)
+
+
+def target_winner(targets_knn):
+    knn_classes = sint.Array(n_classes)
+
+    @for_range(n_classes)
+    def f(i):
+        @for_range(k_num)
+        def g(j):
+            is_present = targets_knn[j] == i + 1
+            knn_classes[i] = is_present.if_else(
+                knn_classes[i] + 1, knn_classes[i])
+
+    #print_vector(knn_classes)
+
+    win_target = sint(0)
+    win_target.store_in_mem(2)
+    win_number = sint(0)
+    win_number.store_in_mem(1)
+
+    @for_range(n_classes)
+    def f(i):
+        win_number = sint.load_mem(1)
+        is_greater = knn_classes[i] >= win_number
+        # coudl add case of tie, taking for k-1 until no tie. For the moment taking the higher to limit false negatives
+        win_number = is_greater.if_else(knn_classes[i], win_number)
+        win_target = is_greater.if_else(i, sint.load_mem(2))
+        win_number.store_in_mem(1)
+        win_target.store_in_mem(2)
+
+    return sint.load_mem(2) + 1
+
+
+class KNN(object):
+    def __init__(self, samples, classes, num_samples, feature_size, k_num):
+        self.k_num = k_num
+        self.num_features = feature_size
+        self.num_samples = num_samples
+        self.training = sfix.Matrix(num_samples, feature_size)
+
+        @for_range(num_samples)
+        def f(i):
+            @for_range(feature_size)
+            def g(j):
+                self.training[i][j] = samples[i][j]
+
+        self.targets = sint.Array(num_samples)
+
+        @for_range(num_samples)
+        def f(i):
+            self.targets[i] = classes[i]
+
+    def compute_dists(self, test):
+        # number of threads dependent on the number of classes
+        num_features = self.num_features
+        num_samples = self.num_samples
+        dists = sfix.Array(num_samples)
+        if num_samples % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of sample elements')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = num_samples / n_threads
+            start_chunk = i * chunk_size
+
+            for k in range(chunk_size):
+                dists[start_chunk + k] = sum((self.training[start_chunk + k][j] -
+                                              test[j])**2 for j in range(num_features))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i) for i in range(
+            n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return dists
+
+    def predict_alg1(self, test):
+        start_timer(2)
+        dists = self.compute_dists(test)
+        print_ln('Time for one knn dist')
+        stop_timer(2)
+        #print_vectors(self.targets, dists)
+
+        dist_min = sfix(0)
+        dist_min.store_in_mem(1)
+
+        targets_knn = sint.Array(self.k_num)
+        targets_knn.assign([None for i in range(self.k_num)])
+
+        dists_knn = sfix.Array(self.k_num)
+        dists_knn.assign([i for i in range(self.k_num)])
+
+        start_timer(2)
+
+        @for_range(self.k_num)
+        def f(i):
+            start_timer(1)
+            dist, loc_target = _min(dists, self.targets, sfix.load_mem(1))
+            print_ln('Time for one 1nn search')
+            stop_timer(1)
+            dist.store_in_mem(1)
+            print_ln('dist: %s, target: %s',
+                     dist.reveal(), loc_target.reveal())
+            targets_knn[i] = loc_target
+            dists_knn[i] = dist
+
+        print_ln('Time for one knn search')
+        stop_timer(2)
+        print_ln('######################')
+
+        return dists_knn, targets_knn
+
+
+def time_private_classifier(ntotal):
+    classifier = KNN(samples, classes, n_samples, feature_size, k_num)
+    cur_sample = sfix.Array(feature_size)
+
+    start_timer(4)
+
+    print_ln('######################')
+
+    @for_range(ntotal)
+    def f(i):
+        start_timer(3)
+        dists_knn, targets_knn = classifier.predict_alg1(test)
+        print_ln('Time for one turn')
+        stop_timer(3)
+        win_target = target_winner(targets_knn)
+        print_ln('Winning target: %s', win_target.reveal())
+    print_ln('Whole algorithm time for %s turn', ntotal)
+    stop_timer(4)
+
+    print_ln('######################')
+    print_ln('######################')
+
+
+loading_all()
+time_private_classifier(n_total_runs)
+
+# import ipdb; ipdb.set_trace()

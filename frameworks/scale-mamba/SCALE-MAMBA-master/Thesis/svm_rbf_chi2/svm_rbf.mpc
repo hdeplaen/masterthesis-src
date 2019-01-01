@@ -1,0 +1,270 @@
+import csv
+import numpy as np
+import sys
+import math
+
+from Compiler.program import Program
+
+program.set_bit_length(22)
+program.set_security(100)
+
+sys.setrecursionlimit(1000000)
+
+n_total_runs = 1
+n_threads = 1
+n_exp = 5
+num_tests = 1
+feature_size = 43
+n_svm = 1
+
+
+def load_hidden_svm(number):
+
+    def load_raw_svm(number):
+        def open_csv(path):
+            return np.genfromtxt(path, delimiter=',')
+
+        folder_path = "./Thesis/svm_rbf/data/RBFSVM_par-svm_"
+        loc_path = folder_path + str(number) + "_"
+
+        coeffs_loc = open_csv(loc_path + "alpha.csv").astype("float")
+        intercept_loc = open_csv(loc_path + "b.csv").astype("float")
+        sv_loc = open_csv(loc_path + "sv.csv").astype("float")
+        sig2_loc = open_csv(loc_path + "sig2.csv").astype("float")
+
+        return sv_loc, coeffs_loc, intercept_loc, sig2_loc
+
+    sv, coeffs, intercept, sig2 = load_raw_svm(number)
+
+    num_sv = int(len(sv))
+    intercept_ = sfix(intercept.item(0))
+    sig2_ = sfix(sig2.item(0))
+    coeffs_ = sfix.Array(num_sv)
+    sv_ = sfix.Matrix(num_sv, feature_size)
+
+    for idx1 in range(num_sv):
+        coeffs_[idx1] = sfix(coeffs[idx1])
+        for idx2 in range(feature_size):
+            sv_[idx1][idx2] = sfix(sv[idx1][idx2])
+
+    classifier = RBF_SVM(coeffs_, intercept_, sv_, sig2_,
+                         num_sv, feature_size, num_tests)
+
+    return classifier
+
+def load_hidden_tests():
+    def load_raw_tests():
+        def open_csv(path):
+            return np.genfromtxt(path, delimiter=',')
+
+        folder_path = "./Thesis/svm_rbf/data/RBFSVM_"
+
+        tests_loc = open_csv(folder_path + "tests.csv").astype("float")
+        #norm_coeff = open_csv(folder_path + "nc.csv").astype("float")
+        #norm_intercept = open_csv(folder_path + "ni.csv").astype("float")
+
+        return tests_loc #, norm_coeff, norm_intercept
+
+    #tests, norm_coeff, norm_intercept = load_raw_tests()
+    tests = load_raw_tests()
+
+    tests = tests[0:num_tests][:]
+
+    tests_ = sfix.Matrix(num_tests, feature_size)
+    #norm_coeff_ = sfix.Array(feature_size)
+    #norm_intercept_ = sfix(norm_intercept)
+
+    for idx_f in range(feature_size):
+        #norm_coeff_[idx_f] = sfix(norm_coeff[idx_f])
+        for idx_t in range(num_tests):
+            tests_[idx_t][idx_f] = sfix(tests[idx_t][idx_f])
+
+    return tests_ #, norm_coeff_, norm_intercept_
+
+def print_vector(vec):
+    @for_range(len(vec))
+    def f(i):
+        print_ln('Vector value: %s', vec[i].reveal())
+
+class RBF_SVM(object):
+    def __init__(self, coeffs_, intercept_, sv_, sig2_, num_sv, num_features, num_tests):
+        self.num_sv = num_sv
+        self.num_features = num_features
+        self.num_tests = num_tests
+
+        self.coeffs = sfix.Array(num_sv)
+        self.intercept = intercept_
+        self.sv = sfix.Matrix(num_sv, num_features)
+        self.sig2 = sig2_
+
+        @for_range(num_sv)
+        def f(idx1):
+            self.coeffs[idx1] = coeffs_[idx1]
+
+        @for_range(num_sv)
+        def f(idx1):
+            @for_range(num_features)
+            def g(idx2):
+                self.sv[idx1][idx2] = sv_[idx1][idx2]
+
+    def transform_data(self, tests):
+        transform_tests = sfix.Matrix(self.num_tests, self.num_sv)
+        sig2 = self.sig2
+        sig2.store_in_mem(0)
+
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of features')
+
+        def thread_chunk():
+            def dist_sv(vec1, vec2):
+                return sum((vec1[idx] - vec2[idx])**2 for idx in range(self.num_features))
+
+            def gauss_sv(dist):
+                sol = sfix(0)
+                val = -dist / sfix.load_mem(0)
+
+                sol = sum((val**idx) / sint(math.factorial(idx))
+                          for idx in range(n_exp))
+
+                return sol
+
+            i = get_arg()
+            chunk_size = self.num_sv / n_threads
+            start_chunk = i * chunk_size
+            end_chunk = (i + 1) * chunk_size
+
+            for idx1 in range(num_tests):
+                for idx2 in range(chunk_size):
+                    transform_tests[idx1][start_chunk + idx2] = gauss_sv(
+                        dist_sv(tests[idx1], self.sv[start_chunk + idx2]))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i)
+                   for i in range(n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return transform_tests
+
+    def predict_rbfsvm_points(self, tests):
+        tr = self.transform_data(tests)
+
+        sol = sfix.Array(self.num_tests)
+
+        self.intercept.store_in_mem(1)
+
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of test points')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = self.num_tests / n_threads
+            start_chunk = i * chunk_size
+
+            for idx1 in range(chunk_size):
+                sol[start_chunk + idx1] = sum((self.coeffs[idx2] * tr[start_chunk + idx1][idx2])
+                                              for idx2 in range(self.num_sv)) + sfix.load_mem(1)
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i) for i in range(
+            n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return sol
+
+    def predict_rbfsvm_sv(self, tests):
+        tr = self.transform_data(tests)
+
+        sol = sfix.Array(num_tests)
+
+        self.intercept.store_in_mem(1)
+
+        sol_chunks = sfix.Matrix(num_tests, n_threads)
+
+        if num_tests % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of features')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = self.num_sv / n_threads
+            start_chunk = i * chunk_size
+            end_chunk = (i + 1) * chunk_size
+
+            for k in range(num_tests):
+                sol_chunks[k][i] = sum(
+                    self.coeffs[j + start_chunk] * tr[k][j + start_chunk] for j in range(chunk_size))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i)
+                   for i in range(n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+        # now final summing
+        for i in range(self.num_tests):
+            sol[i] = sum(sol_chunks[i][j]
+                         for j in range(n_threads)) + self.intercept
+
+        return sol
+
+def predict_par(sol):
+    inds = Array(n_svm, sint)
+    inds.assign([i+1 for i in range(n_svm)])
+    win_val = sint.Array(num_tests)
+
+    for idx_test in range(num_tests):
+        current_max = sfix(-1000)
+
+        for idx_class in range(num_classes):
+            is_bigger = sol[idx_class][idx_test] > current_max
+            win_val[idx_test] = is_bigger.if_else(
+                inds[idx_class], win_val[idx_test])
+            current_max = is_bigger.if_else(
+                sol[idx_class][idx_test], current_max)
+
+    return win_val
+
+def predict_seq(sol):
+    inds = Array(n_svm, sint)
+    inds.assign([i+1 for i in range(n_svm)])
+    win_val = sint.Array(num_tests)
+
+    for idx_test in range(num_tests):
+        for idx_class in reversed(range(num_classes)):
+            is_bigger = sol[idx_class][idx_test] > 0
+            win_val[idx_test] = is_bigger.if_else(
+                inds[idx_class], win_val[idx_test])
+
+    return win_val
+
+def time_private_classifier():
+
+    #tests_, norm_coeff_, norm_intercept_ = load_hidden_tests()
+    tests_ = load_hidden_tests()
+    print_vector(tests_[0])
+    sol = sfix.Matrix(n_svm, num_tests)
+
+    print_ln('######################')
+    start_timer(4)
+    #@for_range(n_svm)
+    #def f(idx_svm):
+    for idx_svm in range(n_svm):
+        classifier = load_hidden_svm(idx_svm+1)
+        sol[idx_svm][:] = classifier.predict_rbfsvm_sv(tests_)
+        #print_vector(output)
+
+    #win_val = predict_par(sol)
+    #print_vector(win_val)
+
+    print_ln('Whole algorithm time for %s turn', 1)
+    stop_timer(4)
+
+    print_ln('######################')
+    print_ln('######################')
+
+time_private_classifier()
+
+# import ipdb; ipdb.set_trace()
