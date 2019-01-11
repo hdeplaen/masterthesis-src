@@ -5,14 +5,11 @@ import math
 
 from Compiler.program import Program
 
-#program.set_bit_length(56)
-#program.set_security(66)
-
 sys.setrecursionlimit(1000000)
 
 n_total_runs = 1
-n_threads = 1
-n_exp = 5
+n_threads = 10
+n_exp = 10
 num_tests = 1
 feature_size = 43
 n_svm = 5
@@ -32,9 +29,11 @@ def load_hidden_svm(number):
         sv_loc = open_csv(loc_path + "sv.csv").astype("float")
         sig2_loc = open_csv(loc_path + "sig2.csv").astype("float")
 
-        num_sv = 3
-        sv_loc = sv_loc[0:num_sv][:]
-        coeffs_loc = coeffs_loc[0:num_sv]
+        #num_sv = int(len(sv_loc)/10)
+        #num_sv = num_sv + n_threads - (num_sv % n_threads)
+        #num_sv = 20
+        #sv_loc = sv_loc[0:num_sv][:]
+        #coeffs_loc = coeffs_loc[0:num_sv]
 
         return sv_loc, coeffs_loc, intercept_loc, sig2_loc
 
@@ -56,6 +55,7 @@ def load_hidden_svm(number):
 
     return classifier
 
+
 def load_hidden_tests():
     def load_raw_tests():
         def open_csv(path):
@@ -67,7 +67,7 @@ def load_hidden_tests():
         #norm_coeff = open_csv(folder_path + "nc.csv").astype("float")
         #norm_intercept = open_csv(folder_path + "ni.csv").astype("float")
 
-        return tests_loc #, norm_coeff, norm_intercept
+        return tests_loc  # , norm_coeff, norm_intercept
 
     #tests, norm_coeff, norm_intercept = load_raw_tests()
     tests = load_raw_tests()
@@ -83,12 +83,14 @@ def load_hidden_tests():
         for idx_t in range(num_tests):
             tests_[idx_t][idx_f] = sfix(tests[idx_t][idx_f])
 
-    return tests_ #, norm_coeff_, norm_intercept_
+    return tests_  # , norm_coeff_, norm_intercept_
+
 
 def print_vector(vec):
     @for_range(len(vec))
     def f(i):
         print_ln('Vector value: %s', vec[i].reveal())
+
 
 class RBF_SVM(object):
     def __init__(self, coeffs_, intercept_, sv_, sig2_, num_sv, num_features, num_tests):
@@ -116,7 +118,7 @@ class RBF_SVM(object):
         sig2 = self.sig2
         sig2.store_in_mem(0)
 
-        if num_tests % n_threads:
+        if self.num_sv % n_threads:
             raise Exception(
                 'Number of threads must divide the number of features')
 
@@ -188,7 +190,7 @@ class RBF_SVM(object):
 
         sol_chunks = sfix.Matrix(num_tests, n_threads)
 
-        if num_tests % n_threads:
+        if self.num_sv % n_threads:
             raise Exception(
                 'Number of threads must divide the number of features')
 
@@ -214,9 +216,10 @@ class RBF_SVM(object):
 
         return sol
 
+
 def predict_par(sol):
     inds = Array(n_svm, sint)
-    inds.assign([i+1 for i in range(n_svm)])
+    inds.assign([i + 1 for i in range(n_svm)])
     win_val = sint.Array(num_tests)
 
     for idx_test in range(num_tests):
@@ -231,9 +234,10 @@ def predict_par(sol):
 
     return win_val
 
+
 def predict_seq(sol):
     inds = Array(n_svm, sint)
-    inds.assign([i+1 for i in range(n_svm)])
+    inds.assign([i + 1 for i in range(n_svm)])
     win_val = sint.Array(num_tests)
 
     for idx_test in range(num_tests):
@@ -244,30 +248,32 @@ def predict_seq(sol):
 
     return win_val
 
+
 def time_private_classifier():
 
     #tests_, norm_coeff_, norm_intercept_ = load_hidden_tests()
     tests_ = load_hidden_tests()
-    print_vector(tests_[0])
+    # print_vector(tests_[0])
     sol = sfix.Matrix(n_svm, num_tests)
 
     print_ln('######################')
     start_timer(4)
-    #@for_range(n_svm)
-    #def f(idx_svm):
+    # @for_range(n_svm)
+    # def f(idx_svm):
     for idx_svm in range(n_svm):
-        classifier = load_hidden_svm(idx_svm+1)
+        classifier = load_hidden_svm(idx_svm + 1)
         sol[idx_svm][:] = classifier.predict_rbfsvm_sv(tests_)
-        #print_vector(output)
+        # print_vector(output)
 
     win_val = predict_par(sol)
-    #print_vector(win_val)
+    # print_vector(win_val)
 
     print_ln('Whole algorithm time for %s turn', 1)
     stop_timer(4)
 
     print_ln('######################')
     print_ln('######################')
+
 
 time_private_classifier()
 

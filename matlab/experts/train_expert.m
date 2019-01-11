@@ -41,6 +41,13 @@ switch type                                                 % for each TYPE
         models.TrainX = TrainX ;
         models.TrainY = TrainY ;
         
+    case 'knn-cnn-chi2'                                              % TYPE kNN
+        [TrainX] = train_knn_chi2(TrainX, TrainY, params.k) ;
+        models.TrainX = TrainX ;
+        models.TrainY = TrainY ;
+        models = train_cnn(TrainX,TrainY) ;
+        tot_sv = models.num_nb ;
+        
     case 'kmeans-knn'                                              % TYPE kNN
         [TrainX,TrainY] = kmeans_clustering(TrainX,TrainY,0) ;
         models.TrainX = TrainX ;

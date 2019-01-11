@@ -4,9 +4,6 @@ import sys
 
 from Compiler.program import Program
 
-program.set_bit_length(22)
-program.set_security(100)
-
 sys.setrecursionlimit(1000000)
 
 n_total_runs = 1
@@ -56,17 +53,17 @@ def loading_all():
     def load_training():
         for i in range(n_samples):
             classes[i] = assign_type_value(
-                training_classes[i], sint)  # input targets
+                training_classes[i], sint)  # classes
 
         for i in range(n_samples):
             for j in range(feature_size):
                 samples[i][j] = assign_type_value(
-                    training_vec[i][j], sfix)  # input features
+                    training_vec[i][j], sfix)  # features
 
     def load_testing():
         for i in range(feature_size):
             test[i] = assign_type_value(
-                testing_vec[i], sfix)  # input features
+                testing_vec[i], sfix)  # testing vector
 
     load_training()
     load_testing()

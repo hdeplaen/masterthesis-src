@@ -32,7 +32,7 @@ TestY_eval = cell(n_test,1) ;   % prealloc
 % Different actions per type
 switch type                                                 % for each TYPE
     
-    case {'knn','kmeans-knn','cnn-knn'}                               % TYPE kNN
+    case {'knn','kmeans-knn','cnn-knn','knn-cnn-chi2'}                               % TYPE kNN
         TestY_eval = eval_knn(models.TrainX, ...
             models.TrainY, TestX, params.k) ;
         

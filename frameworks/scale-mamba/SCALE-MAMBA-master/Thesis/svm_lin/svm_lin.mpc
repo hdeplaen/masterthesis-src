@@ -4,9 +4,6 @@ import sys
 
 from Compiler.program import Program
 
-program.set_bit_length(22)
-program.set_security(100)
-
 sys.setrecursionlimit(1000000)
 
 num_tests_to_do = 10
@@ -121,7 +118,7 @@ class SVM(object):
     def predict_par(self, tests):
         sol = self.compute_svm(tests_)
         inds = Array(self.num_classes, sint)
-        inds.assign([i+1 for i in range(self.num_classes)])
+        inds.assign([i + 1 for i in range(self.num_classes)])
         win_val = sint.Array(num_tests)
 
         for idx_test in range(num_tests):
@@ -139,7 +136,7 @@ class SVM(object):
     def predict_seq(self, tests):
         sol = self.compute_svm(tests_)
         inds = Array(self.num_classes, sint)
-        inds.assign([i+1 for i in range(self.num_classes)])
+        inds.assign([i + 1 for i in range(self.num_classes)])
         win_val = sint.Array(num_tests)
 
         for idx_test in range(num_tests):
@@ -161,7 +158,7 @@ def time_private_classifier(ntotal):
     @for_range(ntotal)
     def f(i):
         output = classifier.predict_par(tests_)
-        #print_vector(output)
+        # print_vector(output)
 
     print_ln('Whole algorithm time for %s turn', ntotal)
     stop_timer(4)

@@ -13,7 +13,7 @@ num_tests_to_do = 10
 num_classes = 4
 n_total_runs = 1
 n_threads = 2
-n_pca = 16
+n_pca = 8
 
 
 def load_raw_data():
@@ -26,7 +26,7 @@ def load_raw_data():
         intercept_loc = open_csv(loc_path + "b.csv").astype("float")
         return coeffs_loc, intercept_loc
 
-    folder_path = "./Thesis/svm_lin_pca/data16/LSVM_seq-svm_"
+    folder_path = "./Thesis/svm_lin_pca/data8/LSVM_seq-svm_"
 
     coeffs = np.empty([num_classes, n_pca])
     intercept = np.empty(num_classes)
@@ -114,8 +114,7 @@ class SVM(object):
             def g(idx_f):
                 self.coeffs_pca[idx_pca][idx_f] = coeffs_pca_[idx_pca][idx_f]
 
-        #print_vector(self.coeffs_pca[0])
-
+        # print_vector(self.coeffs_pca[0])
 
     def compute_svm(self, pca_tr):
         sol = sfix.Matrix(num_classes, num_tests)
@@ -170,7 +169,7 @@ class SVM(object):
     def predict_par(self, pca_tr):
         sol = self.compute_svm(pca_tr)
         inds = Array(self.num_classes, sint)
-        inds.assign([i+1 for i in range(self.num_classes)])
+        inds.assign([i + 1 for i in range(self.num_classes)])
         win_val = sint.Array(num_tests)
 
         for idx_test in range(num_tests):
@@ -188,7 +187,7 @@ class SVM(object):
     def predict_seq(self, pca_tr):
         sol = self.compute_svm(pca_tr)
         inds = Array(self.num_classes, sint)
-        inds.assign([i+1 for i in range(self.num_classes)])
+        inds.assign([i + 1 for i in range(self.num_classes)])
         win_val = sint.Array(num_tests)
 
         for idx_test in range(num_tests):
@@ -210,9 +209,9 @@ def time_private_classifier(ntotal):
     @for_range(ntotal)
     def f(i):
         pca_tr_ = classifier.compute_pca(tests_)
-        #print_vector(pca_tr_[0])
+        # print_vector(pca_tr_[0])
         output = classifier.predict_seq(pca_tr_)
-        #print_vector(output)
+        # print_vector(output)
 
     print_ln('Whole algorithm time for %s turn', ntotal)
     stop_timer(4)
