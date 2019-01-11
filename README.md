@@ -17,6 +17,8 @@ Based on these algorithms, we investigate how they can be made privacy-friendly.
 
 Linear support vector machines allow a rapid evaluation for a good accuracy. The best performance is achieved using the chi-square reduction. Higher accuracies can be achieved with non-linear support vector machines and nearest neighbors. However, compared to nearest neighbors, non-linear support vector machines are much more expensive using multi-party computation due to the need for dual evaluation. Nearest neighbors are also very expensive, but can be reduced to practically feasible evaluation times using the condensed nearest neighbors beforehand. This way we exploit the trade-off between expensive clear pre-processing and a lightweight secret model. When applying feature size reduction to the nearest neighbors, the PCA reduction seems more adapted than the chi-square feature selection.
 
+[Full thesis available here.](https://github.com/hdeplaen/masterthesis-pdf)
+
 ## Information about the code
 
 ### MATLAB
