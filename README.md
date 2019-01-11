@@ -3,9 +3,11 @@
 ## Information
 Promotor: 
 * Prof. Dr. ir. Bart Preneel
+
 Assessors:
 * Prof. Dr. ir. Karl Meerbergen
 * Prof. Dr. ir. Sabine Van Huffel
+
 Supervisors:
 * Dr. Aysajan Abidin
 * Dr. Abdelrahaman Aly
