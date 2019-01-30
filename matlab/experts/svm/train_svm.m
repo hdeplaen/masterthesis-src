@@ -110,11 +110,6 @@ SVMModel = SVMModel{1} ;
 params.gam = [] ;
 params.sig2 = SVMModel.KernelParameters.Scale ;
 
-alpha = SVMModel.Alpha ;
-labels = SVMModel.SupportVectorLabels ;
-sv  = SVMModel.SupportVectors ;
-w = (alpha.*labels)'*sv ;
-
 model           = struct ;      % prealloc
 model.alpha     = SVMModel.Alpha.*SVMModel.SupportVectorLabels ;       % assign alpha
 model.b         = SVMModel.Bias ;           % assign b
@@ -123,7 +118,7 @@ model.params    = params ;      % assign problem parameters
 model.sv        = SVMModel.SupportVectors ; %TrainX(SVMModel.IsSupportVector,:) ;      % assign support vectors
 model.SVMModel  = SVMModel ;
 model.num_sv    = num_sv ;
-model.w         = w ;
+model.w         = SVMModel.Beta/SVMModel.KernelParameters.Scale ;
 
 % assert(nargin==1, 'Wrong number of output arguments') ;
 varargout{1} = model ;

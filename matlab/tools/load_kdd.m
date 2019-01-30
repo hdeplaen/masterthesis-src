@@ -146,14 +146,14 @@ trainX = table2array(trainX) ;                                              % te
 %trainX(:,1) = log(trainX(:,1)+1) ;
 %testX(:,1) = log(testX(:,1)+1) ;
 
-% varargout{1} = trainX(1:100000,:) ;
-% varargout{2} = trainY(1:100000) ;
-% varargout{3} = trainX(100001:end,:) ;
-% varargout{4} = trainY(100001:end) ;
+varargout{1} = trainX(1:100000,:) ;
+varargout{2} = trainY(1:100000) ;
+varargout{3} = trainX(100001:end,:) ;
+varargout{4} = trainY(100001:end) ;
 
-varargout{1} = trainX ;
-varargout{2} = trainY ;
-varargout{3} = testX ;
-varargout{4} = testY ;
+% varargout{1} = trainX ;
+% varargout{2} = trainY ;
+% varargout{3} = testX ;
+% varargout{4} = testY ;
 
 end

@@ -1,0 +1,273 @@
+import csv
+import numpy as np
+import sys
+
+from Compiler.program import Program
+
+sys.setrecursionlimit(1000000)
+
+###########
+#TEST ID
+test_id = 5
+###########
+
+n_total_runs = 1
+n_threads = 5
+multithread_tree = True
+n_pca = 16
+feature_size = 43
+num_tests = 1
+
+def load_raw_data():
+    def open_csv(path):
+        return np.genfromtxt(path, delimiter=',')
+
+    folder_path = "./Thesis/demo_knn_1_pca/data16/"
+    training_vectors_path = folder_path + "training_vec" + ".csv"
+    training_classes_path = folder_path + "training_classes" + ".csv"
+    testing_vectors_path = folder_path + "testing_vec" + ".csv"
+    pca_path = folder_path + "pca" + ".csv"
+
+    training_vec = open_csv(training_vectors_path).astype("float")
+    training_classes = open_csv(training_classes_path).astype("int")
+    testing_vec = open_csv(testing_vectors_path).astype("float")
+    pca = open_csv(pca_path).astype("float")
+
+    testing_vec = testing_vec[test_id-1][:]
+
+    return training_vec, training_classes, testing_vec, pca
+
+
+training_vec, training_classes, testing_vec, pca = load_raw_data()
+
+n_samples = int(len(training_vec))
+n_classes = int(max(training_classes))
+samples = sfix.Matrix(n_samples, n_pca)
+classes = sint.Array(n_samples)
+test_ = sfix.Array(feature_size)
+coeffs_pca_ = sfix.Matrix(n_pca, feature_size)
+
+
+def loading_all():
+
+    def assign_type_value(val, type):
+        if type is sfix:
+            return sfix(float(val))
+        elif type is sint:
+            return sint(int(val))
+
+    def load_training():
+        for i in range(n_samples):
+            classes[i] = assign_type_value(
+                training_classes[i], sint)  # classes
+
+        for i in range(n_samples):
+            for j in range(n_pca):
+                samples[i][j] = assign_type_value(
+                    training_vec[i][j], sfix)  # features
+
+    def load_testing():
+        for i in range(feature_size):
+            test_[i] = assign_type_value(
+                testing_vec[i], sfix)  # testing vector
+
+    def load_pca():
+        for idx_f in range(feature_size):
+            for idx_pca in range(n_pca):
+                coeffs_pca_[idx_pca][idx_f] = sfix(pca[idx_pca][idx_f])
+
+    load_training()
+    load_testing()
+    load_pca()
+
+
+def print_vector(vec):
+    @for_range(len(vec))
+    def f(i):
+        print_ln('Vector value: %s', vec[i].reveal())
+
+
+def print_vectors(vec1, vec2):
+    @for_range(len(vec1))
+    def f(i):
+        print_ln('Vector value: %s and %s', vec1[i].reveal(), vec2[i].reveal())
+
+
+def _min(dist, targets):
+    def _min_sub(dist, targets):
+        n = len(dist)
+        if n == 1:
+            return dist[0], targets[0]
+        else:
+            rounded_half = (n + 1) / 2
+            reduced_dist = [None for i in range(rounded_half)]
+            reduced_targets = [None for i in range(rounded_half)]
+
+            for i in range(n / 2):
+                comparison_flag = dist[2 * i] < dist[2 * i + 1]
+                win_dist = comparison_flag.if_else(
+                    dist[2 * i], dist[2 * i + 1])
+                win_target = comparison_flag.if_else(
+                    targets[2 * i], targets[2 * i + 1])
+
+                reduced_dist[i] = win_dist
+                reduced_targets[i] = win_target
+            if n % 2:
+                reduced_dist[rounded_half - 1] = dist[n - 1]
+                reduced_targets[rounded_half - 1] = targets[n - 1]
+            return _min_sub(reduced_dist, reduced_targets)
+
+    if multithread_tree is None:
+        return _min_sub(dist, targets, dist_min)
+    else:
+        last_chunk_size = len(dist) % n_threads
+        threads_dist = sfix.Array(n_threads + int(last_chunk_size > 0))
+        threads_targets = sint.Array(n_threads + int(last_chunk_size > 0))
+
+        def thread():
+            i = get_arg()
+            n_per_thread = len(dist) / n_threads
+            start = i * n_per_thread
+            chunk_dist = [dist[start + j] for j in range(n_per_thread)]
+            chunk_targets = [targets[start + j] for j in range(n_per_thread)]
+            threads_dist[i], threads_targets[i] = _min_sub(
+                chunk_dist, chunk_targets)
+
+        tape = program.new_tape(thread)
+        threads = [program.run_tape(tape, i) for i in range(n_threads)]
+        for i in threads:
+            program.join_tape(i)
+
+        if last_chunk_size > 0:
+            begin = len(dist) - last_chunk_size
+            chunk_dist = [dist[begin + j] for j in range(last_chunk_size)]
+            chunk_targets = [targets[begin + j]
+                             for j in range(last_chunk_size)]
+            threads_dist[n_threads], threads_targets[n_threads] = _min_sub(
+                chunk_dist, chunk_targets)
+
+        return _min_sub(threads_dist, threads_targets)
+
+
+class KNN(object):
+    def __init__(self, samples, classes, coeffs_pca_, num_samples, feature_size):
+        self.coeffs_pca = sfix.Matrix(n_pca, feature_size)
+        self.num_features = feature_size
+        self.num_samples = num_samples
+        self.training = sfix.Matrix(num_samples, n_pca)
+
+        @for_range(num_samples)
+        def f(i):
+            @for_range(n_pca)
+            def g(j):
+                self.training[i][j] = samples[i][j]
+
+        self.targets = sint.Array(num_samples)
+
+        @for_range(num_samples)
+        def f(i):
+            self.targets[i] = classes[i]
+
+        @for_range(n_pca)
+        def f(idx_pca):
+            @for_range(feature_size)
+            def g(idx_f):
+                self.coeffs_pca[idx_pca][idx_f] = coeffs_pca_[idx_pca][idx_f]
+
+    def compute_dists(self, pca_tr):
+        # number of threads dependent on the number of classes
+        num_samples = self.num_samples
+        dists = sfix.Array(num_samples)
+        if num_samples % n_threads:
+            raise Exception(
+                'Number of threads must divide the number of sample elements')
+
+        def thread_chunk():
+            i = get_arg()
+            chunk_size = num_samples / n_threads
+            start_chunk = i * chunk_size
+
+            for idx_chunk in range(chunk_size):
+                dists[start_chunk + idx_chunk] = sum((self.training[start_chunk + idx_chunk][idx_pca] -
+                                                      pca_tr[idx_pca])**2 for idx_pca in range(n_pca))
+
+        tape = program.new_tape(thread_chunk)  # define what function executes
+        threads = [program.run_tape(tape, i) for i in range(
+            n_threads)]  # execute each thread
+        for i in threads:
+            program.join_tape(i)  # wait until tape i has finished
+
+        return dists
+
+    def compute_pca(self, test):
+        pca_tr = sfix.Array(n_pca)
+
+        for idx_pca in range(n_pca):
+            pca_tr[idx_pca] = sum((self.coeffs_pca[idx_pca][idx_f] * test[idx_f])
+                                  for idx_f in range(feature_size))
+
+        return pca_tr
+
+    def predict_knn(self, test):
+        start_timer(2)
+        pca_tr_ = self.compute_pca(test_)
+        dists = self.compute_dists(pca_tr_)
+        dist, target = _min(dists, self.targets)
+        #print_ln('Time for one 1nn search')
+        #print_ln('dist: %s, target: %s',dist.reveal(), loc_target.reveal())
+
+        return dist, target
+
+
+def time_private_classifier():
+
+    def print_class(class_id_):
+        class_id = class_id_.reveal()
+        class_id.store_in_mem(0)
+
+        def if_1():
+            print_ln('Normal')
+        def else_1():
+            def if_2():
+                print_ln('DoS')
+            def else_2():
+                def if_3():
+                    print_ln('Probe')
+                def else_3():
+                    def if_4():
+                        print_ln('R2L')
+                    def else_4():
+                        def if_5():
+                            print_ln('U2R')
+                        def else_5():
+                            print_ln('Class not recongized')
+                        if_statement(cint.load_mem(0)==5,if_5,else_5)
+                    if_statement(cint.load_mem(0)==4,if_4,else_4)
+                if_statement(cint.load_mem(0)==3,if_3,else_3)
+            if_statement(cint.load_mem(0)==2,if_2,else_2)
+        if_statement(cint.load_mem(0)==1,if_1,else_1)
+
+    classifier = KNN(samples, classes, coeffs_pca_, n_samples, feature_size)
+
+    #start_timer(1)
+
+    #print_ln('######################')
+
+    dist_, target_ = classifier.predict_knn(test_)
+
+    #print_ln('Winning target: %s', target.reveal())
+    #print_ln('Whole algorithm time')
+    #stop_timer(1)
+
+    print_ln('')
+    print_ln('######################')
+    print_ln('OUTPUT CLASS:')
+    #print_ln('%s', target_.reveal())
+    print_class(target_)
+
+    print_ln('######################')
+    print_ln('')
+
+
+loading_all()
+time_private_classifier()

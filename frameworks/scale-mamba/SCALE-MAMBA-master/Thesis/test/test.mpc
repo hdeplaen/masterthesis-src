@@ -1,0 +1,51 @@
+import numpy as np
+import sys
+
+def print_class(class_id_):
+    class_id = class_id_.reveal()
+    class_id.store_in_mem(0)
+
+    def if_1():
+        print_ln('Normal')
+    def else_1():
+        def if_2():
+            print_ln('DoS')
+        def else_2():
+            def if_3():
+                print_ln('Probe')
+            def else_3():
+                def if_4():
+                    print_ln('R2L')
+                def else_4():
+                    def if_5():
+                        print_ln('U2R')
+                    def else_5():
+                        print_ln('Class not recongized')
+                    if_statement(cint.load_mem(0)==5,if_5,else_5)
+                if_statement(cint.load_mem(0)==4,if_4,else_4)
+            if_statement(cint.load_mem(0)==3,if_3,else_3)
+
+
+def print_class2(class_id_):
+    class_id = class_id_.reveal()
+    if_then (class_id==1)
+    print_ln('Hoi')
+    end_if()
+    if_then(class_id==2)
+    print_ln('DoS')
+    end_if()
+    if_then(class_id==3)
+    print_ln('Probe')
+    end_if()
+    if_then(class_id==4)
+    print_ln('R2L')
+    end_if()
+    if_then(class_id==5)
+    print_ln('U2R')
+    end_if()
+    if_then(class_id>5)
+    print_ln('Class not recognized')
+    end_if()
+
+a = sint(4)
+answer = print_class2(a)

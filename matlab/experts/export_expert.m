@@ -29,7 +29,7 @@ classes = expert.classes ;      % get different classes
 % Different actions per type
 switch type                                                 % for each TYPE
     
-    case 'knn'                                              % TYPE kNN
+    case {'knn','cnn-knn'}                                              % TYPE kNN
          loc_name = [export_path '/' type '/' ...
                 filename '_' type '_'] ;
         
